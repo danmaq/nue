@@ -1,5 +1,6 @@
 <?php
 
+require_once(dirname(__FILE__) . '/../../../CConstants.php');
 require_once(dirname(__FILE__) . '/../../IState.php');
 
 /**
@@ -53,8 +54,11 @@ class CSceneIllegalMode
 		$body = $dom->appendChild($dom->createElement('body', _('無効な動作状態。')));
 		$title = $body->appendChild($dom->createAttribute('title'));
 		$title->value = 'ERROR';
-		echo $dom->saveXML();
-//		new xsltprocessor();
+		$xsl = new DOMDocument();
+		$xsl->load(dirname(__FILE__) . '../../../../../skin/' . CConfigure::$SKINSET . '/default.xsl');
+		$xslt = new XSLTProcessor();
+		$xslt->importStyleSheet($xsl);
+		echo $xslt->transformToXML($dom);
 		$entity->setNextState(CEmptyState::getInstance());
 	}
 

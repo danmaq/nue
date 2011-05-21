@@ -1,5 +1,8 @@
 NUE - Network Utterance Environment
 
+■2011/5/22 - Version 0.0.3
+サーバサイドXSLT機能を仮実装。
+
 ■2011/5/21 - Version 0.0.2
 内部的にStateパターンを構築。
 初期化処理としてクエリをパースする処理を実装。
