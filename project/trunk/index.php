@@ -1,7 +1,13 @@
 <?php
 
-error_reporting(E_NOTICE|E_STRICT);
+error_reporting(E_ALL|E_STRICT);
 
-echo 'Hello, world! by danmaq';
+require_once(dirname(__FILE__) . '/lib/CNUE.php');
+
+CNUE::run();
+
+echo 'Network Utterance Environment version 0.0.2 by danmaq';
+//echo '<br />';
+//print_r($_GET);
 
 ?>
