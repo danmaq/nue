@@ -1,5 +1,11 @@
 NUE - Network Utterance Environment
 
+■2011/5/23 - Version 0.0.5
+XML構築機能の小規模な改良。
+バージョン情報をPHP側でも持つようにした。
+XSLスキンの小規模な改良。
+スタイルシート追加。
+
 ■2011/5/22 - Version 0.0.4
 DOMを使用したXML構築機能を実装。
 サーバサイドXSLT機能を実装。

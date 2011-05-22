@@ -13,6 +13,9 @@ require_once(dirname(__FILE__) . '/../conf/CConfigure.php');
 class CConstants
 {
 
+	/** バージョン情報。 */
+	const VERSION = '0.0.5';
+
 	/** ブログ表示状態。 */
 	const STATE_VIEW = 'view';
 
