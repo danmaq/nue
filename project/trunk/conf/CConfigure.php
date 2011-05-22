@@ -53,17 +53,17 @@ class CConfigure
 	/**
 	 *	データベースにログインするユーザIDを設定します。
 	 */
-	const DB_USER = 'SAMPLE';
+	const DB_USER = 'SAMPLE_USER';
 
 	/**
 	 *	データベースにログインするパスワードを設定します。
 	 */
-	const DB_PASSWORD = 'SAMPLE';
+	const DB_PASSWORD = 'SAMPLE_PASSWORD';
 
 	/**
 	 *	使用するデータベース名を設定します。
 	 */
-	const DB_NAME = 'SAMPLE';
+	const DB_NAME = 'SAMPLE_DATABASE';
 
 	//////////////////////////////////////////////////////////////////
 	// <<<< ここまで設定可能エリア
