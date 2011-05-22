@@ -7,7 +7,7 @@ require_once(dirname(__FILE__) . '/../../IState.php');
 /**
  *	モード指定が誤っている場合に呼び出されるシーンです。
  */
-class CSceneIllegalMode
+class CSceneView
 	implements IState
 {
 
@@ -23,7 +23,7 @@ class CSceneIllegalMode
 	{
 		if(self::$instance == null)
 		{
-			self::$instance = new CSceneIllegalMode();
+			self::$instance = new CSceneView();
 		}
 		return self::$instance;
 	}
@@ -52,7 +52,7 @@ class CSceneIllegalMode
 	public function execute(CEntity $entity)
 	{
 		$xmlbuilder = new CDocumentBuilder();
-		$xmlbuilder->createSimpleMessage(_('ERROR'), _('無効な動作状態。'));
+		$xmlbuilder->createSimpleMessage(_('ERROR'), _('記事がありません。'));
 		$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
 		$entity->setNextState(CEmptyState::getInstance());
 	}

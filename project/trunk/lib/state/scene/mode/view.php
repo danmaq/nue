@@ -1,7 +1,7 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../../CEmptyState.php');
+require_once(dirname(__FILE__) . '/../view/CSceneView.php');
 
-$nextState = CEmptyState::getInstance();
+$nextState = CSceneView::getInstance();
 
 ?>

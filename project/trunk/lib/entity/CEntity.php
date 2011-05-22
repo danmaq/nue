@@ -35,11 +35,7 @@ class CEntity
 	 */
 	function __destruct()
 	{
-		$this->setNextState(CEmptyState::getInstance());
-		$this->commitNextState();
-		$this->previousState = CEmptyState::getInstance();
-		$this->currentState = CEmptyState::getInstance();
-		$this->nextState = null;
+		$this->dispose();
 	}
 
 	/**
@@ -98,11 +94,11 @@ class CEntity
 	 */
 	public function commitNextState()
 	{
-		if($this->getNextState() != null)
+		if($this->getNextState() !== null)
 		{
 			$this->getCurrentState()->teardown($this);
 		}
-		$result = $this->getNextState() != null;
+		$result = $this->getNextState() !== null;
 		if($result)
 		{
 			$this->previousState = $this->currentState;
@@ -111,6 +107,18 @@ class CEntity
 			$this->getCurrentState()->setup($this);
 		}
 		return $result;
+	}
+
+	/**
+	 *	状態をリセットします。
+	 */
+	function dispose()
+	{
+		$this->setNextState(CEmptyState::getInstance());
+		$this->commitNextState();
+		$this->previousState = CEmptyState::getInstance();
+		$this->currentState = CEmptyState::getInstance();
+		$this->nextState = null;
 	}
 }
 

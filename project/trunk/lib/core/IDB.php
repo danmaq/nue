@@ -30,8 +30,7 @@ interface IDB
 	 *	@param integer $limit 取得する件数。省略時は(2^31)-1件。
 	 *	@return mixed 値一覧。
 	 */
-	function get(string $sql, integer $limit = PHP_INT_MAX);
-
+	function get($sql, $limit = PHP_INT_MAX);
 }
 
 ?>
