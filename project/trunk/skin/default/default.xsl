@@ -14,17 +14,19 @@
 </xsl:text>
 		<!-- 出力のインデントが乱れるため、意図して改行しています。 -->
 
-		<html>
+		<html xml:lang="ja">
 			<head>
 				<meta charset="UTF-8" />
 				<title><xsl:value-of select="@title" /> - <xsl:value-of select="@site" /></title>
 				<link href="./" rel="Start"/>
+				<link href="./skin/default/default.css" rel="StyleSheet" />
+				<link href="https://twitter.com/#!/danmaq" rev="made" />
 			</head>
 			<body>
 				<h1><xsl:value-of select="@site" /></h1>
 				<xsl:apply-templates select="topic" />
 				<hr />
-				<address>Network Utterance Environment version 0.0.4<br />by danmaq</address>
+				<address>Network Utterance Environment version <xsl:value-of select="@ver" /><br />by danmaq</address>
 			</body>
 		</html>
 	</xsl:template>

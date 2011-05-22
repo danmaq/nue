@@ -3,54 +3,52 @@
 require_once(dirname(__FILE__) . '/../CConstants.php');
 
 /**
- *	ƒhƒLƒ…ƒƒ“ƒg‚ğ¶¬‚·‚éƒNƒ‰ƒXB
+ *	ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆã‚’ç”Ÿæˆã™ã‚‹ã‚¯ãƒ©ã‚¹ã€‚
  */
 class CDocumentBuilder
 {
 
-	/**	XML–¼‘O‹óŠÔURLB */
+	/**	XMLåå‰ç©ºé–“URLã€‚ */
 	const URI_XMLNS = 'http://www.w3.org/2000/xmlns/';
 
-	/**	XHTML–¼‘O‹óŠÔURLB */
+	/**	XHTMLåå‰ç©ºé–“URLã€‚ */
 	const URI_XHTML = 'http://www.w3.org/1999/xhtml';
 
-	/**	XHTML–¼‘O‹óŠÔB */
+	/**	XHTMLåå‰ç©ºé–“ã€‚ */
 	const NS_XHTML = 'xhtml';
 
-	/**	DOMƒIƒuƒWƒFƒNƒgB */
+	/**	DOMã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã€‚ */
 	private $dom;
 
-	/**	XMLƒ‹[ƒg—v‘fB */
+	/**	XMLãƒ«ãƒ¼ãƒˆè¦ç´ ã€‚ */
 	private $body;
 
-	/**	XMLƒ‹[ƒg‚Ìƒ^ƒCƒgƒ‹‘®«B */
+	/**	XMLãƒ«ãƒ¼ãƒˆã®ã‚¿ã‚¤ãƒˆãƒ«å±æ€§ã€‚ */
 	private $title;
 
 	/**
-	 *	ƒRƒ“ƒXƒgƒ‰ƒNƒ^B
+	 *	ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã€‚
 	 *
-	 *	param string $title ƒ^ƒCƒgƒ‹ ƒƒbƒZ[ƒWB
+	 *	param string $title ã‚¿ã‚¤ãƒˆãƒ« ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã€‚
 	 */
 	public function __construct($title = '')
 	{
 		$dom = new DOMDocument('1.0', 'UTF-8');
 		$this->dom = $dom;
 		$body = $dom->createElement('body');
-		$title = $this->createCaption($title);
+		$title = $this->createAttribute($body, 'title', $title);
+		$this->createAttribute($body, 'site', CConfigure::SITE_NAME);
+		$this->createAttribute($body, 'ver', CConstants::VERSION);
 		$this->body = $body;
 		$this->title = $title;
 		$dom->appendChild($body);
-		$body->appendChild($title);
-		$siteName = $dom->createAttribute('site');
-		$siteName->value = CConfigure::SITE_NAME;
-		$body->appendChild($siteName);
 		$body->setAttributeNS(self::URI_XMLNS , 'xmlns:' . self::NS_XHTML, self::URI_XHTML);
 	}
 
 	/**
-	 *	DOMƒIƒuƒWƒFƒNƒg‚ğæ“¾‚µ‚Ü‚·B
+	 *	DOMã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—ã—ã¾ã™ã€‚
 	 *
-	 *	@return DOMDocument DOMƒIƒuƒWƒFƒNƒgB
+	 *	@return DOMDocument DOMã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã€‚
 	 */
 	public function getDOM()
 	{
@@ -58,9 +56,9 @@ class CDocumentBuilder
 	}
 
 	/**
-	 *	ƒ‹[ƒg—v‘f‚ğæ“¾‚µ‚Ü‚·B
+	 *	ãƒ«ãƒ¼ãƒˆè¦ç´ ã‚’å–å¾—ã—ã¾ã™ã€‚
 	 *
-	 *	@return DOMElement ƒ‹[ƒg—v‘fB
+	 *	@return DOMElement ãƒ«ãƒ¼ãƒˆè¦ç´ ã€‚
 	 */
 	public function getRootElement()
 	{
@@ -68,9 +66,9 @@ class CDocumentBuilder
 	}
 
 	/**
-	 *	ƒ^ƒCƒgƒ‹‚ğæ“¾‚µ‚Ü‚·B
+	 *	ã‚¿ã‚¤ãƒˆãƒ«ã‚’å–å¾—ã—ã¾ã™ã€‚
 	 *
-	 *	@return string ƒ^ƒCƒgƒ‹B
+	 *	@return string ã‚¿ã‚¤ãƒˆãƒ«ã€‚
 	 */
 	public function getTitle()
 	{
@@ -78,9 +76,9 @@ class CDocumentBuilder
 	}
 
 	/**
-	 *	ƒ^ƒCƒgƒ‹‚ğİ’è‚µ‚Ü‚·B
+	 *	ã‚¿ã‚¤ãƒˆãƒ«ã‚’è¨­å®šã—ã¾ã™ã€‚
 	 *
-	 *	@param string $value ƒ^ƒCƒgƒ‹B
+	 *	@param string $value ã‚¿ã‚¤ãƒˆãƒ«ã€‚
 	 */
 	public function setTitle($value)
 	{
@@ -88,10 +86,10 @@ class CDocumentBuilder
 	}
 
 	/**
-	 *	XSLT‚ğ‰î‚µ‚ÄHTML‚ğ¶¬‚µAo—Í‚µ‚Ü‚·B
+	 *	XSLTã‚’ä»‹ã—ã¦HTMLã‚’ç”Ÿæˆã—ã€å‡ºåŠ›ã—ã¾ã™ã€‚
 	 *
-	 *	@param string $xslpath XSLƒtƒ@ƒCƒ‹‚Ö‚ÌƒpƒXB
-	 *	@return string o—Í‚³‚ê‚½HTML•¶š—ñB
+	 *	@param string $xslpath XSLãƒ•ã‚¡ã‚¤ãƒ«ã¸ã®ãƒ‘ã‚¹ã€‚
+	 *	@return string å‡ºåŠ›ã•ã‚ŒãŸHTMLæ–‡å­—åˆ—ã€‚
 	 */
 	public function output($xslpath)
 	{
@@ -105,10 +103,10 @@ class CDocumentBuilder
 	}
 
 	/**
-	 *	XSLT‚ğ‰î‚µ‚ÄHTML‚ğ¶¬‚µ‚Ü‚·B
+	 *	XSLTã‚’ä»‹ã—ã¦HTMLã‚’ç”Ÿæˆã—ã¾ã™ã€‚
 	 *
-	 *	@param string $xslpath XSLƒtƒ@ƒCƒ‹‚Ö‚ÌƒpƒXB
-	 *	@return string HTML•¶š—ñB
+	 *	@param string $xslpath XSLãƒ•ã‚¡ã‚¤ãƒ«ã¸ã®ãƒ‘ã‚¹ã€‚
+	 *	@return string HTMLæ–‡å­—åˆ—ã€‚
 	 */
 	public function createHTML($xslpath)
 	{
@@ -120,43 +118,43 @@ class CDocumentBuilder
 	}
 
 	/**
-	 *	‹ó‚ÌƒgƒsƒbƒN‚ğì¬‚µ‚Ü‚·B
+	 *	ç©ºã®ãƒˆãƒ”ãƒƒã‚¯ã‚’ä½œæˆã—ã¾ã™ã€‚
 	 *
-	 *	@param string $caption Œ©o‚µB
-	 *	@return DOMElement ‹ó‚ÌƒgƒsƒbƒN ƒIƒuƒWƒFƒNƒgB
+	 *	@param string $caption è¦‹å‡ºã—ã€‚
+	 *	@return DOMElement ç©ºã®ãƒˆãƒ”ãƒƒã‚¯ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã€‚
 	 */
 	public function createTopic($caption)
 	{
 		$topic = $this->getDOM()->createElement('topic');
-		$topic->appendChild($this->createCaption($caption));
+		$this->createAttribute($topic, 'title', $caption);
 		$this->getRootElement()->appendChild($topic);
 		return $topic;
 	}
 
 	/**
-	 *	‹ó‚Ì’i—‚ğì¬‚µ‚Ü‚·B
+	 *	ç©ºã®æ®µè½ã‚’ä½œæˆã—ã¾ã™ã€‚
 	 *
-	 *	@param string $topic Š‘®‚³‚¹‚éƒgƒsƒbƒNB
-	 *	@param string $caption ¬Œ©o‚µBÈ—ª‚Íì¬‚³‚ê‚Ü‚¹‚ñB
-	 *	@return DOMElement ‹ó‚Ì’i— ƒIƒuƒWƒFƒNƒgB
+	 *	@param DOMNode $topic æ‰€å±ã•ã›ã‚‹ãƒˆãƒ”ãƒƒã‚¯ã€‚
+	 *	@param string $caption å°è¦‹å‡ºã—ã€‚çœç•¥æ™‚ã¯ä½œæˆã•ã‚Œã¾ã›ã‚“ã€‚
+	 *	@return DOMElement ç©ºã®æ®µè½ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã€‚
 	 */
 	public function createParagraph(DOMNode $topic, $caption = null)
 	{
 		$paragraph = $this->getDOM()->createElement('p');
 		if($caption !== null)
 		{
-			$topic->appendChild($this->createCaption($caption));
+			$this->createAttribute($topic, 'title', $caption);
 		}
 		$topic->appendChild($paragraph);
 		return $paragraph;
 	}
 
 	/**
-	 *	ƒVƒ“ƒvƒ‹‚ÈƒƒbƒZ[ƒW‚ğ¶¬‚µ‚Ü‚·B
+	 *	ã‚·ãƒ³ãƒ—ãƒ«ãªãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ç”Ÿæˆã—ã¾ã™ã€‚
 	 *
-	 *	@param string $caption Œ©o‚µB
-	 *	@param string $description –{•¶B
-	 *	@return DOMDocument DOMƒIƒuƒWƒFƒNƒgB
+	 *	@param string $caption è¦‹å‡ºã—ã€‚
+	 *	@param string $description æœ¬æ–‡ã€‚
+	 *	@return DOMDocument DOMã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã€‚
 	 */
 	public function createSimpleMessage($caption, $description)
 	{
@@ -171,19 +169,19 @@ class CDocumentBuilder
 	}
 
 	/**
-	 *	Œ©o‚µ‘®«‚ğì¬‚µ‚Ü‚·B
+	 *	å±æ€§ã‚’ä½œæˆã—ã¾ã™ã€‚
 	 *
-	 *	‚±‚Ìƒƒ\ƒbƒh‚Åì¬‚³‚ê‚½‘®«‚Í‚Ç‚±‚É‚àŠ‘®‚µ‚Ä‚¢‚Ü‚¹‚ñ‚Ì‚Å
-	 *	è“®‚ÅappendChild‚·‚é•K—v‚ª‚ ‚è‚Ü‚·B
-	 *
-	 *	@param string $caption Œ©o‚µB
-	 *	@preturn Œ©o‚µ‘®«ƒIƒuƒWƒFƒNƒgB
+	 *	@param DOMNode $element æ‰€å±ã•ã›ã‚‹è¦ç´ ã€‚
+	 *	@param string $name å±æ€§ã€‚
+	 *	@param string $value å€¤ã€‚
+	 *	@preturn ä½œæˆã•ã‚ŒãŸå±æ€§ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã€‚
 	 */
-	private function createCaption($caption)
+	private function createAttribute(DOMNode $element, $name, $value)
 	{
-		$title = $this->getDOM()->createAttribute('title');
-		$title->value = $caption;
-		return $title;
+		$attr = $this->getDOM()->createAttribute($name);
+		$attr->value = $value;
+		$element->appendChild($attr);
+		return $attr;
 	}
 }
 
