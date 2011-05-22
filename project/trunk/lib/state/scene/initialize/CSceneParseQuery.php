@@ -41,7 +41,7 @@ class CSceneParseQuery
 	 */
 	public function setup(CEntity $entity)
 	{
-		$this->setQueryIfNotExists('cat', CConfigure::$DEFAULT_CATEGORY);
+		$this->setQueryIfNotExists('cat', CConfigure::DEFAULT_CATEGORY);
 		$this->setQueryIfNotExists('from', 0);
 		$this->setQueryIfNotExists('to', 100);
 		$keys = array_keys($_GET);
@@ -52,7 +52,7 @@ class CSceneParseQuery
 			$this->parseGUID($item);
 		}
 		$this->setQueryIfNotExists('f', isset($_GET['q']) || isset($_GET['t']) ?
-			CConstants::$STATE_FIND : CConstants::$STATE_VIEW);
+			CConstants::STATE_FIND : CConstants::STATE_VIEW);
 	}
 
 	/**

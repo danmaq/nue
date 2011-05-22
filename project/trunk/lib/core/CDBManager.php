@@ -4,9 +4,9 @@ require_once(dirname(__FILE__) . '/../CConstants.php');
 require_once('IDB.php');
 
 /**
- *	MySQL専用のデータベース接続するクラス。
+ *	データベース オブジェクト管理クラス。
  */
-class CMySQL
+class CDBManager
 	implements IDB
 {
 
@@ -14,7 +14,7 @@ class CMySQL
 	private static $instance = null;
 
 	/**	データベース オブジェクト。 */
-	public $dbo;
+	private $db;
 
 	/**
 	 *	データベース オブジェクトを取得します。
@@ -25,7 +25,7 @@ class CMySQL
 	{
 		if(self::$instance == null)
 		{
-			self::$instance = new CMySQL();
+			self::$instance = new CDBManager();
 		}
 		return self::$instance;
 	}
@@ -35,6 +35,8 @@ class CMySQL
 	 */
 	private function __construct()
 	{
+		$db = null;
+		require_once(CConfigure::DB_TYPE . '.php');
 	}
 
 	/**
@@ -42,19 +44,17 @@ class CMySQL
 	 */
 	public function connect()
 	{
-		$dsn = sprintf('mysql:dbname=%s;host=%s;port=%d',
-			CConfigure::DB_NAME, CConfigure::DB_HOST, CConfigure::DB_PORT);
-		$this->dbo = new PDO($dsn, CConfigure::DB_USER, CConfigure::DB_PASSWORD);
+		$this->db->connect();
 	}
 
 	/**
 	 *	PDOオブジェクトを取得します。
 	 *
-	 *	@return PDO PDOオブジェクト。
+	 *	@return mixed PDOオブジェクト。
 	 */
 	public function getPDO()
 	{
-		return $this->dbo;
+		return $this->db->getPDO();
 	}
 
 	/**
@@ -62,10 +62,7 @@ class CMySQL
 	 */
 	public function close()
 	{
-		if($this->$dbo !== null)
-		{
-			$this->dbo = null;
-		}
+		$this->db->close();
 	}
 
 	/**
@@ -77,7 +74,7 @@ class CMySQL
 	 */
 	public function get($sql, $limit = PHP_INT_MAX)
 	{
-		return null;
+		return $this->db->get($sql, $limit);
 	}
 }
 
