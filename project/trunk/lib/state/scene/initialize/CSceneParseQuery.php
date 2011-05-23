@@ -1,7 +1,7 @@
 <?php
 
 require_once(dirname(__FILE__) . '/../../../CConstants.php');
-require_once(dirname(__FILE__) . '/../error/CSceneIllegalMode.php');
+require_once(dirname(__FILE__) . '/../error/CSceneSimpleError.php');
 
 /**
  *	GETクエリをパースするシーン。
