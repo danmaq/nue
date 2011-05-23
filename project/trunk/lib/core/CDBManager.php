@@ -37,6 +37,7 @@ class CDBManager
 	{
 		$db = null;
 		require_once(CConfigure::DB_TYPE . '.php');
+		$this->db = $db;
 	}
 
 	/**
