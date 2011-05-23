@@ -39,12 +39,16 @@ class CMySQL
 
 	/**
 	 *	接続を確立します。
+	 *
+	 *	@return boolean 接続できた場合、true。
 	 */
 	public function connect()
 	{
 		$dsn = sprintf('mysql:dbname=%s;host=%s;port=%d',
 			CConfigure::DB_NAME, CConfigure::DB_HOST, CConfigure::DB_PORT);
 		$this->dbo = new PDO($dsn, CConfigure::DB_USER, CConfigure::DB_PASSWORD);
+		// TODO : 接続できたかどうかをここで検証して、booleanで返す。
+		return true;
 	}
 
 	/**
@@ -64,6 +68,7 @@ class CMySQL
 	{
 		if($this->$dbo !== null)
 		{
+			$this->dbo->commmit();
 			$this->dbo = null;
 		}
 	}

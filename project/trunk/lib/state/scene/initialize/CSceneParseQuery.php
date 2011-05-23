@@ -63,7 +63,7 @@ class CSceneParseQuery
 	public function execute(CEntity $entity)
 	{
 		$target = dirname(__FILE__) . '/../mode/' . $_GET['f'] . '.php';
-		$nextState = CSceneIllegalMode::getInstance();
+		$nextState = CSceneSimpleError::getIllegalModeInstance();
 		if(file_exists($target))
 		{
 			require_once($target);

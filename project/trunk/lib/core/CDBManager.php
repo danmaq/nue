@@ -41,10 +41,12 @@ class CDBManager
 
 	/**
 	 *	接続を確立します。
+	 *
+	 *	@return boolean 接続できた場合、true。
 	 */
 	public function connect()
 	{
-		$this->db->connect();
+		return $this->db->connect();
 	}
 
 	/**

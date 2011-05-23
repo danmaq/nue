@@ -1,11 +1,13 @@
 <?php
 
+require_once(dirname(__FILE__) . '/../../../core/CDBManager.php');
 require_once(dirname(__FILE__) . '/../../../CConstants.php');
 require_once(dirname(__FILE__) . '/../../../view/CDocumentBuilder.php');
+require_once(dirname(__FILE__) . '/../error/CSceneSimpleError.php');
 require_once(dirname(__FILE__) . '/../../IState.php');
 
 /**
- *	モード指定が誤っている場合に呼び出されるシーンです。
+ *	記事表示のシーンです。
  */
 class CSceneView
 	implements IState
@@ -51,10 +53,13 @@ class CSceneView
 	 */
 	public function execute(CEntity $entity)
 	{
-		$xmlbuilder = new CDocumentBuilder();
-		$xmlbuilder->createSimpleMessage(_('ERROR'), _('記事がありません。'));
-		$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
-		$entity->setNextState(CEmptyState::getInstance());
+		if($this->connect($entity))
+		{
+			$xmlbuilder = new CDocumentBuilder();
+			$xmlbuilder->createSimpleMessage(_('ERROR'), _('記事がありません。'));
+			$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
+			$entity->setNextState(CEmptyState::getInstance());
+		}
 	}
 
 	/**
@@ -64,6 +69,24 @@ class CSceneView
 	 */
 	public function teardown(CEntity $entity)
 	{
+	}
+
+	/**
+	 *	データベースに接続します。
+	 *
+	 *	@param CEntity $entity この状態が適用されたオブジェクト。
+	 *	@return boolean 接続に成功した場合、true。
+	 */
+	private function connect(CEntity $entity)
+	{
+		$db = CDBManager::getInstance();
+		$result = $db->connect();
+		if(!$result)
+		{
+			$db->close();
+			$entity->setNextState(CSceneSimpleError::getDBNotFoundInstance());
+		}
+		return $result;
 	}
 }
 
