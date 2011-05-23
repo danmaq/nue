@@ -14,7 +14,7 @@ class CConstants
 {
 
 	/** バージョン情報。 */
-	const VERSION = '0.0.7';
+	const VERSION = '0.0.8';
 
 	/** ブログ表示状態。 */
 	const STATE_VIEW = 'view';
