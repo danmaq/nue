@@ -21,6 +21,13 @@ interface IDB
 	function getPDO();
 
 	/**
+	 *	エラー発生時の例外オブジェクトを取得します。
+	 *
+	 *	@return Exception 例外オブジェクト。
+	 */
+	function getException();
+
+	/**
 	 *	接続を閉じます。
 	 */
 	function close();

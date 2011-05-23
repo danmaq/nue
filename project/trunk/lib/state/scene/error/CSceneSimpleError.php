@@ -43,6 +43,7 @@ class CSceneSimpleError
 	{
 		if(self::$dbNotFound == null)
 		{
+			// TODO : CSceneSimpleErrorから分離して、CDBManager.getExceptionを表示できるようにする。
 			self::$dbNotFound = new CSceneSimpleError(_('データベースが見つからないか、接続できません。'));
 		}
 		return self::$dbNotFound;

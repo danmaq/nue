@@ -1,6 +1,6 @@
 NUE - Network Utterance Environment
 
-■2011/5/23 - Version 0.0.6
+■2011/5/23 - Version 0.0.7
 DB接続失敗時に別の状態へとジャンプするようにした。
 DB解放時にコミットするようにした。
 XML構築機能の小規模な改良。
