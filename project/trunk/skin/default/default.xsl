@@ -26,7 +26,7 @@
 				<h1><xsl:value-of select="@site" /></h1>
 				<xsl:apply-templates select="topic" />
 				<hr />
-				<address>Network Utterance Environment version <xsl:value-of select="@ver" /><br />by danmaq</address>
+				<address><a href="http://nue.sourceforge.jp/">Network Utterance Environment</a> version <xsl:value-of select="@ver" /><br />by danmaq</address>
 			</body>
 		</html>
 	</xsl:template>

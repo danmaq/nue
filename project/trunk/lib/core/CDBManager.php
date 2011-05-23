@@ -61,6 +61,16 @@ class CDBManager
 	}
 
 	/**
+	 *	エラー発生時の例外オブジェクトを取得します。
+	 *
+	 *	@return Exception 例外オブジェクト。
+	 */
+	public function getException()
+	{
+		$this->db->getException();
+	}
+
+	/**
 	 *	接続を閉じます。
 	 */
 	public function close()

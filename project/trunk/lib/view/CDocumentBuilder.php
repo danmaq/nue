@@ -154,18 +154,25 @@ class CDocumentBuilder
 	 *
 	 *	@param string $caption 見出し。
 	 *	@param string $description 本文。
-	 *	@return DOMDocument DOMオブジェクト。
+	 *	@param string $seeother 参考資料など。
+	 *	@return DOMElement トピック オブジェクト。
 	 */
-	public function createSimpleMessage($caption, $description)
+	public function createSimpleMessage($caption, $description, $seeother = null)
 	{
 		if(!($this->getTitle()))
 		{
 			$this->setTitle($caption);
 		}
-		$paragraph = $this->createParagraph($this->createTopic($caption));
+		$topic = $this->createTopic($caption);
+		$paragraph = $this->createParagraph($topic);
 		$dom = $this->getDOM();
 		$paragraph->appendChild($dom->createTextNode($description));
-		return $dom;
+		if($seeother !== null)
+		{
+			$paragraph = $this->createParagraph($topic);
+			$paragraph->appendChild($dom->createTextNode($seeother));
+		}
+		return $topic;
 	}
 
 	/**

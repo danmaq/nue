@@ -16,6 +16,9 @@ class CMySQL
 	/**	データベース オブジェクト。 */
 	public $dbo;
 
+	/**	最後に発生した例外オブジェクト。 */
+	public $exception;
+
 	/**
 	 *	データベース オブジェクトを取得します。
 	 *
@@ -44,11 +47,20 @@ class CMySQL
 	 */
 	public function connect()
 	{
-		$dsn = sprintf('mysql:dbname=%s;host=%s;port=%d',
-			CConfigure::DB_NAME, CConfigure::DB_HOST, CConfigure::DB_PORT);
-		$this->dbo = new PDO($dsn, CConfigure::DB_USER, CConfigure::DB_PASSWORD);
-		// TODO : 接続できたかどうかをここで検証して、booleanで返す。
-		return true;
+		$result = false;
+		try
+		{
+			$dsn = sprintf('mysql:dbname=%s;host=%s;port=%d',
+				CConfigure::DB_NAME, CConfigure::DB_HOST, CConfigure::DB_PORT);
+			$this->dbo = new PDO($dsn, CConfigure::DB_USER, CConfigure::DB_PASSWORD);
+			$result = true;
+		}
+		catch(Exception $e)
+		{
+			$this->dbo = null;
+			$this->exception = $e;
+		}
+		return $result;
 	}
 
 	/**
@@ -59,6 +71,16 @@ class CMySQL
 	public function getPDO()
 	{
 		return $this->dbo;
+	}
+
+	/**
+	 *	エラー発生時の例外オブジェクトを取得します。
+	 *
+	 *	@return Exception 例外オブジェクト。
+	 */
+	public function getException()
+	{
+		return $this->exception;
 	}
 
 	/**
@@ -82,6 +104,7 @@ class CMySQL
 	 */
 	public function get($sql, $limit = PHP_INT_MAX)
 	{
+		// TODO : 未実装。
 		return null;
 	}
 }
