@@ -8,6 +8,8 @@ interface IDB
 
 	/**
 	 *	接続を確立します。
+	 *
+	 *	@return boolean 接続できた場合、true。
 	 */
 	function connect();
 
