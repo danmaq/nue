@@ -1,0 +1,4 @@
+UPDATE		NUE_ENTITIES
+	SET		UPDATED = NOW(),
+			BODY = ?
+	WHERE	ID = ?;

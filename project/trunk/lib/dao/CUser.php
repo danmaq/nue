@@ -1,5 +1,7 @@
 <?php
 
+require_once('IDAO.php');
+
 /*
 
 必要な機能
@@ -20,7 +22,7 @@ ID指定でロード(ロールバック)
  *	ユーザDAOクラス。
  */
 class CUser
-	implements IDB
+	implements IDAO
 {
 
 	/**	ユーザ数。 */
@@ -48,16 +50,43 @@ class CUser
 	}
 	
 	/**
-	 *	データベースから値を取得します。
+	 *	実体IDを取得します。
 	 *
-	 *	@param string $sql データベースに投入するクエリ。
-	 *	@param integer $limit 取得する件数。省略時は(2^31)-1件。
-	 *	@return mixed 値一覧。
+	 *	@return string 実体ID(GUID)。
 	 */
-	public function get($sql, $limit = PHP_INT_MAX)
+	public function getID()
 	{
-		// TODO : 未実装。
-		return null;
+		return $this->id;
+	}
+
+	/**
+	 *	実体オブジェクトを取得します。
+	 *
+	 *	@return CDataEntity 実体オブジェクト。
+	 */
+	public function getEntity()
+	{
+		return $this;
+	}
+
+	/**
+	 *	コミットします。
+	 *
+	 *	@return boolean 成功した場合、true。
+	 */
+	public function commit()
+	{
+		return false;
+	}
+
+	/**
+	 *	ロールバックします。
+	 *
+	 *	@return boolean 成功した場合、true。
+	 */
+	public function rollback()
+	{
+		return false;
 	}
 }
 
