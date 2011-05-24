@@ -7,6 +7,6 @@ INSERT INTO NUE_ENTITIES
 VALUES
 (
 	?,
-	?,
+	NOW(),
 	?
 );
