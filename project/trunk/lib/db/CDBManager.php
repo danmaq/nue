@@ -79,15 +79,27 @@ class CDBManager
 	}
 
 	/**
+	 *	データベースにSQLを実行させます。
+	 *
+	 *	@param string $sql データベースに投入するクエリ。
+	 *	@param string $args 引数一覧。
+	 *	@return boolean 成功した場合、true。
+	 */
+	public function execute($sql, $args = array())
+	{
+		return $this->db->execute($sql, $args);
+	}
+
+	/**
 	 *	データベースから値を取得します。
 	 *
 	 *	@param string $sql データベースに投入するクエリ。
-	 *	@param integer $limit 取得する件数。省略時は(2^31)-1件。
-	 *	@return mixed 値一覧。
+	 *	@param string $args 引数一覧。
+	 *	@return array 値一覧。
 	 */
-	public function get($sql, $limit = PHP_INT_MAX)
+	public function execAndFetch($sql, $args = array())
 	{
-		return $this->db->get($sql, $limit);
+		return $this->db->execAndFetch($sql, $args);
 	}
 }
 

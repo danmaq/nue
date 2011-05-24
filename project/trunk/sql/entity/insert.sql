@@ -6,7 +6,7 @@ INSERT INTO NUE_ENTITIES
 )
 VALUES
 (
-	?,
+	:id,
 	NOW(),
-	?
+	:body
 );

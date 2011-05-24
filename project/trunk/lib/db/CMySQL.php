@@ -48,6 +48,7 @@ class CMySQL
 	public function connect()
 	{
 		$result = false;
+		$this->close();
 		try
 		{
 			$dsn = sprintf('mysql:dbname=%s;host=%s;port=%d',
@@ -88,7 +89,7 @@ class CMySQL
 	 */
 	public function close()
 	{
-		if($this->$dbo !== null)
+		if($this->dbo !== null)
 		{
 			$this->dbo->commmit();
 			$this->dbo = null;
@@ -96,16 +97,54 @@ class CMySQL
 	}
 
 	/**
-	 *	データベースから値を取得します。
+	 *	データベースにSQLを実行させます。
 	 *
 	 *	@param string $sql データベースに投入するクエリ。
-	 *	@param integer $limit 取得する件数。省略時は(2^31)-1件。
-	 *	@return mixed 値一覧。
+	 *	@param string $args 引数一覧。
+	 *	@return boolean 成功した場合、true。
 	 */
-	public function get($sql, $limit = PHP_INT_MAX)
+	public function execute($sql, $args = array())
 	{
-		// TODO : 未実装。
-		return null;
+		$result = false;
+		try
+		{
+			$result = $this->getPDO()->prepare($sql)->execute($args);
+		}
+		catch(Exception $e)
+		{
+			$this->exception = $e;
+		}
+		return $result;
+	}
+
+	/**
+	 *	データベースにSQLを実行させ、値を取得します。
+	 *
+	 *	@param string $sql データベースに投入するクエリ。
+	 *	@param string $args 引数一覧。
+	 *	@return stdClass 値一覧。
+	 */
+	public function execAndFetch($sql, $args = array())
+	{
+		$result = null;
+		try
+		{
+			$stmt = $this->getPDO()->prepare($sql);
+			if($stmt->execute($args))
+			{
+				$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			}
+			else
+			{
+				$err = $stmt->errorInfo();
+				throw new Exception($err[2], $err[0]);
+			}
+		}
+		catch(Exception $e)
+		{
+			$this->exception = $e;
+		}
+		return $result;
 	}
 }
 

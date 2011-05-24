@@ -33,13 +33,22 @@ interface IDB
 	function close();
 
 	/**
-	 *	データベースから値を取得します。
+	 *	データベースにSQLを実行させます。
 	 *
 	 *	@param string $sql データベースに投入するクエリ。
-	 *	@param integer $limit 取得する件数。省略時は(2^31)-1件。
-	 *	@return mixed 値一覧。
+	 *	@param string $args 引数一覧。
+	 *	@return boolean 成功した場合、true。
 	 */
-	function get($sql, $limit = PHP_INT_MAX);
+	function execute($sql, $args = array());
+
+	/**
+	 *	データベースにSQLを実行させ、値を取得します。
+	 *
+	 *	@param string $sql データベースに投入するクエリ。
+	 *	@param string $args 引数一覧。
+	 *	@return array 値一覧。
+	 */
+	function execAndFetch($sql, $args = array());
 }
 
 ?>

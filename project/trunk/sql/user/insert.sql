@@ -5,6 +5,6 @@ INSERT INTO NUE_INDEX_USER
 )
 VALUES
 (
-	?,
-	?
+	:id,
+	:entity_id
 );
