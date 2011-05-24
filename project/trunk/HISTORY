@@ -1,5 +1,9 @@
 NUE - Network Utterance Environment
 
+■2011/5/24 - Version 0.0.9
+ユーザDAO実装の続き。
+ファイル キャッシュをガワだけ実装。
+
 ■2011/5/23 - Version 0.0.8
 DB接続失敗時にエラーメッセージを表示するようにした。
 DB解放時にコミットするようにした。

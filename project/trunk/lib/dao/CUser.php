@@ -1,5 +1,21 @@
 <?php
 
+/*
+
+必要な機能
+
+総数取得
+新規作成
+ID指定でロード(ロールバック)
+既定のロード(ロールバック)
+セーブ(コミット)
+権限DAO取得
+メールアドレスDAO取得
+作成日時取得
+該当アカウント削除
+
+*/
+
 /**
  *	ユーザDAOクラス。
  */
@@ -27,65 +43,10 @@ class CUser
 	/**
 	 *	コンストラクタ。
 	 */
-	private function __construct()
+	public function __construct($id = null)
 	{
 	}
-
-	/**
-	 *	接続を確立します。
-	 *
-	 *	@return boolean 接続できた場合、true。
-	 */
-	public function connect()
-	{
-		$result = false;
-		try
-		{
-			$dsn = sprintf('mysql:dbname=%s;host=%s;port=%d',
-				CConfigure::DB_NAME, CConfigure::DB_HOST, CConfigure::DB_PORT);
-			$this->dbo = new PDO($dsn, CConfigure::DB_USER, CConfigure::DB_PASSWORD);
-			$result = true;
-		}
-		catch(Exception $e)
-		{
-			$this->dbo = null;
-			$this->exception = $e;
-		}
-		return $result;
-	}
-
-	/**
-	 *	PDOオブジェクトを取得します。
-	 *
-	 *	@return PDO PDOオブジェクト。
-	 */
-	public function getPDO()
-	{
-		return $this->dbo;
-	}
-
-	/**
-	 *	エラー発生時の例外オブジェクトを取得します。
-	 *
-	 *	@return Exception 例外オブジェクト。
-	 */
-	public function getException()
-	{
-		return $this->exception;
-	}
-
-	/**
-	 *	接続を閉じます。
-	 */
-	public function close()
-	{
-		if($this->$dbo !== null)
-		{
-			$this->dbo->commmit();
-			$this->dbo = null;
-		}
-	}
-
+	
 	/**
 	 *	データベースから値を取得します。
 	 *
