@@ -1,8 +1,8 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../../../CConstants.php');
-require_once(dirname(__FILE__) . '/../../../view/CDocumentBuilder.php');
-require_once(dirname(__FILE__) . '/../../IState.php');
+require_once(NUE_CONSTANTS);
+require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
+require_once(NUE_LIB_ROOT . '/state/IState.php');
 
 /**
  *	モード指定が誤っている場合に呼び出されるシーンです。

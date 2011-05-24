@@ -5,7 +5,7 @@
 // 設定可能な項目はもう少し下にあります。
 //////////////////////////////////////////////////////////////////////
 
-require_once(dirname(__FILE__) . '/../lib/CConstants.php');
+require_once(NUE_LIB_ROOT . '/CConstants.php');
 
 /**
  *	設定クラス。

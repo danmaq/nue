@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../state/CEmptyState.php');
+require_once(NUE_LIB_ROOT . '/state/CEmptyState.php');
 
 /**
  *	状態を持ったオブジェクト。
