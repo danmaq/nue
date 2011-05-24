@@ -5,7 +5,7 @@
 // プログラムが壊れる可能性があります。
 //////////////////////////////////////////////////////////////////////
 
-require_once(dirname(__FILE__) . '/../conf/CConfigure.php');
+require_once(NUE_ROOT . '/conf/CConfigure.php');
 
 /**
  *	定数クラス。

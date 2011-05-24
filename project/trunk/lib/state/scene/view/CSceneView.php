@@ -1,11 +1,10 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../../../core/CDBManager.php');
-require_once(dirname(__FILE__) . '/../../../CConstants.php');
-require_once(dirname(__FILE__) . '/../../../view/CDocumentBuilder.php');
-require_once(dirname(__FILE__) . '/../error/CSceneDBFailed.php');
-require_once(dirname(__FILE__) . '/../error/CSceneSimpleError.php');
-require_once(dirname(__FILE__) . '/../../IState.php');
+require_once(NUE_LIB_ROOT . '/core/CDBManager.php');
+require_once(NUE_LIB_ROOT . '/CConstants.php');
+require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
+require_once(NUE_LIB_ROOT . '/state/scene/error/CSceneDBFailed.php');
+require_once(NUE_LIB_ROOT . '/state/scene/error/CSceneSimpleError.php');
 
 /**
  *	記事表示のシーンです。

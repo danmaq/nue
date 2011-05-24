@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../view/CSceneView.php');
+require_once(NUE_LIB_ROOT . '/state/scene/view/CSceneView.php');
 
 $nextState = CSceneView::getInstance();
 

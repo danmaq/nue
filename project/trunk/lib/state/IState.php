@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../entity/CEntity.php');
+require_once(NUE_LIB_ROOT . '/entity/CEntity.php');
 
 /**
  *	状態表現のためのインターフェイス。

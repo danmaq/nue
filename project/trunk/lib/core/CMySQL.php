@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../CConstants.php');
+require_once(NUE_CONSTANTS);
 require_once('IDB.php');
 
 /**
