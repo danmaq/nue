@@ -1,4 +1,4 @@
 UPDATE		NUE_ENTITIES
 	SET		UPDATED = NOW(),
-			BODY = ?
-	WHERE	ID = ?;
+			BODY = :body
+	WHERE	ID = :id;

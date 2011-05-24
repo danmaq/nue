@@ -1,6 +1,6 @@
 <?php
 
-require_once(NUE_LIB_ROOT . '/core/CDBManager.php');
+require_once(NUE_LIB_ROOT . '/db/CDBManager.php');
 require_once(NUE_LIB_ROOT . '/CConstants.php');
 require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
 require_once(NUE_LIB_ROOT . '/state/scene/error/CSceneDBFailed.php');
