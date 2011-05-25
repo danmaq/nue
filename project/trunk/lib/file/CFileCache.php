@@ -7,7 +7,7 @@ abstract class CFileCache
 {
 
 	/**	ファイル パス。 */
-	private $fname;
+	private $filePath;
 
 	/**	ファイルの中身。 */
 	private $body;
@@ -15,15 +15,15 @@ abstract class CFileCache
 	/**
 	 *	コンストラクタ。
 	 *
-	 *	@param string $fname ファイル パス。
+	 *	@param string $filePath ファイル パス。
 	 */
-	private function __construct($fname)
+	private function __construct($filePath)
 	{
-		$this->fname = $fname;
+		$this->filePath = $filePath;
 		$body = '';
-		if(file_exists($fname))
+		if(file_exists($filePath))
 		{
-			$body = implode('', file($fname));
+			$body = implode('', file($filePath));
 		}
 		$this->body = $body;
 	}
@@ -35,7 +35,7 @@ abstract class CFileCache
 	 */
 	public function getFilePath()
 	{
-		return $this->fname;
+		return $this->filePath;
 	}
 
 	/**
