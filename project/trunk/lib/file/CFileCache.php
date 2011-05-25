@@ -1,16 +1,16 @@
 <?php
 
 /**
- *	ファイル キャッシュ クラス。
+ *	テキスト ファイル キャッシュ クラス。
  */
-abstract class CFileCache
+class CFileCache
 {
 
 	/**	ファイル パス。 */
 	private $filePath;
 
-	/**	ファイルの中身。 */
-	private $body;
+	/**	ファイルの中身一覧。 */
+	private $bodyList;
 
 	/**
 	 *	コンストラクタ。
@@ -20,34 +20,39 @@ abstract class CFileCache
 	private function __construct($filePath)
 	{
 		$this->filePath = $filePath;
-		$body = '';
-		if(file_exists($filePath))
-		{
-			$body = implode('', file($filePath));
-		}
-		$this->body = $body;
+		$this->bodyList = array();
 	}
 
 	/**
 	 *	ファイル パスを取得します。
 	 *
-	 *	@return string ファイル パス。
+	 *	@return string ファイル パス文字列。
 	 */
-	public function getFilePath()
+	public function getPath()
 	{
 		return $this->filePath;
 	}
 
 	/**
-	 *	内容を取得します。
+	 *	ファイルの内容を取得します。
 	 *
-	 *	@return string 内容文字列。
+	 *	@param string $fileName ファイル名。
+	 *	@return string ファイルの内容。
 	 */
-	public function getBody()
+	public function load($fileName)
 	{
-		return $this->body;
+		$bodyList = $this->bodyList;
+		if(!isset($bodyList[$fileName]))
+		{
+			$body = file_get_contents(sprintf('%s/%s', $this->getPath(), $fileName));
+			if($body === false)	// 0バイトすらも読めなかったら
+			{
+				throw new Exception(_('ファイルが見つかりません。'));
+			}
+			$bodyList[$fileName] = $body;
+		}
+		return $bodyList[$fileName];
 	}
-
 }
 
 ?>
