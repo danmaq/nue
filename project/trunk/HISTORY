@@ -1,5 +1,8 @@
 NUE - Network Utterance Environment
 
+■2011/5/24 - Version 0.0.13
+ファイル キャッシュ機能を実装完了。
+
 ■2011/5/24 - Version 0.0.12
 データベース接続機能を実装完了。
 ユーザDAO実装の続き。
