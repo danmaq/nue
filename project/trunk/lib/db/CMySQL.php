@@ -41,6 +41,22 @@ class CMySQL
 	}
 
 	/**
+	 *	デストラクタ。
+	 */
+	function __destruct()
+	{
+		try
+		{
+			$this->close();
+		}
+		catch(Exception $e)
+		{
+			// 握りつぶしてしまっても特に問題なさそうかな
+		}
+		$this->dbo = null;
+	}
+
+	/**
 	 *	接続を確立します。
 	 *
 	 *	@return boolean 接続できた場合、true。
@@ -91,7 +107,7 @@ class CMySQL
 	{
 		if($this->dbo !== null)
 		{
-			$this->dbo->commmit();
+			$this->dbo->commit();
 			$this->dbo = null;
 		}
 	}

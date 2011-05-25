@@ -6,6 +6,7 @@ define('NUE_ROOT', dirname(__FILE__) . '/..');
 define('NUE_LIB_ROOT', dirname(__FILE__));
 define('NUE_CONSTANTS', NUE_LIB_ROOT . '/CConstants.php');
 
+require_once(NUE_LIB_ROOT . '/entity/CScene.php');
 require_once(NUE_LIB_ROOT . '/state/scene/initialize/CSceneParseQuery.php');
 
 /**
@@ -19,7 +20,7 @@ class CNUE
 	 */
 	public static function run()
 	{
-		$scene = new CEntity(CSceneParseQuery::getInstance());
+		$scene = new CScene(CSceneParseQuery::getInstance());
 		$emptyState = CEmptyState::getInstance();
 		do
 		{

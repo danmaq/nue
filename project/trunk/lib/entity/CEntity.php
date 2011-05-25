@@ -112,7 +112,7 @@ class CEntity
 	/**
 	 *	状態をリセットします。
 	 */
-	function dispose()
+	public function dispose()
 	{
 		$this->setNextState(CEmptyState::getInstance());
 		$this->commitNextState();

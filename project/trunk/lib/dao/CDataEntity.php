@@ -1,6 +1,8 @@
 <?php
 
 require_once('IDAO.php');
+require_once(NUE_ROOT . '/db/CDBManager.php');
+require_once(NUE_ROOT . '/file/CFileEntity.php');
 
 /*
 
@@ -20,6 +22,9 @@ class CDataEntity
 	implements IDAO
 {
 
+	/**	テーブルが初期化済みかどうか。 */
+	private static $initialized = false;
+
 	/**	実体ID(GUID)。 */
 	private $id;
 
@@ -30,16 +35,51 @@ class CDataEntity
 	private $body;
 
 	/**
-	 *	コンストラクタ。
+	 *	ユニークなGUIDを持ったインスタンスを作成します。
+	 *
+	 *	注意:この関数を呼び出した時点でそのGUIDは確保されます。
+	 *
+	 *	@return ユニークなGUIDを持ったインスタンス。
 	 */
-	public function __construct($id = null)
+	public static function createUniqueGUIDInstance()
 	{
-		
+		$entity = new CDataEntity();
+		while($entity->rollback())
+		{
+			$entity->id = self::createGUID();
+		}
+		return $entity;
+	}
+
+	/**
+	 *	テーブルの有無を確認し、存在しなければ初期化します。
+	 */
+	private static function initializeTable()
+	{
+		if(!self::$initialized)
+		{
+			self::$initialized = true;
+			CDBManager::getInstance()->execute(CFileSQLEntity::getInstance()->ddl);
+		}
+	}
+
+	/**
+	 *	コンストラクタ。
+	 *
+	 *	@param string $id 実体ID(GUID)。
+	 *	@param boolean $autoRollback 自動でロードするかどうか。
+	 */
+	public function __construct($id = null, $autoRollback = false)
+	{
 		if($id === null)
 		{
 			$id = self::createGUID();
 		}
 		$this->id = $id;
+		if($autoRollback)
+		{
+			$this->rollback();
+		}
 	}
 
 	/**
@@ -96,13 +136,36 @@ class CDataEntity
 	}
 
 	/**
+	 *	削除します。
+	 */
+	public function delete()
+	{
+		$db->execute(CFileSQLEntity::getInstance()->delete, array('id' => $this->getID()));
+	}
+
+	/**
 	 *	コミットします。
 	 *
+	 *	@param boolean $overwrite 上書きを認めるかどうか。省略時はtrue。
 	 *	@return boolean 成功した場合、true。
 	 */
-	public function commit()
+	public function commit($overwrite = true)
 	{
-		return false;
+		$result = false;
+		self::initializeTable();
+		$db = CDBManager::getInstance();
+		$tempEntity = new CDataEntity($this->getID());
+		if($tempEntity->rollBack() && $overwrite)
+		{
+			$result = $db->execute(CFileSQLEntity::getInstance()->update,
+				array('body' => serialize($this->storage())));
+		}
+		else
+		{
+			$result = $db->execute(CFileSQLEntity::getInstance()->insert,
+				array('id' => $this->getID(), 'body' => serialize($this->storage())));
+		}
+		return $result;
 	}
 
 	/**
@@ -112,7 +175,15 @@ class CDataEntity
 	 */
 	public function rollback()
 	{
-		return false;
+		self::initializeTable();
+		$body = CDBManager::getInstance()->execAndFetch(
+			CFileSQLEntity::getInstance()->select, array('id' => $this->getID()));
+		$result = count($body) > 0;
+		if($result)
+		{
+			$this->body = $body[0];
+		}
+		return $result;
 	}
 }
 

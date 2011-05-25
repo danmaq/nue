@@ -3,108 +3,48 @@
 require_once('CFileCache.php');
 
 /**
- *	実体SQL用ファイルキャッシュ。
+ *	実体SQL用ファイル キャッシュ。
  */
 class CFileSQLEntity
 	extends CFileCache
 {
 
-	/**	ルート フォルダ。 */
-	private static $rootdir = NUE_ROOT . '/sql/entity';
-
-	/**	UUID取得SQL用クラス オブジェクト。 */
-	private static $createUUID = null;
-
-	/**	テーブル定義SQL用クラス オブジェクト。 */
-	private static $ddl = null;
-
-	/**	レコード削除SQL用クラス オブジェクト。 */
-	private static $delete = null;
-
-	/**	レコード挿入SQL用クラス オブジェクト。 */
-	private static $insert = null;
-
-	/**	レコード更新SQL用クラス オブジェクト。 */
-	private static $update = null;
+	/**	クラス オブジェクト。 */
+	private static $instance = null;
 
 	/**
-	 *	UUID取得SQL用オブジェクトを取得します。
+	 *	クラス オブジェクトを取得します。
 	 *
-	 *	@return CFileCache ファイルキャッシュ オブジェクト。
+	 *	@return CFileCache クラス オブジェクト。
 	 */
-	public static function getCreateUUID()
+	public static function getInstance()
 	{
-		if(self::$createUUID == null)
+		if(self::$instance == null)
 		{
-			self::$createUUID = new CFileEntity(self::$rootdir . '/createUUID.sql');
+			self::$instance = new CFileEntity();
 		}
-		return self::$createUUID;
-	}
-
-	/**
-	 *	テーブル定義SQL用オブジェクトを取得します。
-	 *
-	 *	@return CFileCache ファイルキャッシュ オブジェクト。
-	 */
-	public static function getDDL()
-	{
-		if(self::$ddl == null)
-		{
-			self::$ddl = new CFileEntity(self::$rootdir . '/ddl.sql');
-		}
-		return self::$ddl;
-	}
-
-	/**
-	 *	レコード削除SQL用オブジェクトを取得します。
-	 *
-	 *	@return CFileCache ファイルキャッシュ オブジェクト。
-	 */
-	public static function getDelete()
-	{
-		if(self::$delete == null)
-		{
-			self::$delete = new CFileEntity(self::$rootdir . '/delete.sql');
-		}
-		return self::$delete;
-	}
-
-	/**
-	 *	レコード挿入SQL用オブジェクトを取得します。
-	 *
-	 *	@return CFileCache ファイルキャッシュ オブジェクト。
-	 */
-	public static function getInsert()
-	{
-		if(self::$insert == null)
-		{
-			self::$insert = new CFileEntity(self::$rootdir . '/insert.sql');
-		}
-		return self::$insert;
-	}
-
-	/**
-	 *	レコード更新SQL用オブジェクトを取得します。
-	 *
-	 *	@return CFileCache ファイルキャッシュ オブジェクト。
-	 */
-	public static function getUpdate()
-	{
-		if(self::$update == null)
-		{
-			self::$update = new CFileEntity(self::$rootdir . '/update.sql');
-		}
-		return self::$update;
+		return self::$instance;
 	}
 
 	/**
 	 *	コンストラクタ。
-	 *
-	 *	@param string $fpath ファイル パス。
 	 */
-	private function __construct($fpath)
+	private function __construct()
 	{
-		parent::__construct($fpath);
+		parent::__construct(NUE_ROOT . '/sql/entity');
+	}
+
+	/**
+	 *	不明なプロパティが呼ばれた際に呼び出されます。
+	 *
+	 *	ここでは、プロパティ名をファイルと見なし呼び出します。
+	 *
+	 *	@param ファイル名。
+	 *	@return ファイル内容文字列。
+	 */
+	public __get($name)
+	{
+		return $this->load($name . 'sql');
 	}
 }
 
