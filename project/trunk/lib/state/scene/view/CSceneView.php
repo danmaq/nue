@@ -3,7 +3,6 @@
 require_once(NUE_LIB_ROOT . '/db/CDBManager.php');
 require_once(NUE_LIB_ROOT . '/CConstants.php');
 require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
-require_once(NUE_LIB_ROOT . '/state/scene/error/CSceneDBFailed.php');
 require_once(NUE_LIB_ROOT . '/state/scene/error/CSceneSimpleError.php');
 
 /**
@@ -53,7 +52,7 @@ class CSceneView
 	 */
 	public function execute(CEntity $entity)
 	{
-		if($this->connect($entity))
+		if($entity->connectDatabase())
 		{
 			$xmlbuilder = new CDocumentBuilder();
 			$xmlbuilder->createSimpleMessage(_('ERROR'), _('記事がありません。'));
@@ -69,24 +68,6 @@ class CSceneView
 	 */
 	public function teardown(CEntity $entity)
 	{
-	}
-
-	/**
-	 *	データベースに接続します。
-	 *
-	 *	@param CEntity $entity この状態が適用されたオブジェクト。
-	 *	@return boolean 接続に成功した場合、true。
-	 */
-	private function connect(CEntity $entity)
-	{
-		$db = CDBManager::getInstance();
-		$result = $db->connect();
-		if(!$result)
-		{
-			$db->close();
-			$entity->setNextState(CSceneDBFailed::getInstance());
-		}
-		return $result;
 	}
 }
 

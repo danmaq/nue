@@ -21,6 +21,11 @@ interface IDAO
 	function getEntity();
 
 	/**
+	 *	削除します。
+	 */
+	function delete();
+
+	/**
 	 *	コミットします。
 	 *
 	 *	@return boolean 成功した場合、true。

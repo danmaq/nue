@@ -25,6 +25,9 @@ class CUser
 	implements IDAO
 {
 
+	/**	テーブルが初期化済みかどうか。 */
+	private static $initialized = false;
+
 	/**	ユーザ数。 */
 	private static $users = -1;
 
@@ -67,6 +70,13 @@ class CUser
 	public function getEntity()
 	{
 		return $this;
+	}
+
+	/**
+	 *	削除します。
+	 */
+	public function delete()
+	{
 	}
 
 	/**
