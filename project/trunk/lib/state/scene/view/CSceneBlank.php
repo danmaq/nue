@@ -1,14 +1,15 @@
 <?php
 
 require_once(NUE_CONSTANTS);
-require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
 require_once(NUE_LIB_ROOT . '/db/CDBManager.php');
+require_once(NUE_LIB_ROOT . '/dao/CUser.php');
+require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
 require_once(NUE_LIB_ROOT . '/state/IState.php');
 
 /**
- *	データベース接続に失敗した場合に呼び出されるシーンです。
+ *	ブランクな記事表示のシーンです。
  */
-class CSceneDBFailed
+class CSceneBlank
 	implements IState
 {
 
@@ -24,7 +25,7 @@ class CSceneDBFailed
 	{
 		if(self::$instance == null)
 		{
-			self::$instance = new CSceneDBFailed();
+			self::$instance = new CSceneBlank();
 		}
 		return self::$instance;
 	}
@@ -52,13 +53,25 @@ class CSceneDBFailed
 	 */
 	public function execute(CEntity $entity)
 	{
-		$xmlbuilder = new CDocumentBuilder();
-		$message = CDBManager::getInstance()->getException();
-		$xmlbuilder->createSimpleMessage(
-			_('ERROR'), _('データベースとの通信に失敗しました。'),
-			$message->getMessage() . "\n" . $message->getTraceAsString());
-		$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
-		$entity->setNextState(CEmptyState::getInstance());
+		if($entity->connectDatabase())
+		{
+			if(CUser::getUserCount() > 0)
+			{
+				// TODO : 記事がないので作りましょう。
+				$xmlbuilder = new CDocumentBuilder();
+				$xmlbuilder->createSimpleMessage(_('ERROR'), _('記事がありません。'));
+				$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
+				$entity->setNextState(CEmptyState::getInstance());
+			}
+			else
+			{
+				// TODO : 新規ユーザ作成へ
+				$xmlbuilder = new CDocumentBuilder();
+				$xmlbuilder->createSimpleMessage(_('ERROR'), _('記事も、ユーザも、ないんだよ。'));
+				$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
+				$entity->setNextState(CEmptyState::getInstance());
+			}
+		}
 	}
 
 	/**

@@ -2,8 +2,8 @@
 
 error_reporting(E_ALL|E_STRICT);
 
-define('NUE_ROOT', dirname(__FILE__) . '/..');
 define('NUE_LIB_ROOT', dirname(__FILE__));
+define('NUE_ROOT', NUE_LIB_ROOT . '/..');
 define('NUE_CONSTANTS', NUE_LIB_ROOT . '/CConstants.php');
 
 require_once(NUE_LIB_ROOT . '/entity/CScene.php');

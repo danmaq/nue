@@ -31,7 +31,6 @@ class CScene
 		$result = $db->connect();
 		if(!$result)
 		{
-			$db->close();
 			$this->setNextState(CSceneDBFailed::getInstance());
 		}
 		return $result;
