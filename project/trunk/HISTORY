@@ -1,5 +1,9 @@
 NUE - Network Utterance Environment
 
+■2011/5/26 - Version 0.0.17
+DB接続クラスに単一値を取得する機能を追加。
+ユーザDAO実装の続き。
+
 ■2011/5/25 - Version 0.0.16
 実体DAOクラスを実装完了。
 ファイル キャッシュ機能をほぼ完全に作り直し。

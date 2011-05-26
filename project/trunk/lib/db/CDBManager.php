@@ -101,6 +101,19 @@ class CDBManager
 	{
 		return $this->db->execAndFetch($sql, $args);
 	}
+
+	/**
+	 *	データベースにSQLを実行させ、単一の値を取得します。
+	 *
+	 *	@param string $sql データベースに投入するクエリ。
+	 *	@param string $column 対象の列。
+	 *	@param string $args 引数一覧。
+	 *	@return mixed 値。
+	 */
+	public function singleFetch($sql, $column, $args = array())
+	{
+		return $this->db->singleFetch($sql, $column, $args);
+	}
 }
 
 ?>

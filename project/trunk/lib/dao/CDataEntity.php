@@ -4,17 +4,6 @@ require_once('IDAO.php');
 require_once(NUE_ROOT . '/db/CDBManager.php');
 require_once(NUE_ROOT . '/file/CFileEntity.php');
 
-/*
-
-必要な機能
-
-指定IDをロード
-新規作成
-削除
-コミット
-
-*/
-
 /**
  *	データ実体クラス。
  */
@@ -44,10 +33,7 @@ class CDataEntity
 	public static function createUniqueGUIDInstance()
 	{
 		$entity = new CDataEntity();
-		while($entity->rollback())
-		{
-			$entity->id = self::createGUID();
-		}
+		$entity->setUniqueID();
 		return $entity;
 	}
 
@@ -67,19 +53,14 @@ class CDataEntity
 	 *	コンストラクタ。
 	 *
 	 *	@param string $id 実体ID(GUID)。
-	 *	@param boolean $autoRollback 自動でロードするかどうか。
 	 */
-	public function __construct($id = null, $autoRollback = false)
+	public function __construct($id = null)
 	{
 		if($id === null)
 		{
 			$id = self::createGUID();
 		}
 		$this->id = $id;
-		if($autoRollback)
-		{
-			$this->rollback();
-		}
 	}
 
 	/**
@@ -126,6 +107,17 @@ class CDataEntity
 	}
 
 	/**
+	 *	新しい実体IDを発行します。
+	 */
+	public function setUniqueID()
+	{
+		while($entity->rollback())
+		{
+			$entity->id = self::createGUID();
+		}
+	}
+
+	/**
 	 *	実体オブジェクトを取得します。
 	 *
 	 *	@return CDataEntity 実体オブジェクト。
@@ -137,10 +129,13 @@ class CDataEntity
 
 	/**
 	 *	削除します。
+	 *
+	 *	@return boolean 削除に成功した場合、true。
 	 */
 	public function delete()
 	{
-		$db->execute(CFileSQLEntity::getInstance()->delete, array('id' => $this->getID()));
+		self::initializeTable();
+		return $db->execute(CFileSQLEntity::getInstance()->delete, array('id' => $this->getID()));
 	}
 
 	/**

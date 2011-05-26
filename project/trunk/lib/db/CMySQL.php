@@ -162,6 +162,24 @@ class CMySQL
 		}
 		return $result;
 	}
+
+	/**
+	 *	データベースにSQLを実行させ、単一の値を取得します。
+	 *
+	 *	@param string $sql データベースに投入するクエリ。
+	 *	@param string $column 対象の列。
+	 *	@param string $args 引数一覧。
+	 *	@return mixed 値。
+	 */
+	public function singleFetch($sql, $column, $args = array())
+	{
+		$body = $this->execAndFetch($sql, $args);
+		if($body == null)
+		{
+			throw $this->getException();
+		}
+		return $body[0][$column];
+	}
 }
 
 ?>
