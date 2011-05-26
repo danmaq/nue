@@ -17,7 +17,7 @@ class CFileCache
 	 *
 	 *	@param string $filePath ファイル パス。
 	 */
-	private function __construct($filePath)
+	public function __construct($filePath)
 	{
 		$this->filePath = $filePath;
 		$this->bodyList = array();
