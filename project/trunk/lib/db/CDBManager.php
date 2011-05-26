@@ -67,7 +67,7 @@ class CDBManager
 	 */
 	public function getException()
 	{
-		$this->db->getException();
+		return $this->db->getException();
 	}
 
 	/**
@@ -75,7 +75,7 @@ class CDBManager
 	 */
 	public function close()
 	{
-		$this->db->close();
+		return $this->db->close();
 	}
 
 	/**

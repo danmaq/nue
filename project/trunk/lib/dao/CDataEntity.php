@@ -1,8 +1,8 @@
 <?php
 
 require_once('IDAO.php');
-require_once(NUE_ROOT . '/db/CDBManager.php');
-require_once(NUE_ROOT . '/file/CFileEntity.php');
+require_once(NUE_LIB_ROOT . '/db/CDBManager.php');
+require_once(NUE_LIB_ROOT . '/file/CFileSQLEntity.php');
 
 /**
  *	データ実体クラス。
@@ -40,7 +40,7 @@ class CDataEntity
 	/**
 	 *	テーブルの有無を確認し、存在しなければ初期化します。
 	 */
-	private static function initializeTable()
+	public static function initializeTable()
 	{
 		if(!self::$initialized)
 		{
@@ -61,6 +61,7 @@ class CDataEntity
 			$id = self::createGUID();
 		}
 		$this->id = $id;
+		$this->updated = time();
 	}
 
 	/**
@@ -176,7 +177,8 @@ class CDataEntity
 		$result = count($body) > 0;
 		if($result)
 		{
-			$this->body = $body[0];
+			$this->body = $body[0]['BODY'];
+			$this->updated = $body[0]['UPDATED'];
 		}
 		return $result;
 	}

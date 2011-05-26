@@ -8,6 +8,9 @@ require_once(NUE_CONSTANTS);
 class CDocumentBuilder
 {
 
+	/**	生のXMLを出力するかどうか。 */
+	const DEBUG_OUTPUT_RAW_XML = false;
+
 	/**	XML名前空間URL。 */
 	const URI_XMLNS = 'http://www.w3.org/2000/xmlns/';
 
@@ -16,6 +19,9 @@ class CDocumentBuilder
 
 	/**	XHTML名前空間。 */
 	const NS_XHTML = 'xhtml';
+
+	/**	トレース メッセージ。 */
+	public static $trace = '';
 
 	/**	DOMオブジェクト。 */
 	private $dom;
@@ -93,13 +99,21 @@ class CDocumentBuilder
 	 */
 	public function output($xslpath)
 	{
-		$xhtml = 'application/xhtml+xml';
-		$accept = isset($_SERVER{'HTTP_ACCEPT'}) ? $_SERVER{'HTTP_ACCEPT'} : $xhtml;
-		$pattern = sprintf('/%s/', preg_quote($xhtml, '/'));
 		ob_start("ob_gzhandler");
-		header(sprintf('Content-Type: %s; charset=UTF-8',
-			preg_match($pattern, $accept) ? $xhtml : 'text/html'));
-		echo $this->createHTML($xslpath);
+		if(self::DEBUG_OUTPUT_RAW_XML)
+		{
+			header('Content-Type: text/xml; charset=UTF-8');
+			echo $this->getDOM()->saveXML();
+		}
+		else
+		{
+			$xhtml = 'application/xhtml+xml';
+			$accept = isset($_SERVER{'HTTP_ACCEPT'}) ? $_SERVER{'HTTP_ACCEPT'} : $xhtml;
+			$pattern = sprintf('/%s/', preg_quote($xhtml, '/'));
+			header(sprintf('Content-Type: %s; charset=UTF-8',
+				preg_match($pattern, $accept) ? $xhtml : 'text/html'));
+			echo $this->createHTML($xslpath);
+		}
 	}
 
 	/**
@@ -110,6 +124,11 @@ class CDocumentBuilder
 	 */
 	public function createHTML($xslpath)
 	{
+		if(self::$trace != null)
+		{
+			$this->createCodeParagraph($this->createTopic(_('デバッグ用メッセージ')), self::$trace);
+		}
+		
 		$xslt = new XSLTProcessor();
 		$xsl = new DOMDocument();
 		$xsl->load(sprintf('%s/skin/%s/%s', CConstants::$ROOT_DIR, CConfigure::SKINSET, $xslpath));
@@ -143,9 +162,30 @@ class CDocumentBuilder
 		$paragraph = $this->getDOM()->createElement('p');
 		if($caption !== null)
 		{
-			$this->createAttribute($topic, 'title', $caption);
+			$this->createAttribute($paragraph, 'title', $caption);
 		}
 		$topic->appendChild($paragraph);
+		return $paragraph;
+	}
+
+	/**
+	 *	コードなど等幅の段落を作成します。
+	 *
+	 *	@param DOMNode $topic 所属させるトピック。
+	 *	@param DOMNode $body 内容。
+	 *	@param string $caption 小見出し。省略時は作成されません。
+	 *	@return DOMElement 空の段落 オブジェクト。
+	 */
+	public function createCodeParagraph(DOMNode $topic, $body, $caption = null)
+	{
+		$dom = $this->getDOM();
+		$paragraph = $this->createParagraph($topic, $caption);
+		$code = $this->createHTMLElement($paragraph, 'code');
+		foreach(explode("\n", $body) as $item)
+		{
+			$code->appendChild($dom->createTextNode($item));
+			$this->createHTMLElement($code, 'br');
+		}
 		return $paragraph;
 	}
 
@@ -169,10 +209,24 @@ class CDocumentBuilder
 		$paragraph->appendChild($dom->createTextNode($description));
 		if($seeother !== null)
 		{
-			$paragraph = $this->createParagraph($topic);
-			$paragraph->appendChild($dom->createTextNode($seeother));
+			$this->createCodeParagraph($topic, $seeother, _('参考'));
 		}
 		return $topic;
+	}
+
+	/**
+	 *	HTML要素を作成します。
+	 *
+	 *	@param DOMNode $element 所属させる要素。
+	 *	@param string $name 要素名。
+	 *	@preturn 作成された要素オブジェクト。
+	 */
+	public function createHTMLElement(DOMNode $element, $name)
+	{
+		$result = $this->getDOM()->createElementNS(
+			self::URI_XHTML, sprintf('%s:%s', self::NS_XHTML, $name));
+		$element->appendChild($result);
+		return $result;
 	}
 
 	/**
@@ -190,6 +244,16 @@ class CDocumentBuilder
 		$element->appendChild($attr);
 		return $attr;
 	}
+}
+
+/**
+ *	ログを追加します。
+ *
+ *	@param string $body ログ。
+ */
+function trace($body)
+{
+	CDocumentBuilder::$trace .= $body;
 }
 
 ?>

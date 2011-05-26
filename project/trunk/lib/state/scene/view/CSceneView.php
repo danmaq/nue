@@ -1,9 +1,8 @@
 <?php
 
-require_once(NUE_LIB_ROOT . '/db/CDBManager.php');
-require_once(NUE_LIB_ROOT . '/CConstants.php');
+require_once(NUE_CONSTANTS);
 require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
-require_once(NUE_LIB_ROOT . '/state/scene/error/CSceneSimpleError.php');
+require_once('CSceneBlank.php');
 
 /**
  *	記事表示のシーンです。
@@ -54,10 +53,15 @@ class CSceneView
 	{
 		if($entity->connectDatabase())
 		{
-			$xmlbuilder = new CDocumentBuilder();
-			$xmlbuilder->createSimpleMessage(_('ERROR'), _('記事がありません。'));
-			$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
-			$entity->setNextState(CEmptyState::getInstance());
+			if(false)	// TODO : 指定カテゴリのページを取得する
+			{
+				// TODO : ページ表示
+				$entity->setNextState(CEmptyState::getInstance());
+			}
+			else	// なければ新規記事作成へ遷移
+			{
+				$entity->setNextState(CSceneBlank::getInstance());
+			}
 		}
 	}
 

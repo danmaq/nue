@@ -1,22 +1,7 @@
 <?php
 
 require_once('CDataEntity.php');
-
-/*
-
-必要な機能
-
-総数取得
-新規作成
-ID指定でロード(ロールバック)
-既定のロード(ロールバック)
-セーブ(コミット)
-権限DAO取得
-メールアドレスDAO取得
-作成日時取得
-該当アカウント削除
-
-*/
+require_once(NUE_LIB_ROOT . '/file/CFileSQLUser.php');
 
 /**
  *	ユーザDAOクラス。
@@ -45,9 +30,10 @@ class CUser
 	{
 		if(self::$users < 0)
 		{
-			$db = CDBManager->getInstance();
-			$db->execute(CFileSQLEntity::getInstance()->ddl);
-			self::$users = $db->singleFetch(CFileSQLEntity::getInstance()->selectCount, 'COUNT');
+			CDataEntity::initializeTable();
+			$db = CDBManager::getInstance();
+			$db->execute(CFileSQLUser::getInstance()->ddl);
+			self::$users = $db->singleFetch(CFileSQLUser::getInstance()->selectCount, 'COUNT');
 		}
 		return self::$users;
 	}
@@ -84,9 +70,12 @@ class CUser
 
 	/**
 	 *	削除します。
+	 *
+	 *	@return boolean 削除に成功した場合、true。
 	 */
 	public function delete()
 	{
+		return $db->execute(CFileSQLUser::getInstance()->delete, array('id' => $this->getID()));
 	}
 
 	/**
@@ -96,7 +85,8 @@ class CUser
 	 */
 	public function commit()
 	{
-		return false;
+		return CDBManager::getInstance()->execute(CFileSQLUser::getInstance()->insert,
+			array('id' => $this->getID(), 'entity_id' => $this->getEntity()->id()));
 	}
 
 	/**
@@ -106,8 +96,22 @@ class CUser
 	 */
 	public function rollback()
 	{
-		
-		return false;
+		$db = CDBManager::getInstance();
+		$body = $db->execAndFetch(CFileSQLUser::getInstance()->selectFromId,
+			array('id' => $this->getID()));
+		$result = count($body) > 0;
+		if($result)
+		{
+			$entity = new CDataEntity($body[0]['ID']);
+			if(!$entity->rollback())
+			{
+				throw new Exception(_('実体は存在しません。'));
+			}
+			$this->entity = $entity;
+			$body =& $entity->storage();
+			// TODO : BODYを初期化する
+		}
+		return $result;
 	}
 }
 

@@ -14,10 +14,10 @@ class CMySQL
 	private static $instance = null;
 
 	/**	データベース オブジェクト。 */
-	public $dbo;
+	private $dbo;
 
 	/**	最後に発生した例外オブジェクト。 */
-	public $exception;
+	private $exception;
 
 	/**
 	 *	データベース オブジェクトを取得します。
@@ -45,37 +45,33 @@ class CMySQL
 	 */
 	function __destruct()
 	{
-		try
-		{
-			$this->close();
-		}
-		catch(Exception $e)
-		{
-			// 握りつぶしてしまっても特に問題なさそうかな
-		}
-		$this->dbo = null;
+		$this->close();
 	}
 
 	/**
 	 *	接続を確立します。
 	 *
+	 *	強制的に再接続したい場合、closeメソッドを呼んで一旦解放してください。
+	 *
 	 *	@return boolean 接続できた場合、true。
 	 */
 	public function connect()
 	{
-		$result = false;
-		$this->close();
-		try
+		$result = ($this->dbo !== null);
+		if(!$result)
 		{
-			$dsn = sprintf('mysql:dbname=%s;host=%s;port=%d',
-				CConfigure::DB_NAME, CConfigure::DB_HOST, CConfigure::DB_PORT);
-			$this->dbo = new PDO($dsn, CConfigure::DB_USER, CConfigure::DB_PASSWORD);
-			$result = true;
-		}
-		catch(Exception $e)
-		{
-			$this->dbo = null;
-			$this->exception = $e;
+			try
+			{
+				$dsn = sprintf('mysql:dbname=%s;host=%s;port=%d',
+					CConfigure::DB_NAME, CConfigure::DB_HOST, CConfigure::DB_PORT);
+				$this->dbo = new PDO($dsn, CConfigure::DB_USER, CConfigure::DB_PASSWORD);
+				$result = true;
+			}
+			catch(Exception $e)
+			{
+				$this->dbo = null;
+				$this->exception = $e;
+			}
 		}
 		return $result;
 	}
@@ -107,7 +103,14 @@ class CMySQL
 	{
 		if($this->dbo !== null)
 		{
-			$this->dbo->commit();
+			try
+			{
+				$this->dbo->commit();
+			}
+			catch(Exception $e)
+			{
+				$this->exception = $e;
+			}
 			$this->dbo = null;
 		}
 	}

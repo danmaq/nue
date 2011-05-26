@@ -42,9 +42,9 @@ class CFileSQLUser
 	 *	@param ファイル名。
 	 *	@return ファイル内容文字列。
 	 */
-	public __get($name)
+	public function __get($name)
 	{
-		return $this->load($name . 'sql');
+		return $this->load($name . '.sql');
 	}
 }
 
