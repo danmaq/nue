@@ -1,6 +1,6 @@
 <?php
 
-require_once('IDAO.php');
+require_once('CDataEntity.php');
 
 /*
 
@@ -25,14 +25,19 @@ class CUser
 	implements IDAO
 {
 
-	/**	テーブルが初期化済みかどうか。 */
-	private static $initialized = false;
-
 	/**	ユーザ数。 */
 	private static $users = -1;
 
+	/**	ユーザID。 */
+	private $id;
+
+	/**	実体。 */
+	private $entity;
+
 	/**
 	 *	ユーザ数を取得します。
+	 *
+	 *	ここで同時にテーブルの初期化も行われます。
 	 *
 	 *	@return integer ユーザ数。
 	 */
@@ -41,6 +46,8 @@ class CUser
 		if(self::$users < 0)
 		{
 			$db = CDBManager->getInstance();
+			$db->execute(CFileSQLEntity::getInstance()->ddl);
+			self::$users = $db->singleFetch(CFileSQLEntity::getInstance()->selectCount, 'COUNT');
 		}
 		return self::$users;
 	}
@@ -48,14 +55,17 @@ class CUser
 	/**
 	 *	コンストラクタ。
 	 */
-	public function __construct($id = null)
+	public function __construct($id)
 	{
+		self::getUserCount();
+		$this->id = $id;
+		$this->entity = new CDataEntity();
 	}
 	
 	/**
-	 *	実体IDを取得します。
+	 *	ユーザIDを取得します。
 	 *
-	 *	@return string 実体ID(GUID)。
+	 *	@return string ユーザID。
 	 */
 	public function getID()
 	{
@@ -69,7 +79,7 @@ class CUser
 	 */
 	public function getEntity()
 	{
-		return $this;
+		return $this->entity;
 	}
 
 	/**
@@ -96,6 +106,7 @@ class CUser
 	 */
 	public function rollback()
 	{
+		
 		return false;
 	}
 }
