@@ -29,7 +29,7 @@ class CFileSQLEntity
 	/**
 	 *	コンストラクタ。
 	 */
-	private function __construct()
+	protected function __construct()
 	{
 		parent::__construct(NUE_ROOT . '/sql/entity');
 	}
