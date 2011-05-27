@@ -44,8 +44,7 @@ class CSceneParseQuery
 		$this->setQueryIfNotExists('cat', CConfigure::DEFAULT_CATEGORY);
 		$this->setQueryIfNotExists('from', 0);
 		$this->setQueryIfNotExists('to', 100);
-		$keys = array_keys($_GET);
-		foreach ($keys as $item)
+		foreach (array_keys($_GET) as $item)
 		{
 			$this->parseCategory($item);
 			$this->parsePage($item);
@@ -62,7 +61,7 @@ class CSceneParseQuery
 	 */
 	public function execute(CEntity $entity)
 	{
-		$target = dirname(__FILE__) . '/../mode/' . $_GET['f'] . '.php';
+		$target = NUE_ROOT . '/plugin/' . $_GET['f'] . '.php';
 		$nextState = CSceneSimpleError::getIllegalModeInstance();
 		if(file_exists($target))
 		{

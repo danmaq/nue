@@ -14,13 +14,16 @@ class CConstants
 {
 
 	/** バージョン情報。 */
-	const VERSION = '0.0.19';
+	const VERSION = '0.0.20';
+
+	/** ユーザ追加状態。 */
+	const STATE_USER_NEW = 'core/user/new';
 
 	/** ブログ表示状態。 */
-	const STATE_VIEW = 'view';
+	const STATE_VIEW = 'core/view';
 
 	/** 検索状態。 */
-	const STATE_FIND = 'find';
+	const STATE_FIND = 'core/find';
 
 	/** MySQL用のID。 */
 	const DBMS_MYSQL = 'mysql';

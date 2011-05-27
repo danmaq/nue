@@ -17,10 +17,15 @@
 		<html xml:lang="ja">
 			<head>
 				<meta charset="UTF-8" />
+				<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+				<meta name="application-name" content="Network Utterance Environment" />
+				<meta name="author" content="danmaq" />
+				<meta name="msapplication-navbutton-color" content="#BCC0DD" />
 				<title><xsl:value-of select="@title" /> - <xsl:value-of select="@site" /></title>
-				<link href="./" rel="Start"/>
+				<link href="./" rel="Start" />
 				<link href="./skin/default/default.css" rel="StyleSheet" />
-				<link href="https://twitter.com/#!/danmaq" rev="made" />
+				<link href="http://twitter.com/danmaq" rev="made" />
+				<xsl:comment> 評価中 </xsl:comment>
 			</head>
 			<body>
 				<h1><xsl:value-of select="@site" /></h1>
@@ -33,10 +38,20 @@
 
 	<!-- トピック。 -->
 	<xsl:template match="topic">
-		<h2><xsl:value-of select="@title" /></h2>
-		<div>
+		<section>
+			<h2><xsl:value-of select="@title" /></h2>
+			<article>
+				<xsl:apply-templates select="p|form" />
+			</article>
+		</section>
+	</xsl:template>
+
+	<!-- フォーム。 -->
+	<xsl:template match="form">
+		<form>
+			<xsl:copy-of select="@*" />
 			<xsl:apply-templates select="p" />
-		</div>
+		</form>
 	</xsl:template>
 
 	<!-- 段落。 -->

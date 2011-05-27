@@ -55,19 +55,20 @@ class CSceneBlank
 	{
 		if($entity->connectDatabase())
 		{
-			if(CUser::getUserCount() > 0)
+			$nextState = CEmptyState::getInstance();
+			if(CUser::getUserCount() == 0)
+			{
+				// 初回表示へ
+				$nextState = CSceneHello::getInstance();
+			}
+			else
 			{
 				// TODO : 記事がないので作りましょう。
 				$xmlbuilder = new CDocumentBuilder();
 				$xmlbuilder->createSimpleMessage(_('ERROR'), _('記事がありません。'));
 				$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
-				$entity->setNextState(CEmptyState::getInstance());
 			}
-			else
-			{
-				// TODO : 新規ユーザ作成へ
-				$entity->setNextState(CSceneHello::getInstance());
-			}
+			$entity->setNextState($nextState);
 		}
 	}
 
