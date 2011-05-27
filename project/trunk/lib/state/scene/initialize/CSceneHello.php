@@ -1,15 +1,12 @@
 <?php
 
 require_once(NUE_CONSTANTS);
-require_once(NUE_LIB_ROOT . '/db/CDBManager.php');
-require_once(NUE_LIB_ROOT . '/dao/CUser.php');
-require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
-require_once(NUE_LIB_ROOT . '/state/scene/initialize/CSceneHello.php');
+require_once(NUE_LIB_ROOT . '/state/IState.php');
 
 /**
- *	ブランクな記事表示のシーンです。
+ *	初回画面シーン。
  */
-class CSceneBlank
+class CSceneHello
 	implements IState
 {
 
@@ -25,7 +22,7 @@ class CSceneBlank
 	{
 		if(self::$instance == null)
 		{
-			self::$instance = new CSceneBlank();
+			self::$instance = new CSceneHello();
 		}
 		return self::$instance;
 	}
@@ -53,22 +50,12 @@ class CSceneBlank
 	 */
 	public function execute(CEntity $entity)
 	{
-		if($entity->connectDatabase())
-		{
-			if(CUser::getUserCount() > 0)
-			{
-				// TODO : 記事がないので作りましょう。
-				$xmlbuilder = new CDocumentBuilder();
-				$xmlbuilder->createSimpleMessage(_('ERROR'), _('記事がありません。'));
-				$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
-				$entity->setNextState(CEmptyState::getInstance());
-			}
-			else
-			{
-				// TODO : 新規ユーザ作成へ
-				$entity->setNextState(CSceneHello::getInstance());
-			}
-		}
+		$xmlbuilder = new CDocumentBuilder(_('SETUP'));
+		$topic = $xmlbuilder->createTopic(_('ようこそ'));
+		$p = $xmlbuilder->createParagraph($topic);
+		$xmlbuilder->createParagraph($p, _('よこそ'));
+		$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
+		$entity->setNextState(CEmptyState::getInstance());
 	}
 
 	/**
