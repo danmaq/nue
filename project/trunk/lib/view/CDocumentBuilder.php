@@ -230,6 +230,20 @@ class CDocumentBuilder
 	}
 
 	/**
+	 *	テキストを挿入します。
+	 *
+	 *	@param DOMNode $element 所属させる要素。
+	 *	@param string $text テキスト。
+	 *	@preturn 作成されたテキスト ノード オブジェクト。
+	 */
+	public function addText(DOMNode $element, $text)
+	{
+		$result = $this->getDOM()->createTextNode($text);
+		$element->appendChild($result);
+		return $result;
+	}
+
+	/**
 	 *	属性を作成します。
 	 *
 	 *	@param DOMNode $element 所属させる要素。
