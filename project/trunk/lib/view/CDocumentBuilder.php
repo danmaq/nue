@@ -17,8 +17,14 @@ class CDocumentBuilder
 	/**	XHTML名前空間URL。 */
 	const URI_XHTML = 'http://www.w3.org/1999/xhtml';
 
+	/**	XML Schema名前空間URL。 */
+	const URI_XSI = 'http://www.w3.org/2001/XMLSchema-instance';
+
 	/**	XHTML名前空間。 */
 	const NS_XHTML = 'xhtml';
+
+	/**	XHTML名前空間。 */
+	const NS_XSI = 'xsi';
 
 	/**	トレース メッセージ。 */
 	public static $trace = '';
@@ -49,6 +55,7 @@ class CDocumentBuilder
 		$this->title = $title;
 		$dom->appendChild($body);
 		$body->setAttributeNS(self::URI_XMLNS , 'xmlns:' . self::NS_XHTML, self::URI_XHTML);
+		$body->setAttributeNS(self::URI_XMLNS , 'xmlns:' . self::NS_XSI, self::URI_XSI);
 	}
 
 	/**
@@ -112,6 +119,7 @@ class CDocumentBuilder
 			$pattern = sprintf('/%s/', preg_quote($xhtml, '/'));
 			header(sprintf('Content-Type: %s; charset=UTF-8',
 				preg_match($pattern, $accept) ? $xhtml : 'text/html'));
+			header('X-UA-Compatible : IE=edge');
 			echo $this->createHTML($xslpath);
 		}
 	}
@@ -219,13 +227,30 @@ class CDocumentBuilder
 	 *
 	 *	@param DOMNode $element 所属させる要素。
 	 *	@param string $name 要素名。
+	 *	@param array $attr 属性一覧。
+	 *	@param mixed $body 挿入する内容。DOMNodeとstringに対応します。
 	 *	@preturn 作成された要素オブジェクト。
 	 */
-	public function createHTMLElement(DOMNode $element, $name)
+	public function createHTMLElement(DOMNode $element, $name, array $attr = array(), $body = null)
 	{
 		$result = $this->getDOM()->createElementNS(
 			self::URI_XHTML, sprintf('%s:%s', self::NS_XHTML, $name));
 		$element->appendChild($result);
+		foreach (array_keys($attr) as $item)
+		{
+			$this->createAttribute($result, $item, $attr[$item]);
+		}
+		if($body != null)
+		{
+			if($body instanceof DOMNode)
+			{
+				$result->appendChild($body);
+			}
+			else
+			{
+				$this->addText($result, $body);
+			}
+		}
 		return $result;
 	}
 

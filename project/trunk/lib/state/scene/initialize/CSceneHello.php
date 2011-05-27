@@ -1,6 +1,7 @@
 <?php
 
 require_once(NUE_CONSTANTS);
+require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
 require_once(NUE_LIB_ROOT . '/state/IState.php');
 
 /**
@@ -51,11 +52,12 @@ class CSceneHello
 	public function execute(CEntity $entity)
 	{
 		$xmlbuilder = new CDocumentBuilder(_('SETUP'));
-		$topic = $xmlbuilder->createTopic(_('ようこそ'));
+		$topic = $xmlbuilder->createTopic(_('Network Utterance Environment へようこそ'));
 		$p = $xmlbuilder->createParagraph($topic);
-		$xmlbuilder->createParagraph($p, _('よこそ'));
+		$xmlbuilder->createHTMLElement($p, 'a', array('href' => './?f=' . CConstants::STATE_USER_NEW),
+			_('このリンクからスタートします。'));
 		$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
-		$entity->setNextState(CEmptyState::getInstance());
+		$entity->dispose();
 	}
 
 	/**

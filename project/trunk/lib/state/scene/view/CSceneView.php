@@ -53,15 +53,16 @@ class CSceneView
 	{
 		if($entity->connectDatabase())
 		{
+			$nextState = CEmptyState::getInstance();
 			if(false)	// TODO : 指定カテゴリのページを取得する
 			{
 				// TODO : ページ表示
-				$entity->setNextState(CEmptyState::getInstance());
 			}
 			else	// なければ新規記事作成へ遷移
 			{
-				$entity->setNextState(CSceneBlank::getInstance());
+				$nextState = CSceneBlank::getInstance();
 			}
+			$entity->setNextState($nextState);
 		}
 	}
 
