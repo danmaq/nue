@@ -7,8 +7,15 @@ require_once(NUE_LIB_ROOT . '/file/CFileSQLUser.php');
  *	ユーザDAOクラス。
  */
 class CUser
-	implements IDAO
+	implements IDAO, Serializable
 {
+
+	/**	実体のメンバとデフォルト値一覧。 */
+	private static $format = array(
+		'password' => '',
+		'name' => '',
+		'root' => false,
+	);
 
 	/**	ユーザ数。 */
 	private static $users = -1;
@@ -40,12 +47,14 @@ class CUser
 
 	/**
 	 *	コンストラクタ。
+	 *
+	 *	@param string $id ユーザID。規定値は空文字(ゲスト扱い)。
 	 */
-	public function __construct($id)
+	public function __construct($id = '')
 	{
 		self::getUserCount();
 		$this->id = $id;
-		$this->entity = new CDataEntity();
+		$this->entity = new CDataEntity(self::$format);
 	}
 	
 	/**
@@ -63,7 +72,7 @@ class CUser
 	 *
 	 *	@return CDataEntity 実体オブジェクト。
 	 */
-	public function getEntity()
+	public function &getEntity()
 	{
 		return $this->entity;
 	}
@@ -75,7 +84,14 @@ class CUser
 	 */
 	public function delete()
 	{
-		return $db->execute(CFileSQLUser::getInstance()->delete, array('id' => $this->getID()));
+		$id = $this->getID();
+		$result = $id === '';	// IDなしはゲスト扱い
+		if(!$result)
+		{
+			$result = $db->execute(
+				CFileSQLUser::getInstance()->delete, array('id' => $this->getID()));
+		}
+		return $result;
 	}
 
 	/**
@@ -85,8 +101,18 @@ class CUser
 	 */
 	public function commit()
 	{
-		return CDBManager::getInstance()->execute(CFileSQLUser::getInstance()->insert,
-			array('id' => $this->getID(), 'entity_id' => $this->getEntity()->id()));
+		$id = $this->getID();
+		$result = $id === '';	// IDなしはゲスト扱い
+		if(!$result)
+		{
+			$entity = $this->getEntity();
+			if($entity->commit())
+			{
+				$result = CDBManager::getInstance()->execute(CFileSQLUser::getInstance()->insert,
+					array('id' => $id, 'entity_id' => $entity->getID()));
+			}
+		}
+		return $result;
 	}
 
 	/**
@@ -96,22 +122,63 @@ class CUser
 	 */
 	public function rollback()
 	{
-		$db = CDBManager::getInstance();
-		$body = $db->execAndFetch(CFileSQLUser::getInstance()->selectFromId,
-			array('id' => $this->getID()));
-		$result = count($body) > 0;
-		if($result)
+		$id = $this->getID();
+		$result = $id === '';	// IDなしはゲスト扱い
+		if(!$result)
 		{
-			$entity = new CDataEntity($body[0]['ID']);
-			if(!$entity->rollback())
+			$db = CDBManager::getInstance();
+			$body = $db->execAndFetch(CFileSQLUser::getInstance()->selectFromId,
+				array('id' => $this->getID()));
+			$result = count($body) > 0;
+			if($result)
 			{
-				throw new Exception(_('実体は存在しません。'));
+				$entity = $this->createEntity($body[0]['ID']);
+				if(!$entity->rollback())
+				{
+					throw new Exception(_('実体は存在しません。'));
+				}
+				$this->entity = $entity;
 			}
-			$this->entity = $entity;
-			$body =& $entity->storage();
-			// TODO : BODYを初期化する
 		}
 		return $result;
+	}
+
+	/**
+	 *	シリアライズします。
+	 *
+	 *	@return string 文字列化されたデータ。
+	 */
+	public function serialize()
+	{
+		return serialize(array($this->id, $this->entity->getID()));
+	}
+
+	/**
+	 *	デシリアライズします。
+	 *
+	 *	@param string $id 実体ID(GUID)。
+	 *	@return CUser ユーザ オブジェクト。
+	 */
+	public function unserialize($serialized)
+	{
+		$eid = '';
+		list($this->id, $eid) = unserialize($serialized);
+		$this->createEntity($eid);
+	}
+
+	/**
+	 *	実体オブジェクトを作成します。
+	 *
+	 *	@param string $id 実体ID(GUID)。
+	 */
+	protected function createEntity($id)
+	{
+		$entity = new CDataEntity(self::$format, $id);
+		if(!$entity->rollback())
+		{
+			throw new Exception(_('実体は存在しません。'));
+		}
+		$this->entity = $entity;
 	}
 }
 

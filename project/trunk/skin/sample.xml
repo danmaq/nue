@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<body title="ページ タイトル" site="ブログ タイトル" ver="0.0.21"
+	xmlns:xhtml="http://www.w3.org/1999/xhtml"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="./skin/nue.xsd">
+	<!-- ver要素にはNUEのバージョンが格納されています。正規表現で表すと\d+\.\d+\.\d+です -->
+	<topic title="トピック タイトル">
+		<p>
+			文章。ここにHTMLのインライン要素が挿入できます。
+			(ただし、xhtml名前空間を使用すること)
+			例: <xhtml:br />
+		</p>
+		<p title="段落にもタイトルを設定することが可能です">
+			1トピック内に複数の段落を設定できます。
+		</p>
+	</topic>
+	<topic title="複数トピックを作成可能です">
+		<p>
+			このようなXMLデータがNUEから出力されますので、これに対応するXSLを作成して
+			お好みのデザイン・レイアウトへ調整してください。
+		</p>
+	</topic>
+</body>

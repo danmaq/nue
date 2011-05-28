@@ -44,7 +44,7 @@ class CSceneParseQuery
 		$this->setQueryIfNotExists('cat', CConfigure::DEFAULT_CATEGORY);
 		$this->setQueryIfNotExists('from', 0);
 		$this->setQueryIfNotExists('to', 100);
-		foreach (array_keys($_GET) as $item)
+		foreach(array_keys($_GET) as $item)
 		{
 			$this->parseCategory($item);
 			$this->parsePage($item);
@@ -61,8 +61,8 @@ class CSceneParseQuery
 	 */
 	public function execute(CEntity $entity)
 	{
-		$target = NUE_ROOT . '/plugin/' . $_GET['f'] . '.php';
 		$nextState = CSceneSimpleError::getIllegalModeInstance();
+		$target = $this->getPluginPath();
 		if(file_exists($target))
 		{
 			require_once($target);
@@ -144,7 +144,8 @@ class CSceneParseQuery
 	private function parseGUID($item)
 	{
 		$result = array();
-		if(preg_match('/^[a-fA-F\d]{8}-[a-fA-F\d]{4}-[a-fA-F\d]{4}-[a-fA-F\d]{4}-[a-fA-F\d]{12}$/', $item, $result))
+		if(preg_match('/^[a-fA-F\d]{8}-[a-fA-F\d]{4}-[a-fA-F\d]{4}-[a-fA-F\d]{4}-[a-fA-F\d]{12}$/',
+			$item, $result))
 		{
 			$this->setQueryIfNotExists('id', strtoupper($result[0]));
 			if(isset($_GET[$item]))
@@ -152,6 +153,17 @@ class CSceneParseQuery
 				unset($_GET[$item]);
 			}
 		}
+	}
+
+	/**
+	 *	記事指定クエリをパースします。
+	 *
+	 *	@param string $item クエリ文字列。
+	 */
+	private function getPluginPath()
+	{
+		return NUE_ROOT . preg_replace('/(\.|\/){2,}/', '\1', sprintf('/plugin/%s.php', str_replace(
+			"\0", '', $_SERVER['REQUEST_METHOD'] == 'POST' ? $_POST['f'] : $_GET['f'])));
 	}
 }
 

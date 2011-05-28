@@ -51,15 +51,26 @@ class CSceneNewUser
 	 */
 	public function execute(CEntity $entity)
 	{
-		if($entity->connectDatabase())
+		$xmlbuilder = new CDocumentBuilder(_('SETUP'));
+		$topic = $xmlbuilder->createTopic(_('管理者作成'));
+		$form = $xmlbuilder->createForm($topic, './');
+		$p = $xmlbuilder->createParagraph($form);
+		$xmlbuilder->createTextInput($p, 'text', 'id',
+			isset($_GET['id']) ? $_GET['id'] : '', _('ID(半角英数字)'), 1, 255);
+		$xmlbuilder->createHTMLElement($p, 'input', array(
+			'type' => 'hidden',
+			'name' => 'f',
+			'value' => CConstants::STATE_USER_ADD));
+		$xmlbuilder->createHTMLElement($p, 'input', array(
+			'type' => 'submit',
+			'value' => _('登録')));
+		if(isset($_GET['err']))
 		{
-			$xmlbuilder = new CDocumentBuilder(_('SETUP'));
-			$topic = $xmlbuilder->createTopic(_('管理者作成'));
-			$p = $xmlbuilder->createParagraph($topic);
-			$xmlbuilder->addText($p, _('HOGE'));
-			$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
-			$entity->dispose();
+			$p = $xmlbuilder->createParagraph($form, _('エラー'));
+			$xmlbuilder->addText($p, $_GET['err']);
 		}
+		$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
+		$entity->dispose();
 	}
 
 	/**
