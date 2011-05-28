@@ -16,6 +16,9 @@ class CSceneBlank
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
 
+	/**	ユーザ オブジェクト。 */
+	private $user = null;
+
 	/**
 	 *	この状態のオブジェクトを取得します。
 	 *
@@ -44,6 +47,13 @@ class CSceneBlank
 	 */
 	public function setup(CEntity $entity)
 	{
+		if($entity->connectDatabase() && $entity->startSession())
+		{
+			if(isset($_SESSION['user']))
+			{
+				$this->user = $_SESSION['user'];
+			}
+		}
 	}
 
 	/**
@@ -53,7 +63,7 @@ class CSceneBlank
 	 */
 	public function execute(CEntity $entity)
 	{
-		if($entity->connectDatabase())
+		if($entity->getNextState() === null)
 		{
 			$nextState = CEmptyState::getInstance();
 			if(CUser::getUserCount() == 0)
@@ -65,6 +75,10 @@ class CSceneBlank
 			{
 				// TODO : 記事がないので作りましょう。
 				$xmlbuilder = new CDocumentBuilder();
+				if($this->user !== null)
+				{
+					$xmlbuilder->createUserLogonInfo();
+				}
 				$xmlbuilder->createSimpleMessage(_('ERROR'), _('記事がありません。'));
 				$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
 			}

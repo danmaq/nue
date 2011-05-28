@@ -132,12 +132,7 @@ class CUser
 			$result = count($body) > 0;
 			if($result)
 			{
-				$entity = $this->createEntity($body[0]['ID']);
-				if(!$entity->rollback())
-				{
-					throw new Exception(_('実体は存在しません。'));
-				}
-				$this->entity = $entity;
+				$entity = $this->createEntity($body[0]['ENTITY_ID']);
 			}
 		}
 		return $result;

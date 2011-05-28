@@ -29,11 +29,25 @@
 			</head>
 			<body>
 				<h1><xsl:value-of select="@site" /></h1>
-				<xsl:apply-templates select="topic" />
+				<xsl:apply-templates select="topic|user" />
 				<hr />
 				<address><a href="http://nue.sourceforge.jp/">Network Utterance Environment</a> version <xsl:value-of select="@ver" /><br />by danmaq</address>
 			</body>
 		</html>
+	</xsl:template>
+
+	<!-- ログオン情報。 -->
+	<xsl:template match="user">
+		<p>
+			<xsl:choose>
+				<xsl:when test="@id">
+					<a href="./?f=core/user/pref"><xsl:value-of select="@name" /> さん</a> | <a href="./?f=core/user/logon">ログオフ</a>
+				</xsl:when>
+				<xsl:otherwise>
+					ゲストさん | <a href="./?f=core/user/logon">ログオン</a> | <a href="./?f=core/user/new">サインアップ</a>
+				</xsl:otherwise>
+			</xsl:choose>
+		</p>
 	</xsl:template>
 
 	<!-- トピック。 -->

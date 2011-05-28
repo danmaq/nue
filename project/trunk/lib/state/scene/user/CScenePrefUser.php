@@ -6,14 +6,17 @@ require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
 require_once(NUE_LIB_ROOT . '/state/IState.php');
 
 /**
- *	ユーザを新規作成するシーンです。
+ *	ユーザ情報を編集するシーンです。
  */
-class CSceneNewUser
+class CScenePrefUser
 	implements IState
 {
 
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
+
+	/**	ユーザ情報。 */
+	private $user = null;
 
 	/**
 	 *	この状態のオブジェクトを取得します。
@@ -24,7 +27,7 @@ class CSceneNewUser
 	{
 		if(self::$instance == null)
 		{
-			self::$instance = new CSceneNewUser();
+			self::$instance = new CScenePrefUser();
 		}
 		return self::$instance;
 	}
@@ -43,6 +46,17 @@ class CSceneNewUser
 	 */
 	public function setup(CEntity $entity)
 	{
+		if($entity->connectDatabase() && $entity->startSession())
+		{
+			if(isset($_SESSION['user']))
+			{
+				$this->user = $_SESSION['user'];
+			}
+			else
+			{
+				die('!!!LOGOUTED!!!');
+			}
+		}
 	}
 
 	/**
@@ -52,20 +66,38 @@ class CSceneNewUser
 	 */
 	public function execute(CEntity $entity)
 	{
-		if($entity->connectDatabase())
+		if($entity->getNextState() === null)
 		{
+			$user = $this->user;
+			$body =& $user->getEntity()->storage();
 			$xmlbuilder = new CDocumentBuilder(_('SETUP'));
-			$topic = $xmlbuilder->createTopic(CUser::getUserCount() == 0 ?
-				_('管理者作成') : _('ユーザ追加'));
+			$topic = $xmlbuilder->createTopic(_('ユーザ情報変更'));
 			$form = $xmlbuilder->createForm($topic, './');
+
 			$p = $xmlbuilder->createParagraph($form);
+			$xmlbuilder->addText($p, _('名前とパスワードを設定してください。'));
+			$xmlbuilder->createHTMLElement($p, 'br');
 			$xmlbuilder->createTextInput($p, 'text', 'id',
-				isset($_GET['id']) ? $_GET['id'] : '', _('ID(半角英数字)'), 1, 255);
+				$user->getID(), _('ユーザID'), 1, 255, true, false);
+			$xmlbuilder->addText($p, sprintf(_('管理者ですか？ : %s'),
+				$body['root'] ? _('はい') : _('いいえ')));
+
+			$p = $xmlbuilder->createParagraph($form);
+			$xmlbuilder->createTextInput($p, 'text', 'name',
+				isset($_GET['name']) ? $_GET['name'] : $body['name'],
+				_('名前(省略時ユーザID)'), 0, 255, false);
+			$reqpwd = strlen($body['password']) > 0;
+			$xmlbuilder->createTextInput($p, 'password', 'pwd0',
+				$reqpwd ? '' : '1', _('現在のパスワード'), 1, 255, true, $reqpwd);
+			$xmlbuilder->createTextInput($p, 'password', 'pwd1',
+				'', _('新しいパスワード'), 1, 255);
+			$xmlbuilder->createTextInput($p, 'password', 'pwd2',
+				'', _('新しいパスワード(再入力)'), 1, 255);
 			$p = $xmlbuilder->createParagraph($form);
 			$xmlbuilder->createHTMLElement($p, 'input', array(
 				'type' => 'hidden',
 				'name' => 'f',
-				'value' => CConstants::STATE_USER_ADD));
+				'value' => CConstants::STATE_USER_MOD));
 			$xmlbuilder->createHTMLElement($p, 'input', array(
 				'type' => 'submit',
 				'value' => _('登録')));

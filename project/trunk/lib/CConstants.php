@@ -14,16 +14,22 @@ class CConstants
 {
 
 	/** バージョン情報。 */
-	const VERSION = '0.0.21';
+	const VERSION = '0.0.22';
 
 	/** セッション名。 */
 	const SESSION_CORE = 'NUE_Core';
 
-	/** ユーザ追加状態。 */
+	/** ユーザ新規作成状態。 */
 	const STATE_USER_NEW = 'core/user/new';
 
 	/** ユーザ追加状態。 */
 	const STATE_USER_ADD = 'core/user/add';
+
+	/** ユーザ設定変更状態。 */
+	const STATE_USER_PREF = 'core/user/pref';
+
+	/** ユーザ設定変更確定状態。 */
+	const STATE_USER_MOD = 'core/user/mod';
 
 	/** ブログ表示状態。 */
 	const STATE_VIEW = 'core/view';
