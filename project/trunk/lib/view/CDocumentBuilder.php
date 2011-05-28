@@ -56,6 +56,7 @@ class CDocumentBuilder
 		$dom->appendChild($body);
 		$body->setAttributeNS(self::URI_XMLNS , 'xmlns:' . self::NS_XHTML, self::URI_XHTML);
 		$body->setAttributeNS(self::URI_XMLNS , 'xmlns:' . self::NS_XSI, self::URI_XSI);
+		$body->setAttributeNS(self::URI_XSI, self::NS_XSI . ':noNamespaceSchemaLocation', './skin/nue.xsd');
 	}
 
 	/**
@@ -159,6 +160,23 @@ class CDocumentBuilder
 	}
 
 	/**
+	 *	空のフォームを作成します。
+	 *
+	 *	@param DOMNode $topic 所属させるトピック。
+	 *	@param string $action 接続先のURL。
+	 *	@param string $method 接続するメソッド。
+	 *	@return DOMElement 空のフォーム オブジェクト。
+	 */
+	public function createForm(DOMNode $topic, $action, $method = 'POST')
+	{
+		$form = $this->getDOM()->createElement('form');
+		$this->createAttribute($form, 'action', $action);
+		$this->createAttribute($form, 'method', $method);
+		$topic->appendChild($form);
+		return $form;
+	}
+
+	/**
 	 *	空の段落を作成します。
 	 *
 	 *	@param DOMNode $topic 所属させるトピック。
@@ -229,7 +247,7 @@ class CDocumentBuilder
 	 *	@param string $name 要素名。
 	 *	@param array $attr 属性一覧。
 	 *	@param mixed $body 挿入する内容。DOMNodeとstringに対応します。
-	 *	@preturn 作成された要素オブジェクト。
+	 *	@preturn DOMElement 作成された要素オブジェクト。
 	 */
 	public function createHTMLElement(DOMNode $element, $name, array $attr = array(), $body = null)
 	{
@@ -259,7 +277,7 @@ class CDocumentBuilder
 	 *
 	 *	@param DOMNode $element 所属させる要素。
 	 *	@param string $text テキスト。
-	 *	@preturn 作成されたテキスト ノード オブジェクト。
+	 *	@preturn DOMNode 作成されたテキスト ノード オブジェクト。
 	 */
 	public function addText(DOMNode $element, $text)
 	{
@@ -274,14 +292,44 @@ class CDocumentBuilder
 	 *	@param DOMNode $element 所属させる要素。
 	 *	@param string $name 属性。
 	 *	@param string $value 値。
-	 *	@preturn 作成された属性オブジェクト。
+	 *	@preturn DOMNode 作成された属性オブジェクト。
 	 */
-	private function createAttribute(DOMNode $element, $name, $value)
+	public function createAttribute(DOMNode $element, $name, $value)
 	{
 		$attr = $this->getDOM()->createAttribute($name);
 		$attr->value = $value;
 		$element->appendChild($attr);
 		return $attr;
+	}
+
+	/**
+	 *	1行入力ボックスを作成します。
+	 *
+	 *	@param CDocumentBuilder $xml ドキュメント生成クラス。
+	 *	@param DOMNode $parent 所属させるノード。
+	 *	@param string $type 入力タイプ。
+	 *	@param string $id キーとなる文字列。
+	 *	@param string $value 値となる文字列。
+	 *	@param string $label ラベル。
+	 *	@param integer $min 最小文字数。
+	 *	@param integer $max 最大文字数。
+	 *	@return DOMElement input要素オブジェクト。
+	 */
+	public function createTextInput(
+		DOMNode $parent, $type, $id, $value, $label, $min, $max)
+	{
+		$this->createHTMLElement($parent, 'label', array('for' => $id),
+			$label);
+		$result = $this->createHTMLElement($parent, 'input', array(
+			'type' => $type,
+			'id' => $id, 'name' => $id,
+			'value' => $value,
+			'maxlength' => $max,
+			'pattern' => sprintf('^[0-9A-Za-z]{%d,%d}$', $min, $max),
+			'placeholder' => sprintf(_('%d～%d文字以内'), $min, $max),
+			'required' => 'required'));
+		$this->createHTMLElement($parent, 'br');
+		return $result;
 	}
 }
 

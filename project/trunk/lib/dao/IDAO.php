@@ -18,7 +18,7 @@ interface IDAO
 	 *
 	 *	@return CDataEntity 実体オブジェクト。
 	 */
-	function getEntity();
+	function &getEntity();
 
 	/**
 	 *	削除します。

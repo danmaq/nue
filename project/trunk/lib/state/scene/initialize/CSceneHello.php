@@ -54,6 +54,9 @@ class CSceneHello
 		$xmlbuilder = new CDocumentBuilder(_('SETUP'));
 		$topic = $xmlbuilder->createTopic(_('Network Utterance Environment へようこそ'));
 		$p = $xmlbuilder->createParagraph($topic);
+		$xmlbuilder->addText($p,
+			_('開始前にCookieが有効になっていることを確認してください。そうでない場合、途中で先に進めなくなる場合があります。'));
+		$xmlbuilder->createHTMLElement($p, 'br');
 		$xmlbuilder->createHTMLElement($p, 'a', array('href' => './?f=' . CConstants::STATE_USER_NEW),
 			_('このリンクからスタートします。'));
 		$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);

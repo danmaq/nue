@@ -23,19 +23,8 @@ class CDataEntity
 	/**	記憶領域(連想配列)。 */
 	private $body;
 
-	/**
-	 *	ユニークなGUIDを持ったインスタンスを作成します。
-	 *
-	 *	注意:この関数を呼び出した時点でそのGUIDは確保されます。
-	 *
-	 *	@return ユニークなGUIDを持ったインスタンス。
-	 */
-	public static function createUniqueGUIDInstance()
-	{
-		$entity = new CDataEntity();
-		$entity->setUniqueID();
-		return $entity;
-	}
+	/**	記憶領域のデフォルト値(連想配列)。 */
+	private $format;
 
 	/**
 	 *	テーブルの有無を確認し、存在しなければ初期化します。
@@ -52,16 +41,19 @@ class CDataEntity
 	/**
 	 *	コンストラクタ。
 	 *
+	 *	@param array $format 記憶領域のフォーマット。
 	 *	@param string $id 実体ID(GUID)。
 	 */
-	public function __construct($id = null)
+	public function __construct(array $format, $id = null)
 	{
 		if($id === null)
 		{
 			$id = self::createGUID();
 		}
 		$this->id = $id;
+		$this->format = $format;
 		$this->updated = time();
+		$this->resetStorage();
 	}
 
 	/**
@@ -92,7 +84,7 @@ class CDataEntity
 	 *
 	 *	@return mixed 記憶領域。
 	 */
-	public function storage()
+	public function &storage()
 	{
 		return $this->body;
 	}
@@ -123,7 +115,7 @@ class CDataEntity
 	 *
 	 *	@return CDataEntity 実体オブジェクト。
 	 */
-	public function getEntity()
+	public function &getEntity()
 	{
 		return $this;
 	}
@@ -150,7 +142,7 @@ class CDataEntity
 		$result = false;
 		self::initializeTable();
 		$db = CDBManager::getInstance();
-		$tempEntity = new CDataEntity($this->getID());
+		$tempEntity = new CDataEntity($this->format, $this->getID());
 		if($tempEntity->rollBack() && $overwrite)
 		{
 			$result = $db->execute(CFileSQLEntity::getInstance()->update,
@@ -177,10 +169,37 @@ class CDataEntity
 		$result = count($body) > 0;
 		if($result)
 		{
-			$this->body = $body[0]['BODY'];
+			$this->body = unserialize($body[0]['BODY']);
 			$this->updated = $body[0]['UPDATED'];
+			$this->resetStorage(false);
 		}
 		return $result;
+	}
+
+	/**
+	 *	記憶領域を初期化します。
+	 *
+	 *	@param boolean $force 強制的にフォーマットするかどうか。
+	 *		falseの場合、存在しないキーだけマージされます。
+	 */
+	public function resetStorage($force = true)
+	{
+		$format = $this->format;
+		if($force)
+		{
+			$this->body = $format;
+		}
+		else
+		{
+			$body =& $this->body;
+			foreach(array_keys($format) as $item)
+			{
+				if(!isset($body[$item]))
+				{
+					$body[$item] = $format[$item];
+				}
+			}
+		}
 	}
 }
 

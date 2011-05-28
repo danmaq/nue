@@ -48,7 +48,7 @@
 
 	<!-- フォーム。 -->
 	<xsl:template match="form">
-		<form>
+		<form onsubmit="return true;">
 			<xsl:copy-of select="@*" />
 			<xsl:apply-templates select="p" />
 		</form>

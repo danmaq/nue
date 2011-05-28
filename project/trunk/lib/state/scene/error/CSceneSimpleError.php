@@ -5,7 +5,7 @@ require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
 require_once(NUE_LIB_ROOT . '/state/IState.php');
 
 /**
- *	モード指定が誤っている場合に呼び出されるシーンです。
+ *	シンプルなエラーメッセージを表示するシーンです。
  */
 class CSceneSimpleError
 	implements IState
@@ -14,8 +14,8 @@ class CSceneSimpleError
 	/**	未定義の動作状態を指定した場合のエラー クラス オブジェクト。 */
 	private static $illegalMode = null;
 
-	/**	データベース接続に失敗した場合のエラー クラス オブジェクト。 */
-	private static $dbNotFound = null;
+	/**	セッション開始に失敗した場合のエラー クラス オブジェクト。 */
+	private static $sessionFailed = null;
 
 	/**	エラー メッセージ。 */
 	private $description;
@@ -35,18 +35,17 @@ class CSceneSimpleError
 	}
 
 	/**
-	 *	データベース接続に失敗した場合のエラー オブジェクトを取得します。
+	 *	セッション開始に失敗した場合のエラー オブジェクトを取得します。
 	 *
 	 *	@return IState 状態のオブジェクト。
 	 */
-	public static function getDBNotFoundInstance()
+	public static function getSessionFailedInstance()
 	{
-		if(self::$dbNotFound == null)
+		if(self::$sessionFailed == null)
 		{
-			// TODO : CSceneSimpleErrorから分離して、CDBManager.getExceptionを表示できるようにする。
-			self::$dbNotFound = new CSceneSimpleError(_('データベースが見つからないか、接続できません。'));
+			self::$sessionFailed = new CSceneSimpleError(_('セッションが開始できません。Cookieがだめかもわからんね'));
 		}
-		return self::$dbNotFound;
+		return self::$sessionFailed;
 	}
 
 	/**

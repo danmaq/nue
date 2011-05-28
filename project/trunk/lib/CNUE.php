@@ -3,7 +3,7 @@
 error_reporting(E_ALL|E_STRICT);
 
 define('NUE_LIB_ROOT', dirname(__FILE__));
-define('NUE_ROOT', NUE_LIB_ROOT . '/..');
+define('NUE_ROOT', realpath(NUE_LIB_ROOT . '/..'));
 define('NUE_CONSTANTS', NUE_LIB_ROOT . '/CConstants.php');
 
 require_once(NUE_LIB_ROOT . '/entity/CScene.php');
@@ -27,6 +27,7 @@ class CNUE
 			$scene->execute();
 		}
 		while($scene->getCurrentState() != $emptyState);
+		exit(0);
 	}
 }
 
