@@ -4,6 +4,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="./skin/nue.xsd">
 	<!-- ver要素にはNUEのバージョンが格納されています。正規表現で表すと\d+\.\d+\.\d+です -->
+
+	<user id='hogehoge' name='ほげ太郎' />
+	<!-- ログイン時のみ挿入されます -->
+
 	<topic title="トピック タイトル">
 		<p>
 			文章。ここにHTMLのインライン要素が挿入できます。

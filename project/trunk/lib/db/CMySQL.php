@@ -62,9 +62,10 @@ class CMySQL
 		{
 			try
 			{
-				$dsn = sprintf('mysql:dbname=%s;host=%s;port=%d',
+				$dsn = sprintf('mysql:dbname=%s;host=%s;port=%d;charset=utf8',
 					CConfigure::DB_NAME, CConfigure::DB_HOST, CConfigure::DB_PORT);
 				$this->dbo = new PDO($dsn, CConfigure::DB_USER, CConfigure::DB_PASSWORD);
+				$this->dbo->query('SET NAMES utf8;');
 				$result = true;
 			}
 			catch(Exception $e)

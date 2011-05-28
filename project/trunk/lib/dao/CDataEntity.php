@@ -143,15 +143,14 @@ class CDataEntity
 		self::initializeTable();
 		$db = CDBManager::getInstance();
 		$tempEntity = new CDataEntity($this->format, $this->getID());
+		$params = array('id' => $this->getID(), 'body' => serialize($this->storage()));
 		if($tempEntity->rollBack() && $overwrite)
 		{
-			$result = $db->execute(CFileSQLEntity::getInstance()->update,
-				array('body' => serialize($this->storage())));
+			$result = $db->execute(CFileSQLEntity::getInstance()->update, $params);
 		}
 		else
 		{
-			$result = $db->execute(CFileSQLEntity::getInstance()->insert,
-				array('id' => $this->getID(), 'body' => serialize($this->storage())));
+			$result = $db->execute(CFileSQLEntity::getInstance()->insert, $params);
 		}
 		return $result;
 	}
@@ -192,13 +191,7 @@ class CDataEntity
 		else
 		{
 			$body =& $this->body;
-			foreach(array_keys($format) as $item)
-			{
-				if(!isset($body[$item]))
-				{
-					$body[$item] = $format[$item];
-				}
-			}
+			$body += $format;
 		}
 	}
 }

@@ -6,13 +6,21 @@
 		schemaLocation="http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd"/>
 
 	<xsd:element name="body" type="BodyType" />
+	<xsd:element name="user" type="UserType" />
 	<xsd:element name="topic" type="TopicType" />
 	<xsd:element name="form" type="FormType" />
 	<xsd:element name="p" type="ParagraphType" />
 	<xsd:complexType name="BodyType">
 		<xsd:sequence>
 			<xsd:attribute name="title" type="xsd:string" use="required" />
+			<xsd:element ref="user" maxOccurs="1" />
 			<xsd:element ref="topic" minOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="UserType">
+		<xsd:sequence>
+			<xsd:attribute name="id" type="xsd:string" use="required" />
+			<xsd:attribute name="name" type="xsd:string" use="required" />
 		</xsd:sequence>
 	</xsd:complexType>
 	<xsd:complexType name="TopicType">

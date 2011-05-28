@@ -146,6 +146,26 @@ class CDocumentBuilder
 	}
 
 	/**
+	 *	ユーザ情報を作成します。
+	 *
+	 *	@return DOMElement ユーザ情報 オブジェクト。
+	 */
+	public function createUserLogonInfo()
+	{
+		$result = $this->getDOM()->createElement('user');
+		if(isset($_SESSION['user']))
+		{
+			$user = $_SESSION['user'];
+			$body =& $user->getEntity()->storage();
+			$result = $this->getDOM()->createElement('user');
+			$this->createAttribute($result, 'id', $user->getID());
+			$this->createAttribute($result, 'name', $body['name']);
+		}
+		$this->getRootElement()->appendChild($result);
+		return $result;
+	}
+
+	/**
 	 *	空のトピックを作成します。
 	 *
 	 *	@param string $caption 見出し。
@@ -313,10 +333,12 @@ class CDocumentBuilder
 	 *	@param string $label ラベル。
 	 *	@param integer $min 最小文字数。
 	 *	@param integer $max 最大文字数。
+	 *	@param boolean $ascii ASCII入力のみ受け付けるかどうか。
+	 *	@param boolean $enabled 有効なフィールドかどうか。
 	 *	@return DOMElement input要素オブジェクト。
 	 */
 	public function createTextInput(
-		DOMNode $parent, $type, $id, $value, $label, $min, $max)
+		DOMNode $parent, $type, $id, $value, $label, $min = 0, $max = 255, $ascii = true, $enabled = true)
 	{
 		$this->createHTMLElement($parent, 'label', array('for' => $id),
 			$label);
@@ -325,9 +347,17 @@ class CDocumentBuilder
 			'id' => $id, 'name' => $id,
 			'value' => $value,
 			'maxlength' => $max,
-			'pattern' => sprintf('^[0-9A-Za-z]{%d,%d}$', $min, $max),
-			'placeholder' => sprintf(_('%d～%d文字以内'), $min, $max),
-			'required' => 'required'));
+			'pattern' => sprintf('^%s{%d,%d}$', $ascii ? '[0-9A-Za-z]' : '.', $min, $max),
+			'placeholder' => sprintf(_('%d～%d文字以内'), $min, $max)));
+		if($min > 0)
+		{
+			$this->createAttribute($result, 'required', 'required');
+		}
+		if(!$enabled)
+		{
+			$this->createAttribute($result, 'disabled', 'disabled');
+			$this->createAttribute($result, 'readonly', 'readonly');
+		}
 		$this->createHTMLElement($parent, 'br');
 		return $result;
 	}

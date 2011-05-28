@@ -6,9 +6,9 @@ require_once(NUE_LIB_ROOT . '/view/CRedirector.php');
 require_once(NUE_LIB_ROOT . '/state/IState.php');
 
 /**
- *	ユーザを追加するシーンです。
+ *	ユーザ設定を変更するシーンです。
  */
-class CSceneAddUser
+class CSceneModUser
 	implements IState
 {
 
@@ -18,11 +18,19 @@ class CSceneAddUser
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
 
+	/**	既定の値一覧。 */
+	private $format = array(
+		'name' => '',
+		'pwd0' => '',
+		'pwd1' => '',
+		'pwd2' => '',
+	);
+
+	/**	名前。 */
+	private $name = null;
+
 	/**	エラー一覧。 */
 	private $errors = null;
-
-	/**	ユーザID。 */
-	private $id = '';
 
 	/**
 	 *	この状態のオブジェクトを取得します。
@@ -33,7 +41,7 @@ class CSceneAddUser
 	{
 		if(self::$instance == null)
 		{
-			self::$instance = new CSceneAddUser();
+			self::$instance = new CSceneModUser();
 		}
 		return self::$instance;
 	}
@@ -58,34 +66,51 @@ class CSceneAddUser
 			{
 				throw new Exception(_('POSTメソッド以外は受理不可。'));
 			}
-			if(!isset($_POST['id']) || strlen($_POST['id']) == 0)
-			{
-				throw new Exception(_('IDを指定しない場合受理不可。'));
-			}
-			$idlen = strlen($_POST['id']);
-			$this->id = $_POST['id'];
-			if($idlen > self::VALIDATE_ID_LENGTH)
-			{
-				throw new Exception(
-					sprintf(_('%dバイトを超えるIDは受理不可。'), self::VALIDATE_ID_LENGTH));
-			}
-			if(!preg_match("/^[\x20-\x7E]+$/", $this->id))
-			{
-				throw new Exception(_('ASCII文字以外は受理不可。'));
-			}
 			if($entity->connectDatabase() && $entity->startSession())
 			{
-				$user = new CUser($this->id);
-				if(CUser::getUserCount() > 0 && $user->rollback())
+				if(!isset($_SESSION['user']))
 				{
-					throw new Exception(_('存在するユーザIDは受理不可。'));
+					throw new Exception(_('ログインしていないため受理不可。'));
 				}
-				$body =& $user->getEntity()->storage();
-				$body['root'] = CUser::getUserCount() == 0;
-				$body['name'] = $this->id;
-				if($user->commit())
+				$_POST += $this->format;
+				$entity = $_SESSION['user']->getEntity();
+				$body =& $entity->storage();
+				$len = strlen($_POST['name']);
+				if($len > 0)
 				{
-					$_SESSION['user'] = $user;
+					if($len > 255)
+					{
+						throw new Exception(_('名前は1～255文字の範囲内以外受理不可。'));
+					}
+					$this->name = $_POST['name'];
+					$body['name'] = $_POST['name'];
+				}
+				if($_POST['pwd1'] !== $_POST['pwd2'])
+				{
+					throw new Exception(_('新しいパスワードの不整合。'));
+				}
+				$len = strlen($_POST['pwd1']);
+				if(strlen($body['password']) > 0)
+				{
+					if($body['password'] !== sha1($_POST['pwd0']))
+					{
+						throw new Exception(_('現在のパスワードの不整合。'));
+					}
+				}
+				else
+				{
+					if($len < 4 || $len > 255)
+					{
+						throw new Exception(_('パスワードは4～255文字の範囲内以外受理不可。'));
+					}
+				}
+				if($len >= 4 && $len <= 255)
+				{
+					$body['password'] = sha1($_POST['pwd1']);
+				}
+				if(!$entity->commit())
+				{
+					throw new Exception(_('予期しない理由でのコミット失敗。'));
 				}
 				session_write_close();
 			}
@@ -108,13 +133,13 @@ class CSceneAddUser
 			$query = array();
 			if($this->errors === null)
 			{
-				$query = array('f' => CConstants::STATE_USER_PREF);
+				$query = array();
 			}
 			else
 			{
 				$query = array(
-					'f' => CConstants::STATE_USER_NEW,
-					'id' => $this->id,
+					'f' => CConstants::STATE_USER_PREF,
+					'name' => $this->name,
 					'err' => $this->errors);
 			}
 			CRedirector::seeOther($query);
