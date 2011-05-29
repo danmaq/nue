@@ -52,11 +52,48 @@ class CScene
 	 */
 	public function startSession($name = CConstants::SESSION_CORE)
 	{
-		session_name($name);
-		$result = session_start();
-		if(!$result)
+		try
 		{
-			$this->setNextState(CSceneSimpleError::getSessionFailedInstance());
+			session_name($name);
+			session_start();
+		}
+		catch(Exception $e)
+		{
+			error_log($e);
+			unset($_SESSION['user']);
+		}
+	}
+
+	/**
+	 *	ユーザ情報をセッションに格納します。
+	 *
+	 *	注意: セッションの保存とクローズは自動で行われません。
+	 *
+	 *	@param CUser $value ユーザ情報。nullを設定すると自動的にセッションから削除します。
+	 */
+	public function setUser(CUser $value = null)
+	{
+		if($value === null)
+		{
+			unset($_SESSION['user']);
+		}
+		else
+		{
+			$_SESSION['user'] = $value;
+		}
+	}
+
+	/**
+	 *	セッションに保存されたユーザ情報を取得します。
+	 *
+	 *	@return CUser ユーザ情報。
+	 */
+	public function getUser()
+	{
+		$result = false;
+		if(isset($_SESSION['user']))
+		{
+			$result = $_SESSION['user'];
 		}
 		return $result;
 	}

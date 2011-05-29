@@ -14,28 +14,31 @@ class CConstants
 {
 
 	/** バージョン情報。 */
-	const VERSION = '0.0.22';
+	const VERSION = '0.0.23';
 
 	/** セッション名。 */
 	const SESSION_CORE = 'NUE_Core';
 
-	/** ユーザ新規作成状態。 */
-	const STATE_USER_NEW = 'core/user/new';
-
 	/** ユーザ追加状態。 */
 	const STATE_USER_ADD = 'core/user/add';
 
-	/** ユーザ設定変更状態。 */
-	const STATE_USER_PREF = 'core/user/pref';
+	/** ユーザログオン状態。 */
+	const STATE_USER_LOGON = 'core/user/logon';
 
 	/** ユーザ設定変更確定状態。 */
 	const STATE_USER_MOD = 'core/user/mod';
 
+	/** ユーザ新規作成状態。 */
+	const STATE_USER_NEW = 'core/user/new';
+
+	/** ユーザ設定変更状態。 */
+	const STATE_USER_PREF = 'core/user/pref';
+
 	/** ブログ表示状態。 */
-	const STATE_VIEW = 'core/view';
+	const STATE_ARTICLE_VIEW = 'core/article/view';
 
 	/** 検索状態。 */
-	const STATE_FIND = 'core/find';
+	const STATE_ARTICLE_FIND = 'core/article/find';
 
 	/** MySQL用のID。 */
 	const DBMS_MYSQL = 'mysql';

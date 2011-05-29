@@ -29,7 +29,7 @@ class CSceneModUser
 	/**	名前。 */
 	private $name = null;
 
-	/**	エラー一覧。 */
+	/**	エラー表示。 */
 	private $errors = null;
 
 	/**
@@ -66,14 +66,16 @@ class CSceneModUser
 			{
 				throw new Exception(_('POSTメソッド以外は受理不可。'));
 			}
-			if($entity->connectDatabase() && $entity->startSession())
+			if($entity->connectDatabase())
 			{
-				if(!isset($_SESSION['user']))
+				$entity->startSession();
+				$user = $entity->getUser();
+				if($user === null)
 				{
 					throw new Exception(_('ログインしていないため受理不可。'));
 				}
 				$_POST += $this->format;
-				$entity = $_SESSION['user']->getEntity();
+				$entity = $user->getEntity();
 				$body =& $entity->storage();
 				$len = strlen($_POST['name']);
 				if($len > 0)
@@ -112,7 +114,6 @@ class CSceneModUser
 				{
 					throw new Exception(_('予期しない理由でのコミット失敗。'));
 				}
-				session_write_close();
 			}
 		}
 		catch(Exception $e)

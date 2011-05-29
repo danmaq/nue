@@ -6,23 +6,20 @@ require_once(NUE_LIB_ROOT . '/view/CRedirector.php');
 require_once(NUE_LIB_ROOT . '/state/IState.php');
 
 /**
- *	ユーザを追加するシーンです。
+ *	ログオンするシーンです。
  */
-class CSceneAddUser
+class CSceneLogonUser
 	implements IState
 {
-
-	/**	有効なIDの最大長(バイト単位)。 */
-	const VALIDATE_ID_LENGTH = 255;
 
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
 
-	/**	エラー一覧。 */
-	private $errors = null;
-
 	/**	ユーザID。 */
 	private $id = '';
+
+	/**	エラー表示。 */
+	private $errors = null;
 
 	/**
 	 *	この状態のオブジェクトを取得します。
@@ -33,7 +30,7 @@ class CSceneAddUser
 	{
 		if(self::$instance == null)
 		{
-			self::$instance = new CSceneAddUser();
+			self::$instance = new CSceneLogonUser();
 		}
 		return self::$instance;
 	}
@@ -58,36 +55,37 @@ class CSceneAddUser
 			{
 				throw new Exception(_('POSTメソッド以外は受理不可。'));
 			}
-			if(!isset($_POST['id']) || strlen($_POST['id']) == 0)
+			if(!(isset($_POST['id']) && isset($_POST['pwd'])) ||
+				strlen($_POST['id']) == 0)
 			{
 				throw new Exception(_('IDを指定しない場合受理不可。'));
 			}
-			$idlen = strlen($_POST['id']);
 			$this->id = $_POST['id'];
-			if($idlen > self::VALIDATE_ID_LENGTH)
-			{
-				throw new Exception(
-					sprintf(_('%dバイトを超えるIDは受理不可。'), self::VALIDATE_ID_LENGTH));
-			}
-			if(!preg_match("/^[\x20-\x7E]+$/", $this->id))
-			{
-				throw new Exception(_('ASCII文字以外は受理不可。'));
-			}
 			if($entity->connectDatabase())
 			{
-				$entity->startSession();
-				$user = new CUser($this->id);
-				if(CUser::getUserCount() > 0 && $user->rollback())
+				$user = new CUser($_POST['id']);
+				if(!$user->rollback())
 				{
-					throw new Exception(_('存在するユーザIDは受理不可。'));
+					throw new Exception(_('該当ユーザは存在しない。'));
 				}
 				$body =& $user->getEntity()->storage();
-				$body['root'] = CUser::getUserCount() == 0;
-				$body['name'] = $this->id;
-				if($user->commit())
+				$password = $body['password'];
+				if(strlen($password) == 0)
 				{
-					$entity->setUser($user);
+					if(strlen($_POST['pwd']) != 0)
+					{
+						throw new Exception(_('パスワードの不整合。'));
+					}
 				}
+				else
+				{
+					if($password !== sha1($_POST['pwd']))
+					{
+						throw new Exception(_('パスワードの不整合。'));
+					}
+				}
+				$entity->startSession();
+				$entity->setUser($user);
 				session_write_close();
 			}
 		}
@@ -107,11 +105,7 @@ class CSceneAddUser
 		if($entity->getNextState() === null)
 		{
 			$query = array();
-			if($this->errors === null)
-			{
-				$query = array('f' => CConstants::STATE_USER_PREF);
-			}
-			else
+			if($this->errors !== null)
 			{
 				$query = array(
 					'f' => CConstants::STATE_USER_NEW,
