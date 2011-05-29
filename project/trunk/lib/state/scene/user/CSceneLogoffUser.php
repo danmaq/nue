@@ -1,22 +1,21 @@
 <?php
 
 require_once(NUE_CONSTANTS);
-require_once(NUE_LIB_ROOT . '/db/CDBManager.php');
 require_once(NUE_LIB_ROOT . '/dao/CUser.php');
-require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
-require_once(NUE_LIB_ROOT . '/state/scene/initialize/CSceneHello.php');
+require_once(NUE_LIB_ROOT . '/view/CRedirector.php');
+require_once(NUE_LIB_ROOT . '/state/IState.php');
 
 /**
- *	ブランクな記事表示のシーンです。
+ *	ログオフするシーンです。
  */
-class CSceneBlank
+class CSceneLogoffUser
 	implements IState
 {
 
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
 
-	/**	ユーザ オブジェクト。 */
+	/**	ユーザ情報。 */
 	private $user = null;
 
 	/**
@@ -28,7 +27,7 @@ class CSceneBlank
 	{
 		if(self::$instance == null)
 		{
-			self::$instance = new CSceneBlank();
+			self::$instance = new CSceneLogoffUser();
 		}
 		return self::$instance;
 	}
@@ -47,13 +46,10 @@ class CSceneBlank
 	 */
 	public function setup(CEntity $entity)
 	{
-		if($entity->connectDatabase() && $entity->startSession())
-		{
-			if(isset($_SESSION['user']))
-			{
-				$this->user = $_SESSION['user'];
-			}
-		}
+		$entity->connectDatabase();
+		$entity->startSession();
+		$entity->setUser(null);
+		session_write_close();
 	}
 
 	/**
@@ -63,27 +59,8 @@ class CSceneBlank
 	 */
 	public function execute(CEntity $entity)
 	{
-		if($entity->getNextState() === null)
-		{
-			$nextState = CEmptyState::getInstance();
-			if(CUser::getUserCount() == 0)
-			{
-				// 初回表示へ
-				$nextState = CSceneHello::getInstance();
-			}
-			else
-			{
-				// TODO : 記事がないので作りましょう。
-				$xmlbuilder = new CDocumentBuilder();
-				if($this->user !== null)
-				{
-					$xmlbuilder->createUserLogonInfo();
-				}
-				$xmlbuilder->createSimpleMessage(_('ERROR'), _('記事がありません。'));
-				$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
-			}
-			$entity->setNextState($nextState);
-		}
+		CRedirector::seeOther();
+		$entity->dispose();
 	}
 
 	/**

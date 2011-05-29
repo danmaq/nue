@@ -55,25 +55,21 @@ class CSceneNewUser
 		if($entity->connectDatabase())
 		{
 			$xmlbuilder = new CDocumentBuilder(_('SETUP'));
-			$topic = $xmlbuilder->createTopic(CUser::getUserCount() == 0 ?
-				_('管理者作成') : _('ユーザ追加'));
-			$form = $xmlbuilder->createForm($topic, './');
-			$p = $xmlbuilder->createParagraph($form);
-			$xmlbuilder->createTextInput($p, 'text', 'id',
-				isset($_GET['id']) ? $_GET['id'] : '', _('ID(半角英数字)'), 1, 255);
-			$p = $xmlbuilder->createParagraph($form);
-			$xmlbuilder->createHTMLElement($p, 'input', array(
-				'type' => 'hidden',
-				'name' => 'f',
-				'value' => CConstants::STATE_USER_ADD));
-			$xmlbuilder->createHTMLElement($p, 'input', array(
-				'type' => 'submit',
-				'value' => _('登録')));
 			if(isset($_GET['err']))
 			{
-				$p = $xmlbuilder->createParagraph($form, _('エラー'));
+				$topic = $xmlbuilder->createTopic(_('エラー'));
+				$p = $xmlbuilder->createParagraph($topic);
 				$xmlbuilder->addText($p, $_GET['err']);
 			}
+			$topicName = _('管理者作成');
+			if(CUser::getUserCount() > 0)
+			{
+				$topicName = _('サインアップ');
+				$p = $this->createForm($xmlbuilder, _('ログオン'), CConstants::STATE_USER_LOGON);
+				$xmlbuilder->createTextInput(
+					$p, 'password', 'pwd', '', _('パスワード(半角英数字)'), 4, 255);
+			}
+			$this->createForm($xmlbuilder, $topicName, CConstants::STATE_USER_ADD);
 			$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
 			$entity->dispose();
 		}
@@ -86,6 +82,31 @@ class CSceneNewUser
 	 */
 	public function teardown(CEntity $entity)
 	{
+	}
+
+	/**
+	 *	フォームを作成します。
+	 *
+	 *	@param CDocumentBuilder $xmlbuilder DOM構築オブジェクト。
+	 *	@param string $topicName トピック名。
+	 *	@param string $action ジャンプ先URI。
+	 */
+	private function createForm(CDocumentBuilder $xmlbuilder, $topicName, $action)
+	{
+		$topic = $xmlbuilder->createTopic($topicName);
+		$form = $xmlbuilder->createForm($topic, './');
+		$result = $xmlbuilder->createParagraph($form);
+		$xmlbuilder->createTextInput($result, 'text', 'id',
+			isset($_GET['id']) ? $_GET['id'] : '', _('ID(半角英数字)'), 1, 255);
+		$p = $xmlbuilder->createParagraph($form);
+		$xmlbuilder->createHTMLElement($p, 'input', array(
+			'type' => 'hidden',
+			'name' => 'f',
+			'value' => $action));
+		$xmlbuilder->createHTMLElement($p, 'input', array(
+			'type' => 'submit',
+			'value' => _('登録')));
+		return $result;
 	}
 }
 

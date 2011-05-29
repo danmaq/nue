@@ -51,7 +51,7 @@ class CSceneParseQuery
 			$this->parseGUID($item);
 		}
 		$this->setQueryIfNotExists('f', isset($_GET['q']) || isset($_GET['t']) ?
-			CConstants::STATE_FIND : CConstants::STATE_VIEW);
+			CConstants::STATE_ARTICLE_FIND : CConstants::STATE_ARTICLE_VIEW);
 	}
 
 	/**

@@ -4,7 +4,7 @@
 	xmlns:xhtml="http://www.w3.org/1999/xhtml"
 	xmlns="http://www.w3.org/1999/xhtml"
 	exclude-result-prefixes="xhtml">
-	<xsl:output method="xml" encoding="UTF-8" indent="yes" />
+	<xsl:output method="xml" encoding="UTF-8" indent="yes" media-type="application/xhtml+xml" />
 
 	<!-- メイン。 -->
 	<xsl:template match="/body">
@@ -28,10 +28,18 @@
 				<xsl:comment> 評価中 </xsl:comment>
 			</head>
 			<body>
-				<h1><xsl:value-of select="@site" /></h1>
-				<xsl:apply-templates select="topic|user" />
-				<hr />
-				<address><a href="http://nue.sourceforge.jp/">Network Utterance Environment</a> version <xsl:value-of select="@ver" /><br />by danmaq</address>
+				<header>
+					<h1>
+						<a href="./" rel="Start"><xsl:value-of select="@site" /></a>
+					</h1>
+					<xsl:apply-templates select="topic|user" />
+				</header>
+				<nav>
+				</nav>
+				<footer>
+					<hr />
+					<address><a href="http://nue.sourceforge.jp/">Network Utterance Environment</a> version <xsl:value-of select="@ver" /><br />by danmaq</address>
+				</footer>
 			</body>
 		</html>
 	</xsl:template>
@@ -41,10 +49,10 @@
 		<p>
 			<xsl:choose>
 				<xsl:when test="@id">
-					<a href="./?f=core/user/pref"><xsl:value-of select="@name" /> さん</a> | <a href="./?f=core/user/logon">ログオフ</a>
+					<a href="./?f=core/user/pref"><xsl:value-of select="@name" /> さん</a> | <a href="./?f=core/user/logoff">ログオフ</a>
 				</xsl:when>
 				<xsl:otherwise>
-					ゲストさん | <a href="./?f=core/user/logon">ログオン</a> | <a href="./?f=core/user/new">サインアップ</a>
+					ゲストさん | <a href="./?f=core/user/new">ログオン / サインアップ</a>
 				</xsl:otherwise>
 			</xsl:choose>
 		</p>

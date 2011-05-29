@@ -46,13 +46,11 @@ class CScenePrefUser
 	 */
 	public function setup(CEntity $entity)
 	{
-		if($entity->connectDatabase() && $entity->startSession())
+		if($entity->connectDatabase())
 		{
-			if(isset($_SESSION['user']))
-			{
-				$this->user = $_SESSION['user'];
-			}
-			else
+			$entity->startSession();
+			$this->user = $entity->getUser();
+			if($this->user === null)
 			{
 				die('!!!LOGOUTED!!!');
 			}
