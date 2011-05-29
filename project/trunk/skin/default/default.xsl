@@ -17,14 +17,16 @@
 		<html xml:lang="ja">
 			<head>
 				<meta charset="UTF-8" />
-				<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+				<xsl:if test="contains(@ua, ' IE ') or contains(@ua, ' MSIE ')">
+					<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+				</xsl:if>
 				<meta name="application-name" content="Network Utterance Environment" />
 				<meta name="author" content="danmaq" />
 				<meta name="msapplication-navbutton-color" content="#BCC0DD" />
 				<title><xsl:value-of select="@title" /> - <xsl:value-of select="@site" /></title>
 				<link href="./" rel="Start" />
 				<link href="./skin/default/default.css" rel="StyleSheet" />
-				<link href="http://twitter.com/danmaq" rev="made" />
+				<link href="http://twitter.com/danmaq" rel="Author" />
 				<xsl:comment> 評価中 </xsl:comment>
 			</head>
 			<body>

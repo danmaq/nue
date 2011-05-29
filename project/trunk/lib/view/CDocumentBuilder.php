@@ -51,6 +51,7 @@ class CDocumentBuilder
 		$title = $this->createAttribute($body, 'title', $title);
 		$this->createAttribute($body, 'site', CConfigure::SITE_NAME);
 		$this->createAttribute($body, 'ver', CConstants::VERSION);
+		$this->createAttribute($body, 'ua', $_SERVER['HTTP_USER_AGENT']);
 		$this->body = $body;
 		$this->title = $title;
 		$dom->appendChild($body);
