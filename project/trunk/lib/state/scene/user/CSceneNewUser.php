@@ -62,7 +62,7 @@ class CSceneNewUser
 				$xmlbuilder->addText($p, $_GET['err']);
 			}
 			$topicName = _('管理者作成');
-			if(CUser::getUserCount() > 0)
+			if(CUser::getTotalCount() > 0)
 			{
 				$topicName = _('サインアップ');
 				$p = $this->createForm($xmlbuilder, _('ログオン'), CConstants::STATE_USER_LOGON);

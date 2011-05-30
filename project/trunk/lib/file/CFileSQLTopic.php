@@ -3,9 +3,9 @@
 require_once('CFileCache.php');
 
 /**
- *	ユーザSQL用ファイル キャッシュ。
+ *	記事SQL用ファイル キャッシュ。
  */
-class CFileSQLUser
+class CFileSQLTopic
 	extends CFileCache
 {
 
@@ -21,7 +21,7 @@ class CFileSQLUser
 	{
 		if(self::$instance == null)
 		{
-			self::$instance = new CFileSQLUser();
+			self::$instance = new CFileSQLTopic();
 		}
 		return self::$instance;
 	}
@@ -31,7 +31,7 @@ class CFileSQLUser
 	 */
 	protected function __construct()
 	{
-		parent::__construct(NUE_ROOT . '/sql/user');
+		parent::__construct(NUE_ROOT . '/sql/topic');
 	}
 
 	/**

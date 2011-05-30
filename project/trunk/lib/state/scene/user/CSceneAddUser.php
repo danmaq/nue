@@ -77,12 +77,12 @@ class CSceneAddUser
 			{
 				$entity->startSession();
 				$user = new CUser($this->id);
-				if(CUser::getUserCount() > 0 && $user->rollback())
+				if(CUser::getTotalCount() > 0 && $user->rollback())
 				{
 					throw new Exception(_('存在するユーザIDは受理不可。'));
 				}
 				$body =& $user->getEntity()->storage();
-				$body['root'] = CUser::getUserCount() == 0;
+				$body['root'] = CUser::getTotalCount() == 0;
 				$body['name'] = $this->id;
 				if($user->commit())
 				{

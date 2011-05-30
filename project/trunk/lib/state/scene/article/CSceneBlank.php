@@ -64,7 +64,7 @@ class CSceneBlank
 		if($entity->getNextState() === null)
 		{
 			$nextState = CEmptyState::getInstance();
-			if(CUser::getUserCount() == 0)
+			if(CUser::getTotalCount() == 0)
 			{
 				// 初回表示へ
 				$nextState = CSceneHello::getInstance();
