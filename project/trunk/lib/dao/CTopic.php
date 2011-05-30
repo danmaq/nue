@@ -4,9 +4,9 @@ require_once('CDataIndex.php');
 require_once(NUE_LIB_ROOT . '/file/CFileSQLUser.php');
 
 /**
- *	ユーザDAOクラス。
+ *	トピックDAOクラス。
  */
-class CUser
+class CTopic
 	extends CDataIndex
 	implements Serializable
 {
