@@ -31,7 +31,7 @@ class CUser
 	 *
 	 *	@return integer ユーザ数。
 	 */
-	public static function getUserCount()
+	public static function getTotalCount()
 	{
 		if(self::$users < 0)
 		{
@@ -51,7 +51,7 @@ class CUser
 	public function __construct($id = '')
 	{
 		parent::__construct(self::$format);
-		self::getUserCount();
+		self::getTotalCount();
 		$this->id = $id;
 	}
 	
@@ -77,7 +77,11 @@ class CUser
 		if(!$result)
 		{
 			$result = $db->execute(
-				CFileSQLUser::getInstance()->delete, array('id' => $this->getID()));
+				CFileSQLUser::getInstance()->delete, array('id' => $id));
+			if($result)
+			{
+				self::$users--;
+			}
 		}
 		return $result;
 	}
@@ -116,7 +120,7 @@ class CUser
 		{
 			$db = CDBManager::getInstance();
 			$body = $db->execAndFetch(CFileSQLUser::getInstance()->selectFromId,
-				array('id' => $this->getID()));
+				array('id' => $id));
 			$result = count($body) > 0;
 			if($result)
 			{
