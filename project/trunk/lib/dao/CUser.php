@@ -144,8 +144,8 @@ class CUser
 	 */
 	public function unserialize($serialized)
 	{
-		$eid = '';
-		list($this->id, $eid) = unserialize($serialized);
+		list($id, $eid) = unserialize($serialized);
+		self::__construct($id);
 		$this->createEntity($eid);
 	}
 }
