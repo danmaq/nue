@@ -76,11 +76,26 @@ class CUser
 		$result = $id === '';	// IDなしはゲスト扱い
 		if(!$result)
 		{
-			$result = $db->execute(
-				CFileSQLUser::getInstance()->delete, array('id' => $id));
-			if($result)
+			$db = CDBManager::getInstance();
+			$pdo = $db->getPDO();
+			try
 			{
-				self::$users--;
+				$result = $db->execute(CFileSQLUser::getInstance()->delete,
+					array('id' => $id)) && $this->getEntity()->delete();
+				if($result)
+				{
+					self::$users--;
+				}
+				else
+				{
+					throw new Exception(_('DB書き込みに失敗'));
+				}
+				$pdo->commit();
+			}
+			catch(Exception $e)
+			{
+				error_log($e);
+				$pdo->rollback();
 			}
 		}
 		return $result;
@@ -98,10 +113,23 @@ class CUser
 		if(!$result)
 		{
 			$entity = $this->getEntity();
-			if($entity->commit())
+			$db = CDBManager::getInstance();
+			$pdo = $db->getPDO();
+			try
 			{
-				$result = CDBManager::getInstance()->execute(CFileSQLUser::getInstance()->insert,
-					array('id' => $id, 'entity_id' => $entity->getID()));
+				$pdo->beginTransaction();
+				$result = $entity->commit() && $db->execute(CFileSQLUser::getInstance()->insert,
+						array('id' => $id, 'entity_id' => $entity->getID()));
+				if(!$result)
+				{
+					throw new Exception(_('DB書き込みに失敗'));
+				}
+				$pdo->commit();
+			}
+			catch(Exception $e)
+			{
+				error_log($e);
+				$pdo->rollback();
 			}
 		}
 		return $result;
