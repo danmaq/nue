@@ -115,9 +115,23 @@ class CDataEntity
 	 *
 	 *	@return CDataEntity 実体オブジェクト。
 	 */
-	public function &getEntity()
+	public function getEntity()
 	{
 		return $this;
+	}
+
+	/**
+	 *	データベースに保存されているかどうかを取得します。
+	 *
+	 *	注意: この関数は、コミットされているかどうかを保証するものではありません。
+	 *
+	 *	@return boolean 保存されている場合、true。
+	 */
+	public function isExists()
+	{
+		self::initializeTable();
+		return CDBManager::getInstance()->singleFetch(CFileSQLEntity::getInstance()->selectExists,
+			'EXIST', array('id' => $this->getID()));
 	}
 
 	/**
@@ -139,20 +153,13 @@ class CDataEntity
 	 */
 	public function commit($overwrite = true)
 	{
-		$result = false;
 		self::initializeTable();
+		$id = $this->getID();
 		$db = CDBManager::getInstance();
-		$tempEntity = new CDataEntity($this->format, $this->getID());
-		$params = array('id' => $this->getID(), 'body' => serialize($this->storage()));
-		if($tempEntity->rollBack() && $overwrite)
-		{
-			$result = $db->execute(CFileSQLEntity::getInstance()->update, $params);
-		}
-		else
-		{
-			$result = $db->execute(CFileSQLEntity::getInstance()->insert, $params);
-		}
-		return $result;
+		$fcache = CFileSQLEntity::getInstance();
+		return $db->execute(
+			$overwrite && $this->isExists() ? $fcache->update : $fcache->insert,
+			array('id' => $id, 'body' => serialize($this->storage())));
 	}
 
 	/**
