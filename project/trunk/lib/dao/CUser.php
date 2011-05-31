@@ -117,6 +117,7 @@ class CUser
 			$pdo = $db->getPDO();
 			try
 			{
+				// FIXME : あれ？これUpdate想定してなくね？
 				$pdo->beginTransaction();
 				$result = $entity->commit() && $db->execute(CFileSQLUser::getInstance()->insert,
 						array('id' => $id, 'entity_id' => $entity->getID()));

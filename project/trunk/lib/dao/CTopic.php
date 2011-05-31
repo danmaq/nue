@@ -22,9 +22,6 @@ class CTopic
 	/**	記事数。 */
 	private static $topics = -1;
 
-	/**	記事ID。 */
-	private $id;
-
 	/**
 	 *	記事数を取得します。
 	 *
@@ -75,9 +72,8 @@ class CTopic
 	public function __construct($id = null)
 	{
 		// IDなしはテンポラリ扱い
-		parent::__construct(self::$format);
+		parent::__construct(self::$format, $id);
 		self::getTotalCount();
-		$this->id = $id;
 	}
 	
 	/**
@@ -87,7 +83,7 @@ class CTopic
 	 */
 	public function getID()
 	{
-		return $this->id;
+		return $this->getEntity()->getID();
 	}
 
 	/**
@@ -134,10 +130,23 @@ class CTopic
 	public function commit()
 	{
 		$entity = $this->getEntity();
-		if($entity->commit())
+		$db = CDBManager::getInstance();
+		$pdo = $db->getPDO();
+		try
 		{
-			$result = CDBManager::getInstance()->execute(CFileSQLTopic::getInstance()->insert,
-				array('id' => $entity->getID()));
+			$pdo->beginTransaction();
+			$result = $entity->commit() && $db->execute(CFileSQLTopic::getInstance()->insert,
+					array('id' => $entity->getID()));
+			if(!$result)
+			{
+				throw new Exception(_('DB書き込みに失敗'));
+			}
+			$pdo->commit();
+		}
+		catch(Exception $e)
+		{
+			error_log($e);
+			$pdo->rollback();
 		}
 		return $result;
 	}
