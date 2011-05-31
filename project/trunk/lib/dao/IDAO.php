@@ -9,7 +9,7 @@ interface IDAO
 	/**
 	 *	IDを取得します。
 	 *
-	 *	@return string ID。
+	 *	@return mixed ID。
 	 */
 	function getID();
 
@@ -18,10 +18,21 @@ interface IDAO
 	 *
 	 *	@return CDataEntity 実体オブジェクト。
 	 */
-	function &getEntity();
+	function getEntity();
+
+	/**
+	 *	データベースに保存されているかどうかを取得します。
+	 *
+	 *	注意: この関数は、コミットされているかどうかを保証するものではありません。
+	 *
+	 *	@return boolean 保存されている場合、true。
+	 */
+	function isExists();
 
 	/**
 	 *	削除します。
+	 *
+	 *	@return boolean 削除に成功した場合、true。
 	 */
 	function delete();
 

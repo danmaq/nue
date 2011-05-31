@@ -13,7 +13,7 @@ class CTopic
 	/**	実体のメンバとデフォルト値一覧。 */
 	private static $format = array(
 		'visible' => true,
-		'date' => time(),
+		'date' => 0,
 		'created_user' => '',
 		'caption' => '',
 		'description' => '',
@@ -34,9 +34,10 @@ class CTopic
 		if(self::$topics < 0)
 		{
 			CDataEntity::initializeTable();
+			$fcache = CFileSQLTopic::getInstance();
 			$db = CDBManager::getInstance();
-			$db->execute(CFileSQLTopic::getInstance()->ddl);
-			self::$users = $db->singleFetch(CFileSQLTopic::getInstance()->selectCount, 'COUNT');
+			$db->execute($fcache->ddl);
+			self::$topics = $db->singleFetch($fcache->selectCount, 'COUNT');
 		}
 		return self::$topics;
 	}
@@ -87,6 +88,20 @@ class CTopic
 	}
 
 	/**
+	 *	データベースに保存されているかどうかを取得します。
+	 *
+	 *	注意: この関数は、コミットされているかどうかを保証するものではありません。
+	 *
+	 *	@return boolean 保存されている場合、true。
+	 */
+	public function isExists()
+	{
+		return self::getTotalCount() > 0 &&
+			CDBManager::getInstance()->singleFetch(CFileSQLTopic::getInstance()->selectExists,
+			'EXIST', array('id' => $this->getID()));
+	}
+
+	/**
 	 *	削除します。
 	 *
 	 *	@return boolean 削除に成功した場合、true。
@@ -101,17 +116,15 @@ class CTopic
 			$pdo = $db->getPDO();
 			try
 			{
+				self::getTotalCount();
 				$result = $db->execute(CFileSQLTopic::getInstance()->delete,
 					array('id' => $id)) && $this->getEntity()->delete();
-				if($result)
-				{
-					self::$topics--;
-				}
-				else
+				if(!$result)
 				{
 					throw new Exception(_('DB書き込みに失敗'));
 				}
 				$pdo->commit();
+				self::$topics--;
 			}
 			catch(Exception $e)
 			{
@@ -135,13 +148,14 @@ class CTopic
 		try
 		{
 			$pdo->beginTransaction();
-			$result = $entity->commit() && $db->execute(CFileSQLTopic::getInstance()->insert,
-					array('id' => $entity->getID()));
+			$result = $entity->commit() && ($this->isExists() || $db->execute(
+				CFileSQLTopic::getInstance()->insert, array('id' => $entity->getID())));
 			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));
 			}
 			$pdo->commit();
+			self::$topics++;
 		}
 		catch(Exception $e)
 		{
@@ -163,9 +177,8 @@ class CTopic
 		if($id !== null)	// IDなしはテンポラリ扱い
 		{
 			$db = CDBManager::getInstance();
-			$body = $db->execAndFetch(CFileSQLTopic::getInstance()->selectFromId,
-				array('id' => $id));
-			$result = count($body) > 0;
+			$result = count(
+				$db->execAndFetch(CFileSQLTopic::getInstance()->select, array('id' => $id))) > 0;
 			if($result)
 			{
 				$entity = $this->createEntity($id);

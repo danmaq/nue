@@ -36,9 +36,10 @@ class CUser
 		if(self::$users < 0)
 		{
 			CDataEntity::initializeTable();
+			$fcache = CFileSQLUser::getInstance();
 			$db = CDBManager::getInstance();
-			$db->execute(CFileSQLUser::getInstance()->ddl);
-			self::$users = $db->singleFetch(CFileSQLUser::getInstance()->selectCount, 'COUNT');
+			$db->execute($fcache->ddl);
+			self::$users = $db->singleFetch($fcache->selectCount, 'COUNT');
 		}
 		return self::$users;
 	}
@@ -66,6 +67,20 @@ class CUser
 	}
 
 	/**
+	 *	データベースに保存されているかどうかを取得します。
+	 *
+	 *	注意: この関数は、コミットされているかどうかを保証するものではありません。
+	 *
+	 *	@return boolean 保存されている場合、true。
+	 */
+	public function isExists()
+	{
+		return self::getTotalCount() > 0 &&
+			CDBManager::getInstance()->singleFetch(CFileSQLUser::getInstance()->selectExists,
+			'EXIST', array('id' => $this->getID()));
+	}
+
+	/**
 	 *	削除します。
 	 *
 	 *	@return boolean 削除に成功した場合、true。
@@ -80,17 +95,15 @@ class CUser
 			$pdo = $db->getPDO();
 			try
 			{
+				self::getTotalCount();
 				$result = $db->execute(CFileSQLUser::getInstance()->delete,
-					array('id' => $id)) && $this->getEntity()->delete();
-				if($result)
-				{
-					self::$users--;
-				}
-				else
+					array('id' => $id)) && parent::delete();
+				if(!$result)
 				{
 					throw new Exception(_('DB書き込みに失敗'));
 				}
 				$pdo->commit();
+				self::$users--;
 			}
 			catch(Exception $e)
 			{
@@ -112,20 +125,22 @@ class CUser
 		$result = $id === '';	// IDなしはゲスト扱い
 		if(!$result)
 		{
+			self::getTotalCount();
 			$entity = $this->getEntity();
 			$db = CDBManager::getInstance();
 			$pdo = $db->getPDO();
 			try
 			{
-				// FIXME : あれ？これUpdate想定してなくね？
 				$pdo->beginTransaction();
-				$result = $entity->commit() && $db->execute(CFileSQLUser::getInstance()->insert,
-						array('id' => $id, 'entity_id' => $entity->getID()));
+				$result = $entity->commit() && ($this->isExists() || $db->execute(
+					CFileSQLUser::getInstance()->insert,
+					array('id' => $id, 'entity_id' => $entity->getID())));
 				if(!$result)
 				{
 					throw new Exception(_('DB書き込みに失敗'));
 				}
 				$pdo->commit();
+				self::$users++;
 			}
 			catch(Exception $e)
 			{
@@ -148,8 +163,7 @@ class CUser
 		if(!$result)
 		{
 			$db = CDBManager::getInstance();
-			$body = $db->execAndFetch(CFileSQLUser::getInstance()->selectFromId,
-				array('id' => $id));
+			$body = $db->execAndFetch(CFileSQLUser::getInstance()->select, array('id' => $id));
 			$result = count($body) > 0;
 			if($result)
 			{

@@ -3,7 +3,7 @@
 require_once('CDataEntity.php');
 
 /**
- *	ユーザDAOクラス。
+ *	各種インデックスDAOの基底クラス。
  */
 abstract class CDataIndex
 	implements IDAO
@@ -31,9 +31,19 @@ abstract class CDataIndex
 	 *
 	 *	@return CDataEntity 実体オブジェクト。
 	 */
-	public function &getEntity()
+	public function getEntity()
 	{
 		return $this->entity;
+	}
+
+	/**
+	 *	削除します。
+	 *
+	 *	@return boolean 削除に成功した場合、true。
+	 */
+	public function delete()
+	{
+		return getEntity()->delete();
 	}
 
 	/**
