@@ -12,6 +12,9 @@ class CTopic
 
 	/**	実体のメンバとデフォルト値一覧。 */
 	private static $format = array(
+		'visible' => true,
+		'date' => time(),
+		'created_user' => '',
 		'caption' => '',
 		'description' => '',
 	);
@@ -39,6 +42,29 @@ class CTopic
 			self::$users = $db->singleFetch(CFileSQLTopic::getInstance()->selectCount, 'COUNT');
 		}
 		return self::$topics;
+	}
+
+	/**
+	 *	記事数を全件取得します。
+	 *
+	 *	@return integer 記事数。
+	 */
+	public static function getAll()
+	{
+		$result = array();
+		if(self::getTotalCount() > 0)
+		{
+			$all = $db->execAndFetch(CFileSQLTopic::getInstance()->selectAll);
+			foreach($all as $item)
+			{
+				$topics = new CTopic($item['ID']);
+				if($topics->rollback())
+				{
+					array_push($result, topics);
+				}
+			}
+		}
+		return $result;
 	}
 
 	/**
@@ -75,11 +101,26 @@ class CTopic
 		$result = false;	// IDなしはテンポラリ扱い
 		if($id !== null)
 		{
-			$result = $db->execute(
-				CFileSQLTopic::getInstance()->delete, array('id' => $id));
-			if($result)
+			$db = CDBManager::getInstance();
+			$pdo = $db->getPDO();
+			try
 			{
-				self::$topics--;
+				$result = $db->execute(CFileSQLTopic::getInstance()->delete,
+					array('id' => $id)) && $this->getEntity()->delete();
+				if($result)
+				{
+					self::$topics--;
+				}
+				else
+				{
+					throw new Exception(_('DB書き込みに失敗'));
+				}
+				$pdo->commit();
+			}
+			catch(Exception $e)
+			{
+				error_log($e);
+				$pdo->rollback();
 			}
 		}
 		return $result;

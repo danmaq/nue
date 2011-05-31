@@ -1,6 +1,7 @@
 <?php
 
 require_once(NUE_CONSTANTS);
+require_once(NUE_LIB_ROOT . '/dao/CTopic.php');
 require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
 require_once('CSceneBlank.php');
 
@@ -54,8 +55,12 @@ class CSceneView
 		if($entity->connectDatabase())
 		{
 			$nextState = CEmptyState::getInstance();
-			if(false)	// TODO : 指定カテゴリのページを取得する
+
+			// TODO : 現在は全記事数を取得しているだけ。
+			// 指定カテゴリのページを取得する
+			if(CTopic::getTotalCount() > 0)
 			{
+				$topics = CTopics::getAll();
 				// TODO : ページ表示
 			}
 			else	// なければ新規記事作成へ遷移
