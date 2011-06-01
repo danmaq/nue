@@ -20,6 +20,7 @@ class CNUE
 	 */
 	public static function run()
 	{
+		date_default_timezone_set('Asia/Tokyo');
 		$scene = new CScene(CSceneParseQuery::getInstance());
 		$emptyState = CEmptyState::getInstance();
 		do

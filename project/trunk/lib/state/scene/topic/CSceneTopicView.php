@@ -90,7 +90,11 @@ class CSceneTopicView
 				$xmlbuilder->addText($p, $body['description']);
 				$t = $xmlbuilder->createTopic(_('この記事について'));
 				$p = $xmlbuilder->createParagraph($t);
-				$xmlbuilder->addText($p, _('投稿日') . $topic->getEntity()->getUpdated());
+				$xmlbuilder->addText(
+					$p, _('投稿日: ') . date('Y/m/d H:i', $topic->getEntity()->getUpdated()));
+				$p = $xmlbuilder->createParagraph($t);
+				$xmlbuilder->addText(
+					$p, _('投稿者: ') . 'anonymous');
 				if($user !== null)
 				{
 					$body =& $user->getEntity()->storage();
