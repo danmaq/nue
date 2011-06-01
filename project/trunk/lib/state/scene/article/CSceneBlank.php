@@ -64,7 +64,8 @@ class CSceneBlank
 	{
 		if($entity->getNextState() === null)
 		{
-			$nextState = CEmptyState::getInstance();
+			$emptyState = CEmptyState::getInstance();
+			$nextState = $emptyState;
 			if(CUser::getTotalCount() == 0)
 			{
 				// 初回表示へ
@@ -73,13 +74,16 @@ class CSceneBlank
 			else
 			{
 				$user = $this->user;
-				$body =& $user->getEntity()->storage();
-				if($body['root'])
+				if($user !== null)
 				{
-					// 投稿フォームへ
-					$nextState = CSceneNew::getInstance();
+					$body =& $user->getEntity()->storage();
+					if($body['root'])
+					{
+						// 投稿フォームへ
+						$nextState = CSceneNew::getInstance();
+					}
 				}
-				else
+				if($nextState === $emptyState)
 				{
 					$xmlbuilder = new CDocumentBuilder();
 					$xmlbuilder->createUserLogonInfo($user);
