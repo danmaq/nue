@@ -50,8 +50,11 @@
 	<xsl:template match="user">
 		<p>
 			<xsl:choose>
-				<xsl:when test="@id">
+				<xsl:when test="@id and @name">
 					<a href="./?f=core/user/pref"><xsl:value-of select="@name" /> さん</a> | <a href="./?f=core/user/logoff">ログオフ</a>
+				</xsl:when>
+				<xsl:when test="not(@id) and @name">
+					<xsl:value-of select="@name" /> さん
 				</xsl:when>
 				<xsl:otherwise>
 					ゲストさん | <a href="./?f=core/user/new">ログオン / サインアップ</a>

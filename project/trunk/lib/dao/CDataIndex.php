@@ -60,6 +60,16 @@ abstract class CDataIndex
 		}
 		$this->entity = $entity;
 	}
+
+	/**
+	 *	記憶領域を取得します。
+	 *
+	 *	@return mixed 記憶領域。
+	 */
+	protected function &storage()
+	{
+		return $this->getEntity()->storage();
+	}
 }
 
 ?>

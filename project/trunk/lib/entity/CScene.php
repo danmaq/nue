@@ -2,6 +2,7 @@
 
 require_once(NUE_CONSTANTS);
 require_once('CEntity.php');
+require_once(NUE_LIB_ROOT . '/dao/CUser.php');
 require_once(NUE_LIB_ROOT . '/state/scene/error/CSceneSimpleError.php');
 require_once(NUE_LIB_ROOT . '/state/scene/error/CSceneDBFailed.php');
 
@@ -86,14 +87,19 @@ class CScene
 	/**
 	 *	セッションに保存されたユーザ情報を取得します。
 	 *
+	 *	@param IState $stateOnFailed 失敗時の状態。
 	 *	@return CUser ユーザ情報。
 	 */
-	public function getUser()
+	public function getUser(IState $stateOnFailed = null)
 	{
 		$result = false;
 		if(isset($_SESSION['user']))
 		{
 			$result = $_SESSION['user'];
+		}
+		else
+		{
+			setNextState($stateOnFailed);
 		}
 		return $result;
 	}

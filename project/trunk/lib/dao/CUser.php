@@ -55,7 +55,7 @@ class CUser
 		self::getTotalCount();
 		$this->id = $id;
 	}
-	
+
 	/**
 	 *	ユーザIDを取得します。
 	 *

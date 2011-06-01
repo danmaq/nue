@@ -1,16 +1,12 @@
 <?php
 
 require_once(NUE_CONSTANTS);
-require_once(NUE_LIB_ROOT . '/db/CDBManager.php');
-require_once(NUE_LIB_ROOT . '/dao/CUser.php');
-require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
-require_once(NUE_LIB_ROOT . '/state/scene/initialize/CSceneHello.php');
-require_once('CSceneNew.php');
+require_once('CSceneBlank.php');
 
 /**
- *	ブランクな記事表示のシーンです。
+ *	記事を作成するシーンです。
  */
-class CSceneBlank
+class CSceneNew
 	implements IState
 {
 
@@ -29,7 +25,7 @@ class CSceneBlank
 	{
 		if(self::$instance == null)
 		{
-			self::$instance = new CSceneBlank();
+			self::$instance = new CSceneNew();
 		}
 		return self::$instance;
 	}
@@ -51,7 +47,14 @@ class CSceneBlank
 		if($entity->connectDatabase())
 		{
 			$entity->startSession();
-			$this->user = $entity->getUser();
+			$sceneBlank = CSceneBlank::getInstance();
+			$user = $entity->getUser($sceneBlank);
+			$body =& $user->getEntity()->storage();
+			if(!$body["root"])
+			{
+				$entity->setNextState($sceneBlank);
+			}
+			$this->user = $user;
 		}
 	}
 
@@ -64,28 +67,18 @@ class CSceneBlank
 	{
 		if($entity->getNextState() === null)
 		{
-			$nextState = CEmptyState::getInstance();
-			if(CUser::getTotalCount() == 0)
-			{
-				// 初回表示へ
-				$nextState = CSceneHello::getInstance();
-			}
-			else
-			{
-				$user = $this->user;
-				$xmlbuilder = new CDocumentBuilder();
-				$xmlbuilder->createUserLogonInfo($user);
-				if(false)
-				{
-					$entity->setNextState(CSceneNew::getInstance());
-				}
-				else
-				{
-					$xmlbuilder->createSimpleMessage(_('ERROR'), _('記事がありません。'));
-				}
-				$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
-			}
-			$entity->setNextState($nextState);
+			$xmlbuilder = new CDocumentBuilder();
+			$xmlbuilder->createUserLogonInfo($this->user, false);
+			$topic = $xmlbuilder->createTopic(_('記事の新規作成'));
+			$form = $xmlbuilder->createForm($topic, './');
+
+			$p = $xmlbuilder->createParagraph($form);
+			$xmlbuilder->createTextInput($p, 'text', 'caption',
+				'', _('タイトル'), 1, 255, false);
+			$xmlbuilder->createTextArea($p, 'description',
+				_('記事内容'));
+			$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
+			$entity->dispose();
 		}
 	}
 
