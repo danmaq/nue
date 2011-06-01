@@ -78,6 +78,9 @@ class CSceneView
 					$topic = $xmlbuilder->createTopic($body['caption']);
 					$p = $xmlbuilder->createParagraph($topic);
 					$xmlbuilder->addText($p, $body['description']);
+					$p = $xmlbuilder->createParagraph($topic);
+					$xmlbuilder->createHTMLElement($p, 'a',
+						array('href' => '?' . $item->getID()), _('記事詳細'));
 				}
 				if($user !== null)
 				{
