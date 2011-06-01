@@ -3,20 +3,23 @@
 require_once(NUE_CONSTANTS);
 require_once(NUE_LIB_ROOT . '/dao/CTopic.php');
 require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
-require_once('CSceneBlank.php');
+require_once(NUE_LIB_ROOT . '/state/scene/article/CSceneView.php');
 
 /**
  *	記事表示のシーンです。
  */
-class CSceneView
+class CSceneTopicView
 	implements IState
 {
 
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
 
-	/**	ユーザ オブジェクト。 */
+	/**	ユーザDAOオブジェクト。 */
 	private $user = null;
+
+	/**	記事DAOオブジェクト。 */
+	private $topic = null;
 
 	/**
 	 *	この状態のオブジェクトを取得します。
@@ -27,7 +30,7 @@ class CSceneView
 	{
 		if(self::$instance == null)
 		{
-			self::$instance = new CSceneView();
+			self::$instance = new CSceneTopicView();
 		}
 		return self::$instance;
 	}
@@ -50,6 +53,14 @@ class CSceneView
 		{
 			$entity->startSession();
 			$this->user = $entity->getUser();
+			if(isset($_GET['id']))
+			{
+				$topic = new CTopic($_GET['id']);
+				if($topic->rollback())
+				{
+					$this->topic = $topic;
+				}
+			}
 		}
 	}
 
@@ -63,41 +74,40 @@ class CSceneView
 		if($entity->getNextState() === null)
 		{
 			$nextState = CEmptyState::getInstance();
-
-			// TODO : 現在は全記事数を取得しているだけ。
-			// 指定カテゴリのページを取得する
-			if(CTopic::getTotalCount() > 0)
+			if($this->topic === null)
+			{
+				$nextState = CSceneView::getInstance();
+			}
+			else
 			{
 				$user = $this->user;
-				$topics = CTopic::getAll();
-				$xmlbuilder = new CDocumentBuilder(_('ARTICLES'));
+				$topic = $this->topic;
+				$body =& $topic->getEntity()->storage();
+				$xmlbuilder = new CDocumentBuilder(_('TOPIC'));
 				$xmlbuilder->createUserLogonInfo($user);
-				foreach($topics as $item)
-				{
-					$body =& $item->getEntity()->storage();
-					$topic = $xmlbuilder->createTopic($body['caption']);
-					$xmlbuilder->createAttribute($topic, 'id', $item->getID());
-					$p = $xmlbuilder->createParagraph($topic);
-					$xmlbuilder->addText($p, $body['description']);
-					$p = $xmlbuilder->createParagraph($topic);
-				}
+				$t = $xmlbuilder->createTopic($body['caption']);
+				$p = $xmlbuilder->createParagraph($t);
+				$xmlbuilder->addText($p, $body['description']);
+				$t = $xmlbuilder->createTopic(_('この記事について'));
+				$p = $xmlbuilder->createParagraph($t);
+				$xmlbuilder->addText($p, _('投稿日') . $topic->getEntity()->getUpdated());
 				if($user !== null)
 				{
 					$body =& $user->getEntity()->storage();
 					if($body['root'])
 					{
-						$topic = $xmlbuilder->createTopic(_('管理'));
-						$p = $xmlbuilder->createParagraph($topic);
+						$t = $xmlbuilder->createTopic(_('管理'));
+						$p = $xmlbuilder->createParagraph($t);
 						$xmlbuilder->createHTMLElement($p, 'a',
-							array('href' => '?f=core/article/topic/new'),
-							_('記事作成'));
+							array('href' => '?f=core/article/topic/new&amp;id=' . $topic->getID()),
+							_('記事編集'));
+						$xmlbuilder->addText($p, ' | ');
+						$xmlbuilder->createHTMLElement($p, 'a',
+							array('href' => '?f=core/article/topic/remove&amp;id=' . $topic->getID()),
+							_('記事削除'));
 					}
 				}
 				$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
-			}
-			else	// なければ新規記事作成へ遷移
-			{
-				$nextState = CSceneBlank::getInstance();
 			}
 			$entity->setNextState($nextState);
 		}

@@ -108,7 +108,7 @@ class CSceneLogonUser
 			if($this->errors !== null)
 			{
 				$query = array(
-					'f' => CConstants::STATE_USER_NEW,
+					'f' => 'core/user/new',
 					'id' => $this->id,
 					'err' => $this->errors);
 			}

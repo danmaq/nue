@@ -139,7 +139,7 @@ class CSceneModUser
 			else
 			{
 				$query = array(
-					'f' => CConstants::STATE_USER_PREF,
+					'f' => 'core/user/pref',
 					'name' => $this->name,
 					'err' => $this->errors);
 			}

@@ -65,11 +65,11 @@ class CSceneNewUser
 			if(CUser::getTotalCount() > 0)
 			{
 				$topicName = _('サインアップ');
-				$p = $this->createForm($xmlbuilder, _('ログオン'), CConstants::STATE_USER_LOGON);
+				$p = $this->createForm($xmlbuilder, _('ログオン'), 'core/user/logon');
 				$xmlbuilder->createTextInput(
 					$p, 'password', 'pwd', '', _('パスワード(半角英数字)'), 4, 255);
 			}
-			$this->createForm($xmlbuilder, $topicName, CConstants::STATE_USER_ADD);
+			$this->createForm($xmlbuilder, $topicName, 'core/user/add');
 			$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
 			$entity->dispose();
 		}

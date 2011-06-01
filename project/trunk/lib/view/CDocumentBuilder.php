@@ -142,7 +142,7 @@ class CDocumentBuilder
 		
 		$xslt = new XSLTProcessor();
 		$xsl = new DOMDocument();
-		$xsl->load(sprintf('%s/skin/%s/%s', CConstants::$ROOT_DIR, CConfigure::SKINSET, $xslpath));
+		$xsl->load(sprintf('%s/skin/%s/%s', NUE_ROOT, CConfigure::SKINSET, $xslpath));
 		$xslt->importStyleSheet($xsl);
 		return $xslt->transformToXML($this->getDOM());
 	}

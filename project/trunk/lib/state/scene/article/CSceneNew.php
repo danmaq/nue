@@ -77,14 +77,14 @@ class CSceneNew
 
 			$p = $xmlbuilder->createParagraph($form);
 			$xmlbuilder->createTextInput($p, 'text', 'caption',
-				'', _('タイトル'), 1, 255, false);
+				isset($_GET['caption']) ? $_GET['caption'] : '', _('タイトル'), 1, 255, false);
 			$xmlbuilder->createTextArea($p, 'description',
-				_('記事内容'));
+				_('記事内容'), isset($_GET['description']) ? $_GET['description'] : ' ');
 			$p = $xmlbuilder->createParagraph($form);
 			$xmlbuilder->createHTMLElement($p, 'input', array(
 				'type' => 'hidden',
 				'name' => 'f',
-				'value' => CConstants::STATE_ARTICLE_POST));
+				'value' => 'core/article/topic/post'));
 			$xmlbuilder->createHTMLElement($p, 'input', array(
 				'type' => 'submit',
 				'value' => _('投稿')));
