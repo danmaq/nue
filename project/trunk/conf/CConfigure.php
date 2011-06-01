@@ -24,8 +24,9 @@ class CConfigure
 
 	/**
 	 *	カテゴリを指定しなかった場合に表示される、既定のカテゴリです。
+	 *	現在のバージョンでは設定しても何も起きません。
 	 */
-	const DEFAULT_CATEGORY = 'diary';
+	const DEFAULT_TAG = '';
 
 	/**
 	 *	使用するスキンを設定します。

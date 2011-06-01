@@ -13,6 +13,9 @@ class CScene
 	extends CEntity
 {
 
+	/**	現在セッション中かどうか。 */
+	private static $inSession = false;
+
 	/**
 	 *	コンストラクタ。
 	 *
@@ -53,16 +56,26 @@ class CScene
 	 */
 	public function startSession($name = CConstants::SESSION_CORE)
 	{
-		try
+		if(!self::$inSession)
 		{
-			session_name($name);
-			session_start();
+			self::$inSession = true;
+			try
+			{
+				session_name($name);
+				session_start();
+			}
+			catch(Exception $e)
+			{
+				error_log($e);
+				unset($_SESSION['user']);
+			}
 		}
-		catch(Exception $e)
-		{
-			error_log($e);
-			unset($_SESSION['user']);
-		}
+	}
+
+	public function endSession()
+	{
+		session_write_close();
+		self::$inSession = false;
 	}
 
 	/**
@@ -92,14 +105,14 @@ class CScene
 	 */
 	public function getUser(IState $stateOnFailed = null)
 	{
-		$result = false;
-		if(isset($_SESSION['user']))
+		$result = null;
+		if(isset($_SESSION['user']) && $_SESSION['user'] instanceof CUser)
 		{
 			$result = $_SESSION['user'];
 		}
 		else
 		{
-			setNextState($stateOnFailed);
+			$this->setNextState($stateOnFailed);
 		}
 		return $result;
 	}

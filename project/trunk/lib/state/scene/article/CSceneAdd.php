@@ -1,6 +1,8 @@
 <?php
 
 require_once(NUE_CONSTANTS);
+require_once(NUE_LIB_ROOT . '/dao/CTopic.php');
+require_once(NUE_LIB_ROOT . '/view/CRedirector.php');
 require_once('CSceneNew.php');
 
 /**
@@ -75,9 +77,18 @@ class CSceneAdd
 				{
 					throw new Exception(_('件名は1～255バイト以内。'));
 				}
-				if(strlen($_POST['description']) < 1)
+				if(strlen($_POST['description']) <= 2)
 				{
 					throw new Exception(_('本文なしは受理不可。'));
+				}
+				$topic = new CTopic();
+				$body =& $topic->getEntity()->storage();
+				$body['caption'] = htmlspecialchars($_POST['caption'], ENT_COMPAT, 'UTF-8');
+				$body['description'] = htmlspecialchars($_POST['description'], ENT_COMPAT, 'UTF-8');
+				$body['created_user'] = $user->getEntity()->getID();
+				if(!$topic->commit())
+				{
+					throw new Exception(_('予期しない投稿の失敗。'));
 				}
 			}
 		}
@@ -104,8 +115,8 @@ class CSceneAdd
 			else
 			{
 				$query = array(
-					'f' => CConstants::STATE_USER_PREF,
-					'name' => $this->name,
+					'caption' => $_POST['caption'],
+					'description' => $_POST['description'],
 					'err' => $this->errors);
 			}
 			CRedirector::seeOther($query);

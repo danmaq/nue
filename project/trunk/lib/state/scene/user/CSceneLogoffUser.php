@@ -49,7 +49,7 @@ class CSceneLogoffUser
 		$entity->connectDatabase();
 		$entity->startSession();
 		$entity->setUser(null);
-		session_write_close();
+		$entity->endSession();
 	}
 
 	/**

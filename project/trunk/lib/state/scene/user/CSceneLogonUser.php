@@ -86,7 +86,7 @@ class CSceneLogonUser
 				}
 				$entity->startSession();
 				$entity->setUser($user);
-				session_write_close();
+				$entity->endSession();
 			}
 		}
 		catch(Exception $e)
