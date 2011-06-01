@@ -88,7 +88,7 @@ class CSceneAddUser
 				{
 					$entity->setUser($user);
 				}
-				session_write_close();
+				$entity->endSession();
 			}
 		}
 		catch(Exception $e)

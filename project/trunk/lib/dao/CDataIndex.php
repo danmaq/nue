@@ -19,11 +19,12 @@ abstract class CDataIndex
 	 *	コンストラクタ。
 	 *
 	 *	@param array $format 記憶領域のフォーマット。
+	 *	@param string $id 実体ID。規定値はnull。
 	 */
-	public function __construct(array $format)
+	public function __construct(array $format, $id = null)
 	{
 		$this->format = $format;
-		$this->entity = new CDataEntity($format);
+		$this->entity = new CDataEntity($format, $id);
 	}
 
 	/**

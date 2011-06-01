@@ -73,17 +73,19 @@ class CSceneBlank
 			else
 			{
 				$user = $this->user;
-				$xmlbuilder = new CDocumentBuilder();
-				$xmlbuilder->createUserLogonInfo($user);
-				if(false)
+				$body =& $user->getEntity()->storage();
+				if($body['root'])
 				{
-					$entity->setNextState(CSceneNew::getInstance());
+					// 投稿フォームへ
+					$nextState = CSceneNew::getInstance();
 				}
 				else
 				{
+					$xmlbuilder = new CDocumentBuilder();
+					$xmlbuilder->createUserLogonInfo($user);
 					$xmlbuilder->createSimpleMessage(_('ERROR'), _('記事がありません。'));
+					$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
 				}
-				$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
 			}
 			$entity->setNextState($nextState);
 		}

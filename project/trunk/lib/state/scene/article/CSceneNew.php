@@ -49,10 +49,13 @@ class CSceneNew
 			$entity->startSession();
 			$sceneBlank = CSceneBlank::getInstance();
 			$user = $entity->getUser($sceneBlank);
-			$body =& $user->getEntity()->storage();
-			if(!$body["root"])
+			if($user !== null)
 			{
-				$entity->setNextState($sceneBlank);
+				$body =& $user->getEntity()->storage();
+				if(!$body["root"])
+				{
+					$entity->setNextState($sceneBlank);
+				}
 			}
 			$this->user = $user;
 		}
@@ -67,7 +70,7 @@ class CSceneNew
 	{
 		if($entity->getNextState() === null)
 		{
-			$xmlbuilder = new CDocumentBuilder();
+			$xmlbuilder = new CDocumentBuilder(_('POST'));
 			$xmlbuilder->createUserLogonInfo($this->user, false);
 			$topic = $xmlbuilder->createTopic(_('記事の新規作成'));
 			$form = $xmlbuilder->createForm($topic, './');
@@ -77,6 +80,19 @@ class CSceneNew
 				'', _('タイトル'), 1, 255, false);
 			$xmlbuilder->createTextArea($p, 'description',
 				_('記事内容'));
+			$p = $xmlbuilder->createParagraph($form);
+			$xmlbuilder->createHTMLElement($p, 'input', array(
+				'type' => 'hidden',
+				'name' => 'f',
+				'value' => CConstants::STATE_ARTICLE_POST));
+			$xmlbuilder->createHTMLElement($p, 'input', array(
+				'type' => 'submit',
+				'value' => _('投稿')));
+			if(isset($_GET['err']))
+			{
+				$p = $xmlbuilder->createParagraph($form, _('エラー'));
+				$xmlbuilder->addText($p, $_GET['err']);
+			}
 			$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
 			$entity->dispose();
 		}

@@ -41,7 +41,7 @@ class CSceneParseQuery
 	 */
 	public function setup(CEntity $entity)
 	{
-		$this->setQueryIfNotExists('cat', CConfigure::DEFAULT_CATEGORY);
+		$this->setQueryIfNotExists('cat', CConfigure::DEFAULT_TAG);
 		$this->setQueryIfNotExists('from', 0);
 		$this->setQueryIfNotExists('to', 100);
 		foreach(array_keys($_GET) as $item)

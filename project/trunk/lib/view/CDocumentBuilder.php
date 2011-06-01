@@ -1,6 +1,7 @@
 <?php
 
 require_once(NUE_CONSTANTS);
+require_once(NUE_LIB_ROOT . '/dao/CUser.php');
 
 /**
  *	ドキュメントを生成するクラス。
@@ -160,7 +161,7 @@ class CDocumentBuilder
 		{
 			$body =& $user->getEntity()->storage();
 			$result = $this->getDOM()->createElement('user');
-			if(!$enableLogoff)
+			if($enableLogoff)
 			{
 				$this->createAttribute($result, 'id', $user->getID());
 			}

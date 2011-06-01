@@ -12,9 +12,7 @@ class CTopic
 
 	/**	実体のメンバとデフォルト値一覧。 */
 	private static $format = array(
-		'visible' => true,
-		'date' => 0,
-		'created_user' => '',
+		'created_user' => '',	// 実体IDを格納する
 		'caption' => '',
 		'description' => '',
 	);
@@ -52,13 +50,13 @@ class CTopic
 		$result = array();
 		if(self::getTotalCount() > 0)
 		{
-			$all = $db->execAndFetch(CFileSQLTopic::getInstance()->selectAll);
+			$all = CDBManager::getInstance()->execAndFetch(CFileSQLTopic::getInstance()->selectAll);
 			foreach($all as $item)
 			{
-				$topics = new CTopic($item['ID']);
-				if($topics->rollback())
+				$topic = new CTopic($item['ID']);
+				if($topic->rollback())
 				{
-					array_push($result, topics);
+					array_push($result, $topic);
 				}
 			}
 		}
@@ -68,7 +66,7 @@ class CTopic
 	/**
 	 *	コンストラクタ。
 	 *
-	 *	@param string $id ユーザID。規定値は空文字(ゲスト扱い)。
+	 *	@param string $id 記事ID。規定値はnull。
 	 */
 	public function __construct($id = null)
 	{
@@ -177,8 +175,7 @@ class CTopic
 		if($id !== null)	// IDなしはテンポラリ扱い
 		{
 			$db = CDBManager::getInstance();
-			$result = count(
-				$db->execAndFetch(CFileSQLTopic::getInstance()->select, array('id' => $id))) > 0;
+			$result = $this->isExists();
 			if($result)
 			{
 				$entity = $this->createEntity($id);

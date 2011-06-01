@@ -14,7 +14,7 @@ class CConstants
 {
 
 	/** バージョン情報。 */
-	const VERSION = '0.0.29';
+	const VERSION = '0.0.30';
 
 	/** セッション名。 */
 	const SESSION_CORE = 'NUE_Core';
@@ -33,6 +33,12 @@ class CConstants
 
 	/** ユーザ設定変更状態。 */
 	const STATE_USER_PREF = 'core/user/pref';
+
+	/** 記事投稿確定状態。 */
+	const STATE_ARTICLE_POST = 'core/article/post';
+
+	/** 記事投稿状態。 */
+	const STATE_ARTICLE_NEW = 'core/article/new';
 
 	/** ブログ表示状態。 */
 	const STATE_ARTICLE_VIEW = 'core/article/view';
