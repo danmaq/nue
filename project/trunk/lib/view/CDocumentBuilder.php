@@ -149,17 +149,21 @@ class CDocumentBuilder
 	/**
 	 *	ユーザ情報を作成します。
 	 *
+	 *	@param CUser $user ユーザDAOオブジェクト。
+	 *	@param boolean $enableLogoff ログオフ可能かどうか。
 	 *	@return DOMElement ユーザ情報 オブジェクト。
 	 */
-	public function createUserLogonInfo()
+	public function createUserLogonInfo(CUser $user = null, $enableLogoff = true)
 	{
 		$result = $this->getDOM()->createElement('user');
-		if(isset($_SESSION['user']))
+		if($user !== null)
 		{
-			$user = $_SESSION['user'];
 			$body =& $user->getEntity()->storage();
 			$result = $this->getDOM()->createElement('user');
-			$this->createAttribute($result, 'id', $user->getID());
+			if(!$enableLogoff)
+			{
+				$this->createAttribute($result, 'id', $user->getID());
+			}
 			$this->createAttribute($result, 'name', $body['name']);
 		}
 		$this->getRootElement()->appendChild($result);
@@ -326,7 +330,6 @@ class CDocumentBuilder
 	/**
 	 *	1行入力ボックスを作成します。
 	 *
-	 *	@param CDocumentBuilder $xml ドキュメント生成クラス。
 	 *	@param DOMNode $parent 所属させるノード。
 	 *	@param string $type 入力タイプ。
 	 *	@param string $id キーとなる文字列。
@@ -339,7 +342,8 @@ class CDocumentBuilder
 	 *	@return DOMElement input要素オブジェクト。
 	 */
 	public function createTextInput(
-		DOMNode $parent, $type, $id, $value, $label, $min = 0, $max = 255, $ascii = true, $enabled = true)
+		DOMNode $parent, $type, $id, $value, $label, $min = 0, $max = 255,
+		$ascii = true, $enabled = true)
 	{
 		$this->createHTMLElement($parent, 'label', array('for' => $id),
 			$label);
@@ -359,6 +363,26 @@ class CDocumentBuilder
 			$this->createAttribute($result, 'disabled', 'disabled');
 			$this->createAttribute($result, 'readonly', 'readonly');
 		}
+		$this->createHTMLElement($parent, 'br');
+		return $result;
+	}
+
+	/**
+	 *	複数行入力ボックスを作成します。
+	 *
+	 *	@param DOMNode $parent 所属させるノード。
+	 *	@param string $id キーとなる文字列。
+	 *	@param string $label ラベル。
+	 *	@return DOMElement textarea要素オブジェクト。
+	 */
+	public function createTextArea(DOMNode $parent, $id, $label)
+	{
+		$this->createHTMLElement($parent, 'label', array('for' => $id),
+			$label);
+		$result = $this->createHTMLElement($parent, 'textarea', array(
+			'id' => $id, 'name' => $id,
+			'placeholder' => $label);
+		$this->addText($result, ' ');
 		$this->createHTMLElement($parent, 'br');
 		return $result;
 	}

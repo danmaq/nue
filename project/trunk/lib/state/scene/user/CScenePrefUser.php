@@ -3,7 +3,7 @@
 require_once(NUE_CONSTANTS);
 require_once(NUE_LIB_ROOT . '/dao/CUser.php');
 require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
-require_once(NUE_LIB_ROOT . '/state/IState.php');
+require_once(NUE_LIB_ROOT . '/state/scene/article/CSceneBlank.php');
 
 /**
  *	ユーザ情報を編集するシーンです。
@@ -49,11 +49,7 @@ class CScenePrefUser
 		if($entity->connectDatabase())
 		{
 			$entity->startSession();
-			$this->user = $entity->getUser();
-			if($this->user === null)
-			{
-				die('!!!LOGOUTED!!!');
-			}
+			$this->user = $entity->getUser(CSceneBlank::getInstance());
 		}
 	}
 
@@ -69,6 +65,7 @@ class CScenePrefUser
 			$user = $this->user;
 			$body =& $user->getEntity()->storage();
 			$xmlbuilder = new CDocumentBuilder(_('SETUP'));
+			$xmlbuilder->createUserLogonInfo($user, false);
 			$topic = $xmlbuilder->createTopic(_('ユーザ情報変更'));
 			$form = $xmlbuilder->createForm($topic, './');
 
