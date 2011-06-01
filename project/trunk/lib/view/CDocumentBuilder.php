@@ -333,7 +333,7 @@ class CDocumentBuilder
 	 *	@param DOMNode $parent 所属させるノード。
 	 *	@param string $type 入力タイプ。
 	 *	@param string $id キーとなる文字列。
-	 *	@param string $value 値となる文字列。
+	 *	@param string $value 既定値となる文字列。
 	 *	@param string $label ラベル。
 	 *	@param integer $min 最小文字数。
 	 *	@param integer $max 最大文字数。
@@ -373,16 +373,16 @@ class CDocumentBuilder
 	 *	@param DOMNode $parent 所属させるノード。
 	 *	@param string $id キーとなる文字列。
 	 *	@param string $label ラベル。
+	 *	@param string $value 既定値となる文字列。
 	 *	@return DOMElement textarea要素オブジェクト。
 	 */
-	public function createTextArea(DOMNode $parent, $id, $label)
+	public function createTextArea(DOMNode $parent, $id, $label, $value = ' ')
 	{
 		$this->createHTMLElement($parent, 'label', array('for' => $id),
 			$label);
 		$result = $this->createHTMLElement($parent, 'textarea', array(
-			'id' => $id, 'name' => $id,
-			'placeholder' => $label);
-		$this->addText($result, ' ');
+			'id' => $id, 'name' => $id, 'placeholder' => $label));
+		$this->addText($result, $value);
 		$this->createHTMLElement($parent, 'br');
 		return $result;
 	}
