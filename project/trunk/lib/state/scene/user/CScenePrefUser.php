@@ -92,7 +92,7 @@ class CScenePrefUser
 			$xmlbuilder->createHTMLElement($p, 'input', array(
 				'type' => 'hidden',
 				'name' => 'f',
-				'value' => CConstants::STATE_USER_MOD));
+				'value' => 'core/user/mod'));
 			$xmlbuilder->createHTMLElement($p, 'input', array(
 				'type' => 'submit',
 				'value' => _('登録')));

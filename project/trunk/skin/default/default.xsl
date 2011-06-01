@@ -51,10 +51,10 @@
 		<p>
 			<xsl:choose>
 				<xsl:when test="@id and @name">
-					<a href="./?f=core/user/pref"><xsl:value-of select="@name" /> さん</a> | <a href="./?f=core/user/logoff">ログオフ</a>
+					<a href="?f=core/user/pref"><xsl:value-of select="@name" /> さん</a> | <a href="?f=core/user/logoff">ログオフ</a>
 				</xsl:when>
 				<xsl:when test="not(@id) and @name"><xsl:value-of select="@name" /> さん</xsl:when>
-				<xsl:otherwise>ゲストさん | <a href="./?f=core/user/new">ログオン / サインアップ</a></xsl:otherwise>
+				<xsl:otherwise>ゲストさん | <a href="?f=core/user/new">ログオン / サインアップ</a></xsl:otherwise>
 			</xsl:choose>
 		</p>
 	</xsl:template>
@@ -62,7 +62,14 @@
 	<!-- トピック。 -->
 	<xsl:template match="topic">
 		<section>
-			<h2><xsl:value-of select="@title" /></h2>
+			<h2>
+				<xsl:choose>
+					<xsl:when test="@id">
+						<a href="?{@id}"><xsl:value-of select="@title" /></a>
+					</xsl:when>
+					<xsl:otherwise><xsl:value-of select="@title" /></xsl:otherwise>
+				</xsl:choose>
+			</h2>
 			<article>
 				<xsl:apply-templates select="p|form" />
 			</article>

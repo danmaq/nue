@@ -28,6 +28,7 @@
 			<xsd:attribute name="title" type="xsd:string" use="required" />
 			<xsd:element ref="p" />
 			<xsd:element ref="form" />
+			<xsd:element ref="id" />
 		</xsd:sequence>
 	</xsd:complexType>
 	<xsd:complexType name="form">

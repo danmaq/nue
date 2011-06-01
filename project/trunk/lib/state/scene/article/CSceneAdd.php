@@ -115,6 +115,7 @@ class CSceneAdd
 			else
 			{
 				$query = array(
+					'f' => 'core/article/topic/new',
 					'caption' => $_POST['caption'],
 					'description' => $_POST['description'],
 					'err' => $this->errors);

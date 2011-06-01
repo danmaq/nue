@@ -57,7 +57,7 @@ class CSceneHello
 		$xmlbuilder->addText($p,
 			_('開始前にCookieが有効になっていることを確認してください。そうでない場合、途中で先に進めなくなる場合があります。'));
 		$xmlbuilder->createHTMLElement($p, 'br');
-		$xmlbuilder->createHTMLElement($p, 'a', array('href' => './?f=' . CConstants::STATE_USER_NEW),
+		$xmlbuilder->createHTMLElement($p, 'a', array('href' => '?f=core/user/new'),
 			_('このリンクからスタートします。'));
 		$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
 		$entity->dispose();
