@@ -5,7 +5,7 @@ require_once(NUE_LIB_ROOT . '/db/CDBManager.php');
 require_once(NUE_LIB_ROOT . '/dao/CUser.php');
 require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
 require_once(NUE_LIB_ROOT . '/state/scene/initialize/CSceneHello.php');
-require_once('CSceneNew.php');
+require_once(NUE_LIB_ROOT . '/state/scene/topic/CSceneTopicNew.php');
 
 /**
  *	ブランクな記事表示のシーンです。
@@ -80,7 +80,7 @@ class CSceneBlank
 					if($body['root'])
 					{
 						// 投稿フォームへ
-						$nextState = CSceneNew::getInstance();
+						$nextState = CSceneTopicNew::getInstance();
 					}
 				}
 				if($nextState === $emptyState)

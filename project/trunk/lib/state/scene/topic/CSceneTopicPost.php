@@ -3,12 +3,12 @@
 require_once(NUE_CONSTANTS);
 require_once(NUE_LIB_ROOT . '/dao/CTopic.php');
 require_once(NUE_LIB_ROOT . '/view/CRedirector.php');
-require_once('CSceneNew.php');
+require_once('CSceneTopicNew.php');
 
 /**
  *	記事を追加するシーンです。
  */
-class CSceneAdd
+class CSceneTopicPost
 	implements IState
 {
 
@@ -33,7 +33,7 @@ class CSceneAdd
 	{
 		if(self::$instance == null)
 		{
-			self::$instance = new CSceneAdd();
+			self::$instance = new CSceneTopicPost();
 		}
 		return self::$instance;
 	}
