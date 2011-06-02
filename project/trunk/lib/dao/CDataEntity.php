@@ -44,7 +44,7 @@ class CDataEntity
 	 *	@param array $format 記憶領域のフォーマット。
 	 *	@param string $id 実体ID(GUID)。
 	 */
-	public function __construct(array $format, $id = null)
+	public function __construct(array $format = array(), $id = null)
 	{
 		if($id === null)
 		{

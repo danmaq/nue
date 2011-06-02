@@ -1,12 +1,12 @@
 <?php
 
 require_once(NUE_CONSTANTS);
-require_once('CSceneBlank.php');
+require_once(NUE_LIB_ROOT . '/state/scene/article/CSceneBlank.php');
 
 /**
  *	記事を作成するシーンです。
  */
-class CSceneNew
+class CSceneTopicNew
 	implements IState
 {
 
@@ -25,7 +25,7 @@ class CSceneNew
 	{
 		if(self::$instance == null)
 		{
-			self::$instance = new CSceneNew();
+			self::$instance = new CSceneTopicNew();
 		}
 		return self::$instance;
 	}

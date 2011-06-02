@@ -1,7 +1,7 @@
 <?php
 
-require_once(NUE_LIB_ROOT . '/state/scene/article/CSceneAdd.php');
+require_once(NUE_LIB_ROOT . '/state/scene/topic/CSceneTopicPost.php');
 
-$nextState = CSceneAdd::getInstance();
+$nextState = CSceneTopicPost::getInstance();
 
 ?>

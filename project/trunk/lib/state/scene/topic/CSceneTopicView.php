@@ -21,6 +21,9 @@ class CSceneTopicView
 	/**	記事DAOオブジェクト。 */
 	private $topic = null;
 
+	/**	投稿者名。 */
+	private $author;
+
 	/**
 	 *	この状態のオブジェクトを取得します。
 	 *
@@ -40,6 +43,7 @@ class CSceneTopicView
 	 */
 	private function __construct()
 	{
+		$this->author = _('名無しさん');
 	}
 
 	/**
@@ -58,6 +62,13 @@ class CSceneTopicView
 				$topic = new CTopic($_GET['id']);
 				if($topic->rollback())
 				{
+					$body =& $topic->getEntity()->storage();
+					$author = new CDataEntity(array(), $body['created_user']);
+					if($author->rollback())
+					{
+						$body =& $author->storage();
+						$this->author = $body['name'];
+					}
 					$this->topic = $topic;
 				}
 			}
@@ -93,8 +104,9 @@ class CSceneTopicView
 				$xmlbuilder->addText(
 					$p, _('投稿日: ') . date('Y/m/d H:i', $topic->getEntity()->getUpdated()));
 				$p = $xmlbuilder->createParagraph($t);
+				
 				$xmlbuilder->addText(
-					$p, _('投稿者: ') . 'anonymous');
+					$p, _('投稿者: ') . $this->author);
 				if($user !== null)
 				{
 					$body =& $user->getEntity()->storage();
