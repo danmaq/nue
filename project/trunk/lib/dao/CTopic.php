@@ -115,6 +115,7 @@ class CTopic
 			try
 			{
 				self::getTotalCount();
+				$pdo->beginTransaction();
 				$result = $db->execute(CFileSQLTopic::getInstance()->delete,
 					array('id' => $id)) && $this->getEntity()->delete();
 				if(!$result)

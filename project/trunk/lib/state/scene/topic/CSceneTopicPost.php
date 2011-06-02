@@ -24,6 +24,9 @@ class CSceneTopicPost
 	/**	エラー表示。 */
 	private $errors = null;
 
+	/**	記事DAOオブジェクト。 */
+	private $topic = null;
+
 	/**
 	 *	この状態のオブジェクトを取得します。
 	 *
@@ -102,6 +105,7 @@ class CSceneTopicPost
 				{
 					throw new Exception(_('予期しない投稿の失敗。'));
 				}
+				$this->topic = $topic;
 			}
 		}
 		catch(Exception $e)
@@ -122,7 +126,16 @@ class CSceneTopicPost
 			$query = array();
 			if($this->errors === null)
 			{
-				$query = array();
+				if($this->topic === null)
+				{
+					$query = array();
+				}
+				else
+				{
+					$query = array(
+						'f' => 'core/article/topic/view',
+						'id' => $this->topic->getID());
+				}
 			}
 			else
 			{

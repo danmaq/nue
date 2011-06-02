@@ -106,7 +106,7 @@ class CSceneTopicNew
 
 			$p = $xmlbuilder->createParagraph($form);
 			$xmlbuilder->createTextInput($p, 'text', 'caption',
-				$this>caption, _('タイトル'), 1, 255, false);
+				$this->caption, _('タイトル'), 1, 255, false);
 			$xmlbuilder->createTextArea($p, 'description',
 				_('記事内容'), $this->description);
 			$p = $xmlbuilder->createParagraph($form);
@@ -124,11 +124,6 @@ class CSceneTopicNew
 			$xmlbuilder->createHTMLElement($p, 'input', array(
 				'type' => 'submit',
 				'value' => _('投稿')));
-			if(isset($_GET['err']))
-			{
-				$p = $xmlbuilder->createParagraph($form, _('エラー'));
-				$xmlbuilder->addText($p, $_GET['err']);
-			}
 			$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
 			$entity->dispose();
 		}

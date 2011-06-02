@@ -96,11 +96,6 @@ class CScenePrefUser
 			$xmlbuilder->createHTMLElement($p, 'input', array(
 				'type' => 'submit',
 				'value' => _('登録')));
-			if(isset($_GET['err']))
-			{
-				$p = $xmlbuilder->createParagraph($form, _('エラー'));
-				$xmlbuilder->addText($p, $_GET['err']);
-			}
 			$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
 			$entity->dispose();
 		}
