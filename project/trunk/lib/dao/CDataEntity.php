@@ -142,7 +142,8 @@ class CDataEntity
 	public function delete()
 	{
 		self::initializeTable();
-		return $db->execute(CFileSQLEntity::getInstance()->delete, array('id' => $this->getID()));
+		return CDBManager::getInstance()->execute(
+			CFileSQLEntity::getInstance()->delete, array('id' => $this->getID()));
 	}
 
 	/**

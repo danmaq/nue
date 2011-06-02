@@ -2,8 +2,8 @@
 
 require_once(NUE_CONSTANTS);
 require_once(NUE_LIB_ROOT . '/dao/CTopic.php');
-require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
 require_once(NUE_LIB_ROOT . '/view/CRedirector.php');
+require_once('CSceneTopicView.php');
 
 /**
  *	記事を削除するシーンです。
@@ -15,11 +15,8 @@ class CSceneTopicRemove
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
 
-	/**	既定の値一覧。 */
-	private $format = array(
-		'caption' => '',
-		'description' => '',
-	);
+	/**	記事ID。 */
+	private $id = null;
 
 	/**	エラー表示。 */
 	private $errors = null;
@@ -54,10 +51,6 @@ class CSceneTopicRemove
 	{
 		try
 		{
-			if($_SERVER['REQUEST_METHOD'] !== 'POST')
-			{
-				throw new Exception(_('POSTメソッド以外は受理不可。'));
-			}
 			if($entity->connectDatabase())
 			{
 				$entity->startSession();
@@ -66,25 +59,20 @@ class CSceneTopicRemove
 				{
 					throw new Exception(_('ログインしていないため受理不可。'));
 				}
-				$_POST += $this->format;
 				$body =& $user->getEntity()->storage();
 				if(!$body['root'])
 				{
-					throw new Exception(_('管理者以外は投稿不可。'));
+					throw new Exception(_('管理者以外からの削除は受理不可。'));
 				}
-				$len = strlen($_POST['caption']);
-				if($len < 1 || $len > 255)
+				if(!isset($_GET['id']))
 				{
-					throw new Exception(_('件名は1～255バイト以内。'));
+					throw new Exception(_('対象不明の削除は受理不可。'));
 				}
-				if(strlen($_POST['description']) <= 2)
-				{
-					throw new Exception(_('本文なしは受理不可。'));
-				}
+				$this->id = $_GET['id'];
 				$topic = null;
-				if(isset($_POST['id']))
+				if(isset($_GET['id']))
 				{
-					$topic = new CTopic($_POST['id']);
+					$topic = new CTopic($_GET['id']);
 					if(!$topic->rollback())
 					{
 						$topic = null;
@@ -92,15 +80,11 @@ class CSceneTopicRemove
 				}
 				if($topic === null)
 				{
-					$topic = new CTopic();
+					throw new Exception(_('対象IDの記事が見つかりません。'));
 				}
-				$body =& $topic->getEntity()->storage();
-				$body['caption'] = htmlspecialchars($_POST['caption'], ENT_COMPAT, 'UTF-8');
-				$body['description'] = htmlspecialchars($_POST['description'], ENT_COMPAT, 'UTF-8');
-				$body['created_user'] = $user->getEntity()->getID();
-				if(!$topic->commit())
+				if(!$topic->delete())
 				{
-					throw new Exception(_('予期しない投稿の失敗。'));
+					throw new Exception(_('予期しない削除の失敗。'));
 				}
 			}
 		}
@@ -120,16 +104,15 @@ class CSceneTopicRemove
 		if($entity->getNextState() === null)
 		{
 			$query = array();
-			if($this->errors === null)
+			if($this->errors === null || $this->id === null)
 			{
 				$query = array();
 			}
 			else
 			{
 				$query = array(
-					'f' => 'core/article/topic/new',
-					'caption' => $_POST['caption'],
-					'description' => $_POST['description'],
+					'f' => 'core/article/topic/view',
+					'id' => $this->id,
 					'err' => $this->errors);
 			}
 			CRedirector::seeOther($query);

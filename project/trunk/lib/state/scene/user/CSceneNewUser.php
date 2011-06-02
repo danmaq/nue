@@ -55,12 +55,6 @@ class CSceneNewUser
 		if($entity->connectDatabase())
 		{
 			$xmlbuilder = new CDocumentBuilder(_('SETUP'));
-			if(isset($_GET['err']))
-			{
-				$topic = $xmlbuilder->createTopic(_('エラー'));
-				$p = $xmlbuilder->createParagraph($topic);
-				$xmlbuilder->addText($p, $_GET['err']);
-			}
 			$topicName = _('管理者作成');
 			if(CUser::getTotalCount() > 0)
 			{

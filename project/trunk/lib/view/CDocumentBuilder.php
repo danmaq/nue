@@ -109,6 +109,12 @@ class CDocumentBuilder
 	 */
 	public function output($xslpath)
 	{
+		if(isset($_GET['err']))
+		{
+			$topic = $this->createTopic(_('エラー'));
+			$p = $this->createParagraph($topic);
+			$this->addText($p, $_GET['err']);
+		}
 		ob_start("ob_gzhandler");
 		if(self::DEBUG_OUTPUT_RAW_XML)
 		{
