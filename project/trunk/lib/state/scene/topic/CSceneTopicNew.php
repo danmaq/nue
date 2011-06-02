@@ -1,6 +1,7 @@
 <?php
 
 require_once(NUE_CONSTANTS);
+require_once(NUE_LIB_ROOT . '/dao/CTopic.php');
 require_once(NUE_LIB_ROOT . '/state/scene/article/CSceneBlank.php');
 
 /**
@@ -13,8 +14,17 @@ class CSceneTopicNew
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
 
-	/**	ユーザ オブジェクト。 */
+	/**	ユーザDAOオブジェクト。 */
 	private $user = null;
+
+	/**	記事ID。 */
+	private $id = null;
+
+	/**	表題。 */
+	private $caption = '';
+
+	/**	内容。 */
+	private $description = ' ';
 
 	/**
 	 *	この状態のオブジェクトを取得します。
@@ -51,13 +61,32 @@ class CSceneTopicNew
 			$user = $entity->getUser($sceneBlank);
 			if($user !== null)
 			{
+				$this->user = $user;
 				$body =& $user->getEntity()->storage();
 				if(!$body["root"])
 				{
 					$entity->setNextState($sceneBlank);
 				}
+				if(isset($_GET['id']))
+				{
+					$topic = new CTopic($_GET['id']);
+					if($topic->rollback())
+					{
+						$body =& $topic->getEntity()->storage();
+						$this->id = $_GET['id'];
+						$this->caption = $body['caption'];
+						$this->description = $body['description'];
+					}
+				}
+				if(isset($_GET['caption']))
+				{
+					$this->caption = $_GET['caption'];
+				}
+				if(isset($_GET['description']))
+				{
+					$this->description = $_GET['description'];
+				}
 			}
-			$this->user = $user;
 		}
 	}
 
@@ -77,10 +106,17 @@ class CSceneTopicNew
 
 			$p = $xmlbuilder->createParagraph($form);
 			$xmlbuilder->createTextInput($p, 'text', 'caption',
-				isset($_GET['caption']) ? $_GET['caption'] : '', _('タイトル'), 1, 255, false);
+				$this>caption, _('タイトル'), 1, 255, false);
 			$xmlbuilder->createTextArea($p, 'description',
-				_('記事内容'), isset($_GET['description']) ? $_GET['description'] : ' ');
+				_('記事内容'), $this->description);
 			$p = $xmlbuilder->createParagraph($form);
+			if($this->id !== null)
+			{
+				$xmlbuilder->createHTMLElement($p, 'input', array(
+					'type' => 'hidden',
+					'name' => 'id',
+					'value' => $this->id));
+			}
 			$xmlbuilder->createHTMLElement($p, 'input', array(
 				'type' => 'hidden',
 				'name' => 'f',
