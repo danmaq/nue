@@ -74,10 +74,10 @@ class CSceneView
 				$xmlbuilder->createUserLogonInfo($user);
 				foreach($topics as $item)
 				{
-					$entity = $item->getEntity();
-					$body =& $entity->storage();
+					$e = $item->getEntity();
+					$body =& $e->storage();
 					$topic = $xmlbuilder->createTopic(
-						date('[Y/m/d]', $entity->getUpdated()) . $body['caption']);
+						date('[Y/m/d]', $e->getUpdated()) . $body['caption']);
 					$xmlbuilder->createAttribute($topic, 'id', $item->getID());
 					$p = $xmlbuilder->createParagraph($topic);
 					$xmlbuilder->addText($p, $body['description']);

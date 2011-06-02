@@ -2,13 +2,13 @@
 
 require_once(NUE_CONSTANTS);
 require_once(NUE_LIB_ROOT . '/dao/CTopic.php');
+require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
 require_once(NUE_LIB_ROOT . '/view/CRedirector.php');
-require_once('CSceneTopicNew.php');
 
 /**
- *	記事を追加するシーンです。
+ *	記事を削除するシーンです。
  */
-class CSceneTopicPost
+class CSceneTopicRemove
 	implements IState
 {
 
@@ -33,7 +33,7 @@ class CSceneTopicPost
 	{
 		if(self::$instance == null)
 		{
-			self::$instance = new CSceneTopicPost();
+			self::$instance = new CSceneTopicRemove();
 		}
 		return self::$instance;
 	}
