@@ -98,6 +98,8 @@ class CSceneTopicPost
 					$topic = new CTopic();
 				}
 				$body =& $topic->getEntity()->storage();
+				// TODO : 特殊文字対応
+				// TODO : HTML対応
 				$body['caption'] = htmlspecialchars($_POST['caption'], ENT_COMPAT, 'UTF-8');
 				$body['description'] = htmlspecialchars($_POST['description'], ENT_COMPAT, 'UTF-8');
 				$body['created_user'] = $user->getEntity()->getID();
