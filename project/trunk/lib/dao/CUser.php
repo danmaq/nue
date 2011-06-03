@@ -96,6 +96,7 @@ class CUser
 			try
 			{
 				self::getTotalCount();
+				$pdo->beginTransaction();
 				$result = $db->execute(CFileSQLUser::getInstance()->delete,
 					array('id' => $id)) && parent::delete();
 				if(!$result)
@@ -107,7 +108,7 @@ class CUser
 			}
 			catch(Exception $e)
 			{
-				error_log($e);
+				error_log($e->toString());
 				$pdo->rollback();
 			}
 		}

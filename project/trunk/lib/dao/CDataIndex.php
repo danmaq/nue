@@ -44,7 +44,7 @@ abstract class CDataIndex
 	 */
 	public function delete()
 	{
-		return getEntity()->delete();
+		return $this->getEntity()->delete();
 	}
 
 	/**
