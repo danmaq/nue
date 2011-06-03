@@ -117,7 +117,7 @@ class CTopic
 				self::getTotalCount();
 				$pdo->beginTransaction();
 				$result = $db->execute(CFileSQLTopic::getInstance()->delete,
-					array('id' => $id)) && $this->getEntity()->delete();
+					array('id' => $id)) && parent::delete();
 				if(!$result)
 				{
 					throw new Exception(_('DB書き込みに失敗'));
