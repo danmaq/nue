@@ -96,6 +96,23 @@ class CScenePrefUser
 			$xmlbuilder->createHTMLElement($p, 'input', array(
 				'type' => 'submit',
 				'value' => _('登録')));
+
+			$topic = $xmlbuilder->createTopic(_('アカウント削除'));
+			$form = $xmlbuilder->createForm($topic, './');
+
+			$p = $xmlbuilder->createParagraph($form);
+			$xmlbuilder->addText($p,
+				_('やっぱりアカウント作るのやめた、またはアカウントを削除する場合、下記のボタンを押してください。'));
+
+			$p = $xmlbuilder->createParagraph($form);
+			$xmlbuilder->createHTMLElement($p, 'input', array(
+				'type' => 'hidden',
+				'name' => 'f',
+				'value' => 'core/user/remove'));
+			$xmlbuilder->createHTMLElement($p, 'input', array(
+				'type' => 'submit',
+				'value' => _('このアカウントを削除します。')));
+
 			$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
 			$entity->dispose();
 		}
