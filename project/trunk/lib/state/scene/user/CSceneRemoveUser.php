@@ -60,6 +60,11 @@ class CSceneRemoveUser
 				{
 					throw new Exception(_('ログインしていないため受理不可。'));
 				}
+				$body =& $user->getEntity()->storage();
+				if($body['root'])
+				{
+					throw new Exception(_('管理者ユーザは削除不可。'));
+				}
 				if(!$user->delete())
 				{
 					throw new Exception(_('予期しない理由での削除失敗。'));

@@ -23,7 +23,10 @@
 				<meta name="application-name" content="Network Utterance Environment" />
 				<meta name="author" content="danmaq" />
 				<meta name="msapplication-navbutton-color" content="#BCC0DD" />
-				<title><xsl:value-of select="@title" /> - <xsl:value-of select="@site" /></title>
+				<title>
+					<xsl:if test="@title and string-length(@title) > 0"><xsl:value-of select="@title" /> - </xsl:if>
+					<xsl:value-of select="@site" />
+				</title>
 				<link href="./" rel="Start" />
 				<link href="./skin/default/default.css" rel="StyleSheet" />
 				<link href="http://twitter.com/danmaq" rel="Author" />

@@ -75,7 +75,7 @@ class CSceneTopicNew
 						$body =& $topic->getEntity()->storage();
 						$this->id = $_GET['id'];
 						$this->caption = $body['caption'];
-						$this->description = $body['description'];
+						$this->description = join("\n\n", $topic->getDescription());
 					}
 				}
 				if(isset($_GET['caption']))

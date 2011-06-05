@@ -39,6 +39,15 @@ class CDocumentBuilder
 	/**	XMLルートのタイトル属性。 */
 	private $title;
 
+	public static function createBody(DOMDocument $dom)
+	{
+		$body = $dom->createElement('body');
+		$body->setAttributeNS(self::URI_XMLNS , 'xmlns:' . self::NS_XHTML, self::URI_XHTML);
+		$body->setAttributeNS(self::URI_XMLNS , 'xmlns:' . self::NS_XSI, self::URI_XSI);
+		$dom->appendChild($body);
+		return $body;
+	}
+
 	/**
 	 *	コンストラクタ。
 	 *
@@ -47,18 +56,15 @@ class CDocumentBuilder
 	public function __construct($title = '')
 	{
 		$dom = new DOMDocument('1.0', 'UTF-8');
+		$body = self::createBody($dom);
 		$this->dom = $dom;
-		$body = $dom->createElement('body');
 		$title = $this->createAttribute($body, 'title', $title);
 		$this->createAttribute($body, 'site', CConfigure::SITE_NAME);
 		$this->createAttribute($body, 'ver', CConstants::VERSION);
 		$this->createAttribute($body, 'ua', $_SERVER['HTTP_USER_AGENT']);
+		$body->setAttributeNS(self::URI_XSI, self::NS_XSI . ':noNamespaceSchemaLocation', './skin/nue.xsd');
 		$this->body = $body;
 		$this->title = $title;
-		$dom->appendChild($body);
-		$body->setAttributeNS(self::URI_XMLNS , 'xmlns:' . self::NS_XHTML, self::URI_XHTML);
-		$body->setAttributeNS(self::URI_XMLNS , 'xmlns:' . self::NS_XSI, self::URI_XSI);
-		$body->setAttributeNS(self::URI_XSI, self::NS_XSI . ':noNamespaceSchemaLocation', './skin/nue.xsd');
 	}
 
 	/**
@@ -141,11 +147,10 @@ class CDocumentBuilder
 	 */
 	public function createHTML($xslpath)
 	{
-		if(self::$trace != null)
+		if(strlen(self::$trace) > 0)
 		{
 			$this->createCodeParagraph($this->createTopic(_('デバッグ用メッセージ')), self::$trace);
 		}
-		
 		$xslt = new XSLTProcessor();
 		$xsl = new DOMDocument();
 		$xsl->load(sprintf('%s/skin/%s/%s', NUE_ROOT, CConfigure::SKINSET, $xslpath));
@@ -313,9 +318,54 @@ class CDocumentBuilder
 	 */
 	public function addText(DOMNode $element, $text)
 	{
-		$result = $this->getDOM()->createTextNode($text);
+		$result = $this->getDOM()->createDocumentFragment();
+		$result->appendXML($text);
 		$element->appendChild($result);
 		return $result;
+	}
+
+	/**
+	 *	HTML風言語をパースします。
+	 *
+	 *	@param DOMNode $element 所属させる要素。
+	 *	@param string $expr 文字列。
+	 */
+	public function addHLML(DOMNode $element, $expr)
+	{
+		$dom = $this->getDOM();
+		$result = array();
+		if(preg_match('/^(.*?)\[\[\[([a-zA-Z_]+?):(.*?)\](.*?)\]\](.*)$/',
+			$expr, $elm, PREG_OFFSET_CAPTURE))
+		{
+			$this->addText($element, $elm[1][0]);
+			$tag = $elm[2][0];
+			$elm[3][0] = preg_replace('/\\\,/', "\1\x00", $elm[3][0]);
+			$attrs = preg_split('/\,/', $elm[3][0], -1, PREG_SPLIT_NO_EMPTY);
+			for($i = count($attrs); --$i >= 0; )
+			{
+				$attrs[$i] = preg_replace('/\x00/', ',', $attrs[$i]);
+				$attrs[$i] = preg_split('/=/', $attrs[$i], 2);
+			}
+			$inner = $elm[4][0];
+			$expr = substr($expr, $elm[5][1]);
+			$result = $element;
+			$target = $this->getHLMLPath($tag);
+			$exists = file_exists($target);
+			if($exists)
+			{
+				require_once($target);
+			}
+			if($exists && $result !== $element)
+			{
+				$element->appendChild($result);
+			}
+			$this->addHLML($result, $inner);
+			$this->addHLML($element, $expr);
+		}
+		elseif(strlen($expr) > 0)
+		{
+			$this->addText($element, $expr);
+		}
 	}
 
 	/**
@@ -388,9 +438,45 @@ class CDocumentBuilder
 		$this->createHTMLElement($parent, 'label', array('for' => $id),
 			$label);
 		$result = $this->createHTMLElement($parent, 'textarea', array(
-			'id' => $id, 'name' => $id, 'placeholder' => $label));
+			'id' => $id, 'name' => $id, 'placeholder' => $label,
+			'maxlength' => CDataEntity::SIZE, 'required' => 'required',
+			'cols' => 40, 'rows' => 5));
 		$this->addText($result, $value);
 		$this->createHTMLElement($parent, 'br');
+		return $result;
+	}
+
+	/**
+	 *	HLMLプラグインのパスを取得します。
+	 *
+	 *	@param string $tag クエリ文字列。
+	 *	@return string パス。
+	 */
+	private function getHLMLPath($tag)
+	{
+		return NUE_ROOT . preg_replace('/(\.|\/){2,}/', '\1', sprintf('/hlml/%s.php', $tag));
+	}
+
+	/**
+	 *	既定のHLML変換をします。
+	 *
+	 *	@param string $tag 要素名。
+	 *	@param array $attrs 要素一覧。[[key,value][key,value]...]
+	 *	@param array $allow 許容する要素一覧。(全許容する場合null、全禁止する場合空の配列)
+	 *	@return DOMElement 要素オブジェクト。
+	 */
+	private function simpleHMLMConvert($tag, array $attrs, array $allow = null)
+	{
+		$result = $this->getDOM()->createElementNS(
+			self::URI_XHTML, sprintf('%s:%s', self::NS_XHTML, $tag));
+		$allAllow = $allow === null;
+		foreach($attrs as $item)
+		{
+			if($allAllow || in_array($item[0], $allow))
+			{
+				$this->createAttribute($result, $item[0], $item[1]);
+			}
+		}
 		return $result;
 	}
 }
@@ -402,7 +488,7 @@ class CDocumentBuilder
  */
 function trace($body)
 {
-	CDocumentBuilder::$trace .= $body;
+	CDocumentBuilder::$trace .= "\n" . $body;
 }
 
 ?>

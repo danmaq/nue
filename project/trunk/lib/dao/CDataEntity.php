@@ -11,6 +11,9 @@ class CDataEntity
 	implements IDAO
 {
 
+	/**	書き込み可能な最大長。 */
+	const SIZE = 65535;
+
 	/**	テーブルが初期化済みかどうか。 */
 	private static $initialized = false;
 
@@ -158,6 +161,11 @@ class CDataEntity
 		$id = $this->getID();
 		$db = CDBManager::getInstance();
 		$fcache = CFileSQLEntity::getInstance();
+		$body = serialize($this->storage());
+		if(strlen($body) > self::SIZE)
+		{
+			throw new Exception(_('記憶領域の容量超過。'));
+		}
 		return $db->execute(
 			$overwrite && $this->isExists() ? $fcache->update : $fcache->insert,
 			array('id' => $id, 'body' => serialize($this->storage())));

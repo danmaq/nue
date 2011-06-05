@@ -77,15 +77,16 @@ class CSceneModUser
 				$_POST += $this->format;
 				$entity = $user->getEntity();
 				$body =& $entity->storage();
-				$len = strlen($_POST['name']);
+				$name = trim($_POST['name']);
+				$len = strlen($name);
 				if($len > 0)
 				{
 					if($len > 255)
 					{
 						throw new Exception(_('名前は1～255文字の範囲内以外受理不可。'));
 					}
-					$this->name = $_POST['name'];
-					$body['name'] = $_POST['name'];
+					$this->name = $name;
+					$body['name'] = $name;
 				}
 				if($_POST['pwd1'] !== $_POST['pwd2'])
 				{

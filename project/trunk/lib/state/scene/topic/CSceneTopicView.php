@@ -97,8 +97,11 @@ class CSceneTopicView
 				$xmlbuilder = new CDocumentBuilder(_('TOPIC'));
 				$xmlbuilder->createUserLogonInfo($user);
 				$t = $xmlbuilder->createTopic($body['caption']);
-				$p = $xmlbuilder->createParagraph($t);
-				$xmlbuilder->addText($p, $body['description']);
+				foreach($topic->getDescription() as $item)
+				{
+					$p = $xmlbuilder->createParagraph($t);
+					$xmlbuilder->addHLML($p, $item);
+				}
 				$t = $xmlbuilder->createTopic(_('この記事について'));
 				$p = $xmlbuilder->createParagraph($t);
 				$xmlbuilder->addText(
