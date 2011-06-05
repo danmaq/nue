@@ -1,0 +1,144 @@
+=====================================================================
+    NUE - Network Utterance Environment
+        Copyright (c)2011 danmaq All rights reserved.
+=====================================================================
+
+_____________________________________________________________________
+■目次
+
+・概要
+・制作の経緯
+・システム要件
+・セットアップ
+・アップグレード
+・アンインストール
+・FAQ
+・著作権情報
+・更新履歴
+
+_____________________________________________________________________
+■概要
+
+ウェブログ表示・管理システムです。
+XSL(XMLスタイルシート)を使って、自在にデザインやレイアウトを設定できます。
+
+_____________________________________________________________________
+■制作の経緯
+
+・XSLTでスキンを作れるブログが作りたかった
+・ウェブ開発が殆ど未経験に近いので勉強がてら
+
+_____________________________________________________________________
+■システム要件
+
+○サーバサイド
+PHP 5.1以降
+・PDO、DOM、XSL要対応
+MySQL 5.0以降 (将来的にはSQLiteにも対応予定)
+
+○クライアントサイド
+下記に対応したウェブブラウザ
+・HTTP 1.1
+・HTML5(XHTML5) ※
+・UTF-8/日本語表示
+※ スキンをカスタマイズすることで、その他のバージョンのXHTMLに対応することができます。
+
+_____________________________________________________________________
+■セットアップ
+
+1.このフォルダごとWeb領域に配置します。
+2.conf/CConfigure.phpを編集します。データベース情報を設定してください。
+3.index.phpにアクセスして、画面の指示に従い管理者ユーザを作成します。
+
+_____________________________________________________________________
+■アップグレード
+
+1.上書き配置します。
+2.conf/CConfigure.phpを編集しなおしてください。
+
+_____________________________________________________________________
+■アンインストール
+
+1.このフォルダ配下の全ファイルを削除します。
+2.データベースに接続して、NUE_INDEX_から始まる名前のすべてのテーブルを削除します。
+3.NUE_ENTITIESテーブルを削除します。
+
+_____________________________________________________________________
+■FAQ
+
+○削除は？編集は？退会は？
+次かその次のリリースで対応予定です。
+
+○管理者以外のアカウント所有者は何ができるの？
+独自の名前を設定して会員っぽい気分を味わえます。現在のバージョンでは
+それ以上のことは何もできません。退会および記事の削除・編集のサポート後に
+管理者以外のメンバーでもできることが増えていく予定です。
+
+○動作サンプルが見たい。
+http://danmaq.com/nue/ にございます。
+
+_____________________________________________________________________
+■著作権情報
+
+Copyright (c) 2011 danmaq All rights reserved.
+
+以下に定める条件に従い、本ソフトウェアおよび関連文書のファイ
+ル（以下「ソフトウェア」）の複製を取得するすべての人に対し、
+ソフトウェアを無制限に扱うことを無償で許可します。これには、
+ソフトウェアの複製を使用、複写、変更、結合、掲載、頒布、サブ
+ライセンス、および／または販売する権利、およびソフトウェアを
+提供する相手に同じことを許可する権利も無制限に含まれます。 
+
+上記の著作権表示および本許諾表示を、ソフトウェアの
+すべての複製または重要な部分に記載するものとします。 
+
+ソフトウェアは「現状のまま」で、明示であるか暗黙であるかを問わず、
+何らの保証もなく提供されます。ここでいう保証とは、商品性、特定の目
+的への適合性、および権利非侵害についての保証も含みますが、それに限
+定されるものではありません。作者または著作権者は、契約行為、不法行
+為、またはそれ以外であろうと、ソフトウェアに起因または関連し、ある
+いはソフトウェアの使用またはその他の扱いによって生じる一切の請求、
+損害、その他の義務について何らの責任も負わないものとします。 
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without restriction,
+including without limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of the Software,
+and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+danmaq代表 Mc(まく) <info@danmaq.com> http://danmaq.com/
+
+_____________________________________________________________________
+■主な更新履歴
+
+(詳細はHISTORYを参照すること)
+
+○2011/6/2 v0.1.33
+記事詳細のページを追加。
+記事投稿に不備があった場合、戻るべきでない場所に戻ってしまう不具合を修正。
+記事一覧表示画面において、ログオンしていない状態だと落ちる不具合を修正。
+
+○2011/6/1 v0.0.30
+初回リリース。
+とりあえずユーザ登録と記事投稿機能のみ。
+
+○2011/5/20 v0.0.1
+プロジェクト再開、本製作開始。
+データ構造は概念だけ引き継ぎ、物理的にはスキーマレス採用。
+
+○2010/8/20
+プロジェクト立ち上げ。
+要件定義及びデータ設計だけまとめ、一時休眠。
