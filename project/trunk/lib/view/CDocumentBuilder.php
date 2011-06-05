@@ -318,9 +318,13 @@ class CDocumentBuilder
 	 */
 	public function addText(DOMNode $element, $text)
 	{
-		$result = $this->getDOM()->createDocumentFragment();
-		$result->appendXML($text);
-		$element->appendChild($result);
+		$result = null;
+		if(strlen($text) > 0)
+		{
+			$result = $this->getDOM()->createDocumentFragment();
+			$result->appendXML($text);
+			$element->appendChild($result);
+		}
 		return $result;
 	}
 
@@ -362,7 +366,7 @@ class CDocumentBuilder
 			$this->addHLML($result, $inner);
 			$this->addHLML($element, $expr);
 		}
-		elseif(strlen($expr) > 0)
+		else
 		{
 			$this->addText($element, $expr);
 		}
