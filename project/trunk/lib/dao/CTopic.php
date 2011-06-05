@@ -74,7 +74,7 @@ class CTopic
 		parent::__construct(self::$format, $id);
 		self::getTotalCount();
 	}
-	
+
 	/**
 	 *	ユーザIDを取得します。
 	 *
@@ -83,6 +83,27 @@ class CTopic
 	public function getID()
 	{
 		return $this->getEntity()->getID();
+	}
+
+	/**
+	 *	本文を取得します。
+	 *
+	 *	@return array 本文。
+	 */
+	public function getDescription()
+	{
+		$body =& $this->storage();
+		$result = array();
+		try
+		{
+			$result = unserialize($body['description']);
+		}
+		catch(Exception $e)
+		{
+			// 旧バージョンからの互換用
+			array_push($result, $body['description']);
+		}
+		return $result;
 	}
 
 	/**

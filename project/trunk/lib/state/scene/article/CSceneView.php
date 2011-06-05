@@ -70,7 +70,9 @@ class CSceneView
 			{
 				$user = $this->user;
 				$topics = CTopic::getAll();
-				$xmlbuilder = new CDocumentBuilder(_('ARTICLES'));
+				$xmlbuilder = CSceneParseQuery::getInstance()->isStartPage() ?
+					new CDocumentBuilder() :
+					new CDocumentBuilder(_('ARTICLES'));
 				$xmlbuilder->createUserLogonInfo($user);
 				foreach($topics as $item)
 				{
@@ -79,9 +81,11 @@ class CSceneView
 					$topic = $xmlbuilder->createTopic(
 						date('[Y/m/d]', $e->getUpdated()) . $body['caption']);
 					$xmlbuilder->createAttribute($topic, 'id', $item->getID());
-					$p = $xmlbuilder->createParagraph($topic);
-					$xmlbuilder->addText($p, $body['description']);
-					$p = $xmlbuilder->createParagraph($topic);
+					foreach($item->getDescription() as $d)
+					{
+						$p = $xmlbuilder->createParagraph($topic);
+						$xmlbuilder->addHLML($p, $d);
+					}
 				}
 				if($user !== null)
 				{

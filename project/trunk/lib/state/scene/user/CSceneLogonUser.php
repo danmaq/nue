@@ -60,7 +60,7 @@ class CSceneLogonUser
 			{
 				throw new Exception(_('IDを指定しない場合受理不可。'));
 			}
-			$this->id = $_POST['id'];
+			$this->id = trim($_POST['id']);
 			if($entity->connectDatabase())
 			{
 				$user = new CUser($_POST['id']);

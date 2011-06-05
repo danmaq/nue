@@ -13,6 +13,9 @@ class CSceneParseQuery
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
 
+	/**	トップページかどうか。 */
+	private $top = true;
+
 	/**
 	 *	この状態のオブジェクトを取得します。
 	 *
@@ -35,21 +38,33 @@ class CSceneParseQuery
 	}
 
 	/**
+	 *	トップページかどうかを取得します。
+	 *
+	 *	@return boolean トップページである場合、true。
+	 */
+	public function isStartPage()
+	{
+		return $this->top;
+	}
+
+	/**
 	 *	この状態が開始されたときに呼び出されます。
 	 *
 	 *	@param CEntity $entity この状態が適用されたオブジェクト。
 	 */
 	public function setup(CEntity $entity)
 	{
-//		$this->setQueryIfNotExists('cat', CConfigure::DEFAULT_TAG);
-		$this->setQueryIfNotExists('from', 0);
-		$this->setQueryIfNotExists('to', 100);
+		$top = true;
 		foreach(array_keys($_GET) as $item)
 		{
+			$this->top = false;
 			$this->parseCategory($item);
 			$this->parsePage($item);
 			$this->parseGUID($item);
 		}
+//		$this->setQueryIfNotExists('cat', CConfigure::DEFAULT_TAG);
+		$this->setQueryIfNotExists('from', 0);
+		$this->setQueryIfNotExists('to', 100);
 		$mode = 'core/article/view';
 		if(isset($_GET['q']) || isset($_GET['t']))
 		{
@@ -164,9 +179,9 @@ class CSceneParseQuery
 	}
 
 	/**
-	 *	記事指定クエリをパースします。
+	 *	プラグインのパスを取得します。
 	 *
-	 *	@param string $item クエリ文字列。
+	 *	@return string パス。
 	 */
 	private function getPluginPath()
 	{

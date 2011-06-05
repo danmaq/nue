@@ -83,7 +83,7 @@ class CSceneAddUser
 				}
 				$body =& $user->getEntity()->storage();
 				$body['root'] = CUser::getTotalCount() == 0;
-				$body['name'] = $this->id;
+				$body['name'] = trim($this->id);
 				if($user->commit())
 				{
 					$entity->setUser($user);

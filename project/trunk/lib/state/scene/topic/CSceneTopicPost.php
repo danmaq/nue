@@ -3,6 +3,7 @@
 require_once(NUE_CONSTANTS);
 require_once(NUE_LIB_ROOT . '/dao/CTopic.php');
 require_once(NUE_LIB_ROOT . '/view/CRedirector.php');
+require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
 require_once('CSceneTopicNew.php');
 
 /**
@@ -75,7 +76,8 @@ class CSceneTopicPost
 				{
 					throw new Exception(_('管理者以外は投稿不可。'));
 				}
-				$len = strlen($_POST['caption']);
+				$caption = trim($_POST['caption']);
+				$len = strlen($caption);
 				if($len < 1 || $len > 255)
 				{
 					throw new Exception(_('件名は1～255バイト以内。'));
@@ -98,10 +100,14 @@ class CSceneTopicPost
 					$topic = new CTopic();
 				}
 				$body =& $topic->getEntity()->storage();
-				// TODO : 特殊文字対応
 				// TODO : HTML対応
-				$body['caption'] = htmlspecialchars($_POST['caption'], ENT_COMPAT, 'UTF-8');
-				$body['description'] = htmlspecialchars($_POST['description'], ENT_COMPAT, 'UTF-8');
+				$body['caption'] = htmlspecialchars($caption, ENT_COMPAT, 'UTF-8');
+				$descs = preg_split('/(\x0d\x0a|\x0d|\x0a){2,}?/', trim($_POST['description']), -1, PREG_SPLIT_NO_EMPTY);
+				for($i = count($descs); --$i >= 0; )
+				{
+					$descs[$i] = htmlspecialchars(trim($descs[$i]), ENT_COMPAT, 'UTF-8');
+				}
+				$body['description'] = serialize($descs);
 				$body['created_user'] = $user->getEntity()->getID();
 				if(!$topic->commit())
 				{
