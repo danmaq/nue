@@ -68,7 +68,7 @@ class CSceneLogonUser
 				{
 					throw new Exception(_('該当ユーザは存在しない。'));
 				}
-				$body =& $user->getEntity()->storage();
+				$body =& $user->storage();
 				$password = $body['password'];
 				if(strlen($password) == 0)
 				{

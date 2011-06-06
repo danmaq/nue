@@ -63,7 +63,7 @@ class CScenePrefUser
 		if($entity->getNextState() === null)
 		{
 			$user = $this->user;
-			$body =& $user->getEntity()->storage();
+			$body =& $user->storage();
 			$xmlbuilder = new CDocumentBuilder(_('SETUP'));
 			$xmlbuilder->createUserLogonInfo($user, false);
 			$topic = $xmlbuilder->createTopic(_('ユーザ情報変更'));

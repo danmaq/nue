@@ -71,7 +71,7 @@ class CSceneTopicPost
 					throw new Exception(_('ログインしていないため受理不可。'));
 				}
 				$_POST += $this->format;
-				$body =& $user->getEntity()->storage();
+				$body =& $user->storage();
 				if(!$body['root'])
 				{
 					throw new Exception(_('管理者以外は投稿不可。'));
@@ -99,7 +99,7 @@ class CSceneTopicPost
 				{
 					$topic = new CTopic();
 				}
-				$body =& $topic->getEntity()->storage();
+				$body =& $topic->storage();
 				// TODO : HTML対応
 				$body['caption'] = htmlspecialchars($caption, ENT_COMPAT, 'UTF-8');
 				$descs = preg_split('/(\x0d\x0a|\x0d|\x0a){2,}/', trim($_POST['description']), -1, PREG_SPLIT_NO_EMPTY);

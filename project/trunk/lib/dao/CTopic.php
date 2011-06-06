@@ -1,6 +1,6 @@
 <?php
 
-require_once('CDataIndex.php');
+require_once('CUser.php');
 require_once(NUE_LIB_ROOT . '/file/CFileSQLTopic.php');
 
 /**
@@ -19,6 +19,9 @@ class CTopic
 
 	/**	記事数。 */
 	private static $topics = -1;
+
+	/**	ユーザDAOオブジェクト。 */
+	private $user = null;
 
 	/**
 	 *	記事数を取得します。
@@ -104,6 +107,18 @@ class CTopic
 			array_push($result, $body['description']);
 		}
 		return $result;
+	}
+
+	/**
+	 *	製作者のユーザDAOを取得します。
+	 *
+	 *	@return CUser ユーザDAO。
+	 */
+	public function getCreatedUser()
+	{
+		$body =& $this->storage();
+		$result = CUser::getAliasListFromEntityID($body['created_user']);
+		return count($result) == 0 ? null : $result[0];
 	}
 
 	/**

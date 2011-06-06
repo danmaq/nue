@@ -62,7 +62,7 @@ class CSceneTopicNew
 			if($user !== null)
 			{
 				$this->user = $user;
-				$body =& $user->getEntity()->storage();
+				$body =& $user->storage();
 				if(!$body["root"])
 				{
 					$entity->setNextState($sceneBlank);
@@ -72,7 +72,7 @@ class CSceneTopicNew
 					$topic = new CTopic($_GET['id']);
 					if($topic->rollback())
 					{
-						$body =& $topic->getEntity()->storage();
+						$body =& $topic->storage();
 						$this->id = $_GET['id'];
 						$this->caption = $body['caption'];
 						$this->description = join("\n\n", $topic->getDescription());
