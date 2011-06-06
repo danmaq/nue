@@ -481,7 +481,7 @@ class CDocumentBuilder
 		$allAllow = $allow === null;
 		if(!$allAllow)
 		{
-			$allow = array_merge($allow, $hlmlAutoAllow);
+			$allow = array_merge($allow, self::$hlmlAutoAllow);
 		}
 		foreach($attrs as $item)
 		{
