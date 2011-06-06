@@ -3,6 +3,8 @@
 require_once(NUE_CONSTANTS);
 require_once(NUE_LIB_ROOT . '/dao/CUser.php');
 
+// TODO : これそろそろ分割考えたほうがいいんじゃねえの？
+
 /**
  *	ドキュメントを生成するクラス。
  */
@@ -29,6 +31,9 @@ class CDocumentBuilder
 
 	/**	トレース メッセージ。 */
 	public static $trace = '';
+
+	/**	ここに列挙されたHLML属性は全て無条件で許可されます。 */
+	private static $hlmlAutoAllow = array('title');
 
 	/**	DOMオブジェクト。 */
 	private $dom;
@@ -474,6 +479,10 @@ class CDocumentBuilder
 		$result = $this->getDOM()->createElementNS(
 			self::URI_XHTML, sprintf('%s:%s', self::NS_XHTML, $tag));
 		$allAllow = $allow === null;
+		if(!$allAllow)
+		{
+			$allow += $hlmlAutoAllow;
+		}
 		foreach($attrs as $item)
 		{
 			if($allAllow || in_array($item[0], $allow))
