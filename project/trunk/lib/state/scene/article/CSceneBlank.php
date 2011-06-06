@@ -76,7 +76,7 @@ class CSceneBlank
 				$user = $this->user;
 				if($user !== null)
 				{
-					$body =& $user->getEntity()->storage();
+					$body =& $user->storage();
 					if($body['root'])
 					{
 						// 投稿フォームへ

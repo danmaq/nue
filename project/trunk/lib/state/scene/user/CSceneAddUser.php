@@ -81,7 +81,7 @@ class CSceneAddUser
 				{
 					throw new Exception(_('存在するユーザIDは受理不可。'));
 				}
-				$body =& $user->getEntity()->storage();
+				$body =& $user->storage();
 				$body['root'] = CUser::getTotalCount() == 0;
 				$body['name'] = trim($this->id);
 				if($user->commit())

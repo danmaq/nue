@@ -45,6 +45,39 @@ class CUser
 	}
 
 	/**
+	 *	実体IDからエイリアス一覧取得します。
+	 *
+	 *	取得したエイリアスはすべて同一の実体オブジェクトを持っています。
+	 *
+	 *	@param string $entityID 実体ID。
+	 *	@return CUser エイリアス ユーザDAO一覧。
+	 */
+	public static function getAliasListFromEntityID($entityID)
+	{
+		$result = array();
+		if(self::getTotalCount() > 0)
+		{
+			$entity = null;
+			foreach(CDBManager::getInstance()->execAndFetch(
+				CFileSQLUser::getInstance()->selectFromEntityID,
+				array('entity_id' => $entityID)) as $item)
+			{
+				$user = new CUser($item['ID']);
+				if($entity === null && $user->rollback())
+				{
+					$entity = $user->entity;
+				}
+				if($entity !== null)
+				{
+					$user->entity = $entity;
+					array_push($result, $user);
+				}
+			}
+		}
+		return $result;
+	}
+
+	/**
 	 *	コンストラクタ。
 	 *
 	 *	@param string $id ユーザID。規定値は空文字(ゲスト扱い)。

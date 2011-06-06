@@ -13,7 +13,7 @@ abstract class CDataIndex
 	private $format;
 
 	/**	実体。 */
-	private $entity;
+	protected $entity;
 
 	/**
 	 *	コンストラクタ。
@@ -48,6 +48,16 @@ abstract class CDataIndex
 	}
 
 	/**
+	 *	記憶領域を取得します。
+	 *
+	 *	@return mixed 記憶領域。
+	 */
+	public function &storage()
+	{
+		return $this->getEntity()->storage();
+	}
+
+	/**
 	 *	実体オブジェクトを作成します。
 	 *
 	 *	@param string $id 実体ID(GUID)。
@@ -60,16 +70,6 @@ abstract class CDataIndex
 			throw new Exception(_('実体は存在しません。'));
 		}
 		$this->entity = $entity;
-	}
-
-	/**
-	 *	記憶領域を取得します。
-	 *
-	 *	@return mixed 記憶領域。
-	 */
-	protected function &storage()
-	{
-		return $this->getEntity()->storage();
 	}
 }
 

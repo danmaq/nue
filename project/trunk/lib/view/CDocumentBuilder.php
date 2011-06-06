@@ -175,7 +175,7 @@ class CDocumentBuilder
 		$result = $this->getDOM()->createElement('user');
 		if($user !== null)
 		{
-			$body =& $user->getEntity()->storage();
+			$body =& $user->storage();
 			$result = $this->getDOM()->createElement('user');
 			if($enableLogoff)
 			{

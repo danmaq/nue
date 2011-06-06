@@ -59,7 +59,7 @@ class CSceneTopicRemove
 				{
 					throw new Exception(_('ログインしていないため受理不可。'));
 				}
-				$body =& $user->getEntity()->storage();
+				$body =& $user->storage();
 				if(!$body['root'])
 				{
 					throw new Exception(_('管理者以外からの削除は受理不可。'));

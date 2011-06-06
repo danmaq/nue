@@ -62,9 +62,8 @@ class CSceneTopicView
 				$topic = new CTopic($_GET['id']);
 				if($topic->rollback())
 				{
-					$body =& $topic->getEntity()->storage();
-					$author = new CDataEntity(array(), $body['created_user']);
-					if($author->rollback())
+					$author = $topic->getCreatedUser();
+					if($author !== null)
 					{
 						$body =& $author->storage();
 						$this->author = $body['name'];
@@ -93,7 +92,7 @@ class CSceneTopicView
 			{
 				$user = $this->user;
 				$topic = $this->topic;
-				$body =& $topic->getEntity()->storage();
+				$body =& $topic->storage();
 				$xmlbuilder = new CDocumentBuilder(_('TOPIC'));
 				$xmlbuilder->createUserLogonInfo($user);
 				$t = $xmlbuilder->createTopic($body['caption']);
@@ -112,7 +111,7 @@ class CSceneTopicView
 					$p, _('投稿者: ') . $this->author);
 				if($user !== null)
 				{
-					$body =& $user->getEntity()->storage();
+					$body =& $user->storage();
 					if($body['root'])
 					{
 						$t = $xmlbuilder->createTopic(_('管理'));

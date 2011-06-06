@@ -89,7 +89,7 @@ class CSceneView
 				}
 				if($user !== null)
 				{
-					$body =& $user->getEntity()->storage();
+					$body =& $user->storage();
 					if($body['root'])
 					{
 						$topic = $xmlbuilder->createTopic(_('管理'));
