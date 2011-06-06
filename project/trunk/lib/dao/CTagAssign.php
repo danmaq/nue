@@ -1,23 +1,19 @@
 <?php
 
 require_once('CDataIndex.php');
-require_once(NUE_LIB_ROOT . '/file/CFileSQLTag.php');
+require_once(NUE_LIB_ROOT . '/file/CFileSQLTagAssign.php');
 
 /**
- *	タグDAOクラス。
+ *	タグ割り当てDAOクラス。
  */
-class CTag
+class CTagAssign
 	extends CDataIndex
 {
 
 	/**	実体のメンバとデフォルト値一覧。 */
 	private static $format = array(
-		'name' => '',
-		'parent' => '',
+		'lock' => false,
 	);
-
-	/**	タグ数。 */
-	private static $tags = -1;
 
 	/**	タグ名。 */
 	private $name;

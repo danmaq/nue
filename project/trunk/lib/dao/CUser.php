@@ -163,12 +163,12 @@ class CUser
 		$result = $id === '';	// IDなしはゲスト扱い
 		if(!$result)
 		{
-			$db = CDBManager::getInstance();
-			$body = $db->execAndFetch(CFileSQLUser::getInstance()->select, array('id' => $id));
+			$body = CDBManager::getInstance()->execAndFetch(
+				CFileSQLUser::getInstance()->select, array('id' => $id));
 			$result = count($body) > 0;
 			if($result)
 			{
-				$entity = $this->createEntity($body[0]['ENTITY_ID']);
+				$this->createEntity($body[0]['ENTITY_ID']);
 			}
 		}
 		return $result;
