@@ -2,6 +2,7 @@
 
 require_once('CUser.php');
 require_once(NUE_LIB_ROOT . '/file/CFileSQLTopic.php');
+require_once(NUE_LIB_ROOT . '/file/CFileSQLTagAssign.php');
 
 /**
  *	記事DAOクラス。
@@ -119,6 +120,28 @@ class CTopic
 		$body =& $this->storage();
 		$result = CUser::getAliasListFromEntityID($body['created_user']);
 		return count($result) == 0 ? null : $result[0];
+	}
+
+	/**
+	 *	記事IDからタグ割り当て一覧を取得します。
+	 *
+	 *	@return array タグ割り当てDAO一覧
+	 */
+	public function getTagAssignList()
+	{
+		$result = array();
+		$id = $this->getID();
+		foreach(CDBManager::getInstance()->execAndFetch(
+			CFileSQLTagAssign::getInstance()->selectFromTopic, array('topic_id' => $id))
+			as $item)
+		{
+			$assign = new CTagAssign($item['NAME'], $id, $item['ENTITY_ID']);
+			if($assign->rollback())
+			{
+				array_push($result, $assign);
+			}
+		}
+		return $result;
 	}
 
 	/**

@@ -43,10 +43,11 @@ class CTagAssign
 	 *
 	 *	@param mixed $mtag タグ名、またはタグDAOオブジェクト。
 	 *	@param mixed $topic 記事ID、または記事DAOオブジェクト。
+	 *	@param string $entityID 実体ID。
 	 */
-	public function __construct($mtag, $topic)
+	public function __construct($mtag, $topic, $entityID = null)
 	{
-		parent::__construct(self::$format);
+		parent::__construct(self::$format, $entityID);
 		self::initialize();
 		$this->name = $name;
 		$this->topic = $topic;
@@ -71,9 +72,31 @@ class CTagAssign
 		if(!($result instanceof CTag))
 		{
 			$result = new CTag($result);
-			$result->rollback();
+			if($result->rollback())
+			{
+				$this->mtag = $result;
+			}
 		}
-		return $this->mtag;
+		return $result;
+	}
+
+	/**
+	 *	記事DAOオブジェクトを取得します。
+	 *
+	 *	@return CTag 記事DAOオブジェクト。
+	 */
+	public function getTopic()
+	{
+		$result = $this->topic;
+		if(!($result instanceof CTopic))
+		{
+			$result = new CTopic($result);
+			if($result->rollback())
+			{
+				$this->mtag = $result;
+			}
+		}
+		return $result;
 	}
 
 	/**
@@ -85,9 +108,8 @@ class CTagAssign
 	 */
 	public function isExists()
 	{
-		return self::getTotalCount() > 0 &&
-			CDBManager::getInstance()->singleFetch(CFileSQLTag::getInstance()->selectExists,
-			'EXIST', array('name' => $this->getID()));
+		return self::getTotalCount() > 0 && CDBManager::getInstance()->singleFetch(
+			CFileSQLTagAssign::getInstance()->selectExists, 'EXIST', $this->getDBParameters());
 	}
 
 	/**
@@ -97,7 +119,6 @@ class CTagAssign
 	 */
 	public function delete()
 	{
-		$name = $this->getID();
 		$db = CDBManager::getInstance();
 		$pdo = $db->getPDO();
 		$result = false;
@@ -105,14 +126,13 @@ class CTagAssign
 		{
 			self::getTotalCount();
 			$pdo->beginTransaction();
-			$result = $db->execute(CFileSQLTag::getInstance()->delete,
-				array('name' => $name)) && parent::delete();
+			$result = $db->execute(CFileSQLTagAssign::getInstance()->delete,
+				$this->getDBParameters()) && parent::delete();
 			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));
 			}
 			$pdo->commit();
-			self::$topics--;
 		}
 		catch(Exception $e)
 		{
@@ -136,13 +156,12 @@ class CTagAssign
 		{
 			$pdo->beginTransaction();
 			$result = $entity->commit() && ($this->isExists() || $db->execute(
-				CFileSQLTag::getInstance()->insert, array('name' => $entity->getID())));
+				CFileSQLTagAssign::getInstance()->insert, $this->getDBParameters()));
 			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));
 			}
 			$pdo->commit();
-			self::$topics++;
 		}
 		catch(Exception $e)
 		{
@@ -160,13 +179,25 @@ class CTagAssign
 	public function rollback()
 	{
 		$body = CDBManager::getInstance()->execAndFetch(
-			CFileSQLTag::getInstance()->select, array('name' => $this->getID()));
+			CFileSQLTagAssign::getInstance()->select, $this->getDBParameters());
 		$result = count($body) > 0;
 		if($result)
 		{
 			$this->createEntity($body[0]['ENTITY_ID']);
 		}
 		return $result;
+	}
+
+	/**
+	 *	データベースへ渡すID代わりとなるユニークな引数を取得します。
+	 *
+	 *	@return array パラメータ。
+	 */
+	private function getDBParameters()
+	{
+		return array(
+			'name'		=> $this->getTag()->getID(),
+			'topic_id'	=> $this->getTopic()->getID());
 	}
 }
 

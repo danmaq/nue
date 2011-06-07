@@ -2,6 +2,7 @@
 
 require_once('CDataIndex.php');
 require_once(NUE_LIB_ROOT . '/file/CFileSQLTag.php');
+require_once(NUE_LIB_ROOT . '/file/CFileSQLTagAssign.php');
 
 /**
  *	タグDAOクラス。
@@ -65,6 +66,27 @@ class CTag
 	}
 
 	/**
+	 *	タグ割り当て一覧を取得します。
+	 *
+	 *	@return array 割り当てDAO一覧
+	 */
+	public function getListFromTag()
+	{
+		$result = array();
+		$name = $this->getID();
+		foreach(CDBManager::getInstance()->execAndFetch(
+			CFileSQLTagAssign::getInstance()->selectFromName, array('name' => $name)) as $item)
+		{
+			$assign = new CTagAssign($name, $item['TOPIC_ID'], $item['ENTITY_ID']);
+			if($assign->rollback())
+			{
+				array_push($result, $assign);
+			}
+		}
+		return $result;
+	}
+
+	/**
 	 *	データベースに保存されているかどうかを取得します。
 	 *
 	 *	注意: この関数は、コミットされているかどうかを保証するものではありません。
@@ -85,7 +107,6 @@ class CTag
 	 */
 	public function delete()
 	{
-		$name = $this->getID();
 		$db = CDBManager::getInstance();
 		$pdo = $db->getPDO();
 		$result = false;
@@ -94,7 +115,7 @@ class CTag
 			self::getTotalCount();
 			$pdo->beginTransaction();
 			$result = $db->execute(CFileSQLTag::getInstance()->delete,
-				array('name' => $name)) && parent::delete();
+				array('name' => $this->getID())) && parent::delete();
 			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));
