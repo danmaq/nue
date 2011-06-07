@@ -93,12 +93,11 @@ class CRedirector
 			$uri = str_replace($document_root_path, $document_root_url, $absolute_path);
 			if($absolute_path !== $uri)
 			{
-			    $result = $uri;
+			    $result = $uri . (preg_match('/\/$/', $uri) ? '' : '/');
 			}
 		}
 		return $result;
 	}
-
 }
 
 ?>
