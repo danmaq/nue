@@ -29,6 +29,11 @@ class CConfigure
 	const DEFAULT_TAG = '';
 
 	/**
+	 *	1記事に登録可能な最大タグ数です。
+	 */
+	const TAG_MAX = 10;
+
+	/**
 	 *	使用するスキンを設定します。
 	 */
 	const SKINSET = 'default';

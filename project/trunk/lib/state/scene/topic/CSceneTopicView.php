@@ -101,12 +101,22 @@ class CSceneTopicView
 					$p = $xmlbuilder->createParagraph($t);
 					$xmlbuilder->addHLML($p, $item);
 				}
+
+				$t = $xmlbuilder->createTopic(_('タグ'));
+				$p = $xmlbuilder->createParagraph($t);
+				foreach($topic->getTagAssignList() as $item)
+				{
+					$xmlbuilder->createHTMLElement($p, 'a', array('href' => '#'),
+						$item->getTag()->getID());
+					$xmlbuilder->createHTMLElement($p, 'br');
+				}
+
 				$t = $xmlbuilder->createTopic(_('この記事について'));
 				$p = $xmlbuilder->createParagraph($t);
 				$xmlbuilder->addText(
 					$p, _('投稿日: ') . date('Y/m/d H:i', $topic->getEntity()->getUpdated()));
+
 				$p = $xmlbuilder->createParagraph($t);
-				
 				$xmlbuilder->addText(
 					$p, _('投稿者: ') . $this->author);
 				if($user !== null)

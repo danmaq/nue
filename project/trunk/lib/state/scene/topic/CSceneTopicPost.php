@@ -114,6 +114,16 @@ class CSceneTopicPost
 					throw new Exception(_('予期しない投稿の失敗。'));
 				}
 				$this->topic = $topic;
+
+				for($i = CConfigure::TAG_MAX; --$i >= 0; )
+				{
+					$ntag = trim($_POST['tag_' . $i]);
+					if($ntag !== '')
+					{
+						// TODO : タグ追加・削除処理
+					}
+				}
+				
 			}
 		}
 		catch(Exception $e)
