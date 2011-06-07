@@ -1,6 +1,7 @@
 <?php
 
-require_once('CDataIndex.php');
+require_once('CTopic.php');
+require_once('CTag.php');
 require_once(NUE_LIB_ROOT . '/file/CFileSQLTagAssign.php');
 
 /**
@@ -15,49 +16,64 @@ class CTagAssign
 		'lock' => false,
 	);
 
-	/**	タグ名。 */
-	private $name;
+	/**	初期化済みかどうか。 */
+	private static $initialized = false;
+
+	/**	タグDAOオブジェクト。 */
+	private $mtag;
+
+	/**	記事DAOオブジェクト。 */
+	private $topic;
 
 	/**
-	 *	記事数を取得します。
-	 *
-	 *	ここで同時にテーブルの初期化も行われます。
-	 *
-	 *	@return integer 記事数。
+	 *	テーブルが初期化されていない場合、初期化します。
 	 */
-	public static function getTotalCount()
+	public static function initialize()
 	{
-		if(self::$tags < 0)
+		if(!self::$initialized)
 		{
 			CDataEntity::initializeTable();
-			$fcache = CFileSQLTag::getInstance();
-			$db = CDBManager::getInstance();
-			$db->execute($fcache->ddl);
-			self::$topics = $db->singleFetch($fcache->selectCount, 'COUNT');
+			CDBManager::getInstance()->execute(CFileSQLTagAssign::getInstance()->ddl);
+			self::$initialized = true;
 		}
-		return self::$tags;
 	}
 
 	/**
 	 *	コンストラクタ。
 	 *
-	 *	@param string $name タグ名。
+	 *	@param mixed $mtag タグ名、またはタグDAOオブジェクト。
+	 *	@param mixed $topic 記事ID、または記事DAOオブジェクト。
 	 */
-	public function __construct($name)
+	public function __construct($mtag, $topic)
 	{
 		parent::__construct(self::$format);
-		self::getTotalCount();
+		self::initialize();
 		$this->name = $name;
+		$this->topic = $topic;
 	}
-	
+
 	/**
-	 *	タグ名を取得します。
-	 *
-	 *	@return string タグ名。
+	 *	使用できません。例外が発生します。
 	 */
 	public function getID()
 	{
-		return $this->name;
+		throw new Exception(_('NOT IMPLEMENTED!'));
+	}
+
+	/**
+	 *	タグDAOオブジェクトを取得します。
+	 *
+	 *	@return CTag タグDAOオブジェクト。
+	 */
+	public function getTag()
+	{
+		$result = $this->mtag;
+		if(!($result instanceof CTag))
+		{
+			$result = new CTag($result);
+			$result->rollback();
+		}
+		return $this->mtag;
 	}
 
 	/**
