@@ -166,7 +166,8 @@ class CUser
 			try
 			{
 				$pdo->beginTransaction();
-				$result = $entity->commit() && ($this->isExists() || $db->execute(
+				$exists = $this->isExists();
+				$result = $entity->commit() && ($exists || $db->execute(
 					CFileSQLUser::getInstance()->insert,
 					array('id' => $id, 'entity_id' => $entity->getID())));
 				if(!$result)
@@ -174,7 +175,10 @@ class CUser
 					throw new Exception(_('DB書き込みに失敗'));
 				}
 				$pdo->commit();
-				self::$users++;
+				if(!$exists)
+				{
+					self::$users++;
+				}
 			}
 			catch(Exception $e)
 			{

@@ -115,20 +115,21 @@ class CSceneTopicPost
 				}
 				$this->topic = $topic;
 
+				$tags = array();
 				for($i = CConfigure::TAG_MAX; --$i >= 0; )
 				{
 					$ntag = trim($_POST['tag_' . $i]);
 					if($ntag !== '')
 					{
-						// TODO : タグ追加・削除処理
+						array_push($tags, $ntag);
 					}
 				}
-				
+				$topic->setTagAssignList($tags);
 			}
 		}
 		catch(Exception $e)
 		{
-			$this->errors = $e->getMessage();
+			$this->errors = $e->__toString();
 		}
 	}
 
@@ -162,6 +163,10 @@ class CSceneTopicPost
 					'caption' => $_POST['caption'],
 					'description' => $_POST['description'],
 					'err' => $this->errors);
+				if($this->topic !== null)
+				{
+					$query += array('id' => $this->topic->getID());
+				}
 			}
 			CRedirector::seeOther($query);
 			$entity->dispose();

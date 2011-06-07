@@ -1,6 +1,7 @@
 <?php
 
 require_once('CUser.php');
+require_once('CTagAssign.php');
 require_once(NUE_LIB_ROOT . '/file/CFileSQLTopic.php');
 require_once(NUE_LIB_ROOT . '/file/CFileSQLTagAssign.php');
 
@@ -123,7 +124,7 @@ class CTopic
 	}
 
 	/**
-	 *	記事IDからタグ割り当て一覧を取得します。
+	 *	タグ割り当て一覧を取得します。
 	 *
 	 *	@return array タグ割り当てDAO一覧
 	 */
@@ -131,17 +132,42 @@ class CTopic
 	{
 		$result = array();
 		$id = $this->getID();
+		CTagAssign::initialize();
 		foreach(CDBManager::getInstance()->execAndFetch(
 			CFileSQLTagAssign::getInstance()->selectFromTopic, array('topic_id' => $id))
 			as $item)
 		{
-			$assign = new CTagAssign($item['NAME'], $id, $item['ENTITY_ID']);
+			$assign = new CTagAssign($item['NAME'], $this, $item['ENTITY_ID']);
 			if($assign->rollback())
 			{
 				array_push($result, $assign);
 			}
 		}
 		return $result;
+	}
+
+	/**
+	 *	タグを割り当てます。
+	 *
+	 *	@param array $words タグ名一覧。
+	 */
+	public function setTagAssignList(array $words)
+	{
+		if(count($words) > 0)
+		{
+			foreach(self::getTagAssignList() as $oldTag)
+			{
+				if(!in_array($oldTag->getTag()->getID(), $words, true))
+				{
+					$oldTag->delete();
+				}
+			}
+			foreach(CTag::createTagList($words) as $newTag)
+			{
+				$nassign = new CTagAssign($newTag, $this);
+				$nassign->commit();
+			}
+		}
 	}
 
 	/**
@@ -183,6 +209,10 @@ class CTopic
 				}
 				$pdo->commit();
 				self::$topics--;
+				foreach($this->getTagAssignList() as $item)
+				{
+					$item->delete();
+				}
 			}
 			catch(Exception $e)
 			{
@@ -206,14 +236,18 @@ class CTopic
 		try
 		{
 			$pdo->beginTransaction();
-			$result = $entity->commit() && ($this->isExists() || $db->execute(
+			$exists = $this->isExists();
+			$result = $entity->commit() && ($exists || $db->execute(
 				CFileSQLTopic::getInstance()->insert, array('id' => $entity->getID())));
 			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));
 			}
 			$pdo->commit();
-			self::$topics++;
+			if(!$exists)
+			{
+				self::$topics++;
+			}
 		}
 		catch(Exception $e)
 		{

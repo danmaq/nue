@@ -38,9 +38,29 @@ class CTag
 			$fcache = CFileSQLTag::getInstance();
 			$db = CDBManager::getInstance();
 			$db->execute($fcache->ddl);
-			self::$topics = $db->singleFetch($fcache->selectCount, 'COUNT');
+			self::$tags = $db->singleFetch($fcache->selectCount, 'COUNT');
 		}
 		return self::$tags;
+	}
+
+	/**
+	 *	タグ名一覧からオブジェクト一覧を作成します。
+	 *
+	 *	@param array $words タグ名一覧。
+	 *	@return array タグDAOオブジェクト一覧。
+	 */
+	public static function createTagList(array $words)
+	{
+		$result = array();
+		foreach($words as $item)
+		{
+			$tag = new CTag($item);
+			if($tag->rollback() || $tag->commit())
+			{
+				array_push($result, $tag);
+			}
+		}
+		return $result;
 	}
 
 	/**
@@ -74,6 +94,7 @@ class CTag
 	{
 		$result = array();
 		$name = $this->getID();
+		CTagAssign::initialize();
 		foreach(CDBManager::getInstance()->execAndFetch(
 			CFileSQLTagAssign::getInstance()->selectFromName, array('name' => $name)) as $item)
 		{
@@ -121,7 +142,7 @@ class CTag
 				throw new Exception(_('DB書き込みに失敗'));
 			}
 			$pdo->commit();
-			self::$topics--;
+			self::$tags--;
 		}
 		catch(Exception $e)
 		{
@@ -144,18 +165,24 @@ class CTag
 		try
 		{
 			$pdo->beginTransaction();
-			$result = $entity->commit() && ($this->isExists() || $db->execute(
-				CFileSQLTag::getInstance()->insert, array('name' => $entity->getID())));
+			$exists = $this->isExists();
+			$result = $entity->commit() && ($exists || $db->execute(
+				CFileSQLTag::getInstance()->insert,
+				array('name' => $this->getID(), 'entity_id' => $entity->getID())));
 			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));
 			}
 			$pdo->commit();
-			self::$topics++;
+			if(!$exists)
+			{
+				self::$tags++;
+			}
 		}
 		catch(Exception $e)
 		{
-			error_log($e);
+			error_log($e->__toString());
+			error_log(print_r($pdo->errorInfo(), true));
 			$pdo->rollback();
 		}
 		return $result;
