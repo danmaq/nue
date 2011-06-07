@@ -5,6 +5,6 @@ INSERT INTO NUE_INDEX_TAG
 )
 VALUES
 (
-	:id,
+	:name,
 	:entity_id
 );

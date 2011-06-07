@@ -82,7 +82,7 @@ class CSceneTopicNew
 						$tags = $topic->getTagAssignList();
 						while(count($tags) < CConfigure::TAG_MAX)
 						{
-							array_push($tags, null);
+							array_unshift($tags, null);
 						}
 						$this->tags = $tags;
 					}
@@ -110,7 +110,8 @@ class CSceneTopicNew
 		{
 			$xmlbuilder = new CDocumentBuilder(_('POST'));
 			$xmlbuilder->createUserLogonInfo($this->user, false);
-			$topic = $xmlbuilder->createTopic(_('記事の新規作成'));
+			$topic = $xmlbuilder->createTopic(
+				$this->id === null ? _('記事の新規作成') : _('記事の編集'));
 			$form = $xmlbuilder->createForm($topic, './');
 
 			$p = $xmlbuilder->createParagraph($form);
@@ -126,7 +127,7 @@ class CSceneTopicNew
 				$mtag = $tags[$i];
 				$xmlbuilder->createTextInput($p, 'text', 'tag_' . $i,
 					$mtag === null ? '' : $mtag->getTag()->getID(),
-					_('タグ') . $i, 1, 255, false);
+					sprintf('%s %02d', _('タグ'), CConfigure::TAG_MAX - $i), 1, 255, false);
 			}
 
 			$p = $xmlbuilder->createParagraph($form);

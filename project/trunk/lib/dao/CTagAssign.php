@@ -33,6 +33,7 @@ class CTagAssign
 		if(!self::$initialized)
 		{
 			CDataEntity::initializeTable();
+			CTag::getTotalCount();
 			CDBManager::getInstance()->execute(CFileSQLTagAssign::getInstance()->ddl);
 			self::$initialized = true;
 		}
@@ -49,7 +50,7 @@ class CTagAssign
 	{
 		parent::__construct(self::$format, $entityID);
 		self::initialize();
-		$this->name = $name;
+		$this->mtag = $mtag;
 		$this->topic = $topic;
 	}
 
@@ -108,7 +109,8 @@ class CTagAssign
 	 */
 	public function isExists()
 	{
-		return self::getTotalCount() > 0 && CDBManager::getInstance()->singleFetch(
+		self::initialize();
+		return CDBManager::getInstance()->singleFetch(
 			CFileSQLTagAssign::getInstance()->selectExists, 'EXIST', $this->getDBParameters());
 	}
 
@@ -124,7 +126,7 @@ class CTagAssign
 		$result = false;
 		try
 		{
-			self::getTotalCount();
+			self::initialize();
 			$pdo->beginTransaction();
 			$result = $db->execute(CFileSQLTagAssign::getInstance()->delete,
 				$this->getDBParameters()) && parent::delete();
@@ -133,10 +135,16 @@ class CTagAssign
 				throw new Exception(_('DB書き込みに失敗'));
 			}
 			$pdo->commit();
+			$tag = $this->getTag();
+			if(count($tag->getListFromTag()) === 0)
+			{
+				$tag->delete();
+			}
 		}
 		catch(Exception $e)
 		{
-			error_log($e);
+			error_log($e->__toString());
+			error_log(print_r($pdo->errorInfo(), true));
 			$pdo->rollback();
 		}
 		return $result;
@@ -154,9 +162,11 @@ class CTagAssign
 		$pdo = $db->getPDO();
 		try
 		{
+			self::initialize();
 			$pdo->beginTransaction();
 			$result = $entity->commit() && ($this->isExists() || $db->execute(
-				CFileSQLTagAssign::getInstance()->insert, $this->getDBParameters()));
+				CFileSQLTagAssign::getInstance()->insert,
+				$this->getDBParameters() + array('entity_id' => $entity->getID())));
 			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));
@@ -165,7 +175,8 @@ class CTagAssign
 		}
 		catch(Exception $e)
 		{
-			error_log($e);
+			error_log($e->__toString());
+			error_log(print_r($pdo->errorInfo(), true));
 			$pdo->rollback();
 		}
 		return $result;
@@ -178,6 +189,7 @@ class CTagAssign
 	 */
 	public function rollback()
 	{
+		self::initialize();
 		$body = CDBManager::getInstance()->execAndFetch(
 			CFileSQLTagAssign::getInstance()->select, $this->getDBParameters());
 		$result = count($body) > 0;
