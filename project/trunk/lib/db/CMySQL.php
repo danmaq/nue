@@ -104,14 +104,6 @@ class CMySQL
 	{
 		if($this->dbo !== null)
 		{
-			try
-			{
-				$this->dbo->commit();
-			}
-			catch(Exception $e)
-			{
-				$this->exception = $e;
-			}
 			$this->dbo = null;
 		}
 	}
