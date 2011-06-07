@@ -26,6 +26,9 @@ class CSceneTopicNew
 	/**	内容。 */
 	private $description = ' ';
 
+	/**	タグ一覧。 */
+	private $tags = array();
+
 	/**
 	 *	この状態のオブジェクトを取得します。
 	 *
@@ -76,6 +79,12 @@ class CSceneTopicNew
 						$this->id = $_GET['id'];
 						$this->caption = $body['caption'];
 						$this->description = join("\n\n", $topic->getDescription());
+						$tags = $topic->getTagAssignList();
+						while(count($tags) < CConfigure::TAG_MAX)
+						{
+							array_push($tags, null);
+						}
+						$this->tags = $tags;
 					}
 				}
 				if(isset($_GET['caption']))
@@ -109,6 +118,17 @@ class CSceneTopicNew
 				$this->caption, _('タイトル'), 1, 255, false);
 			$xmlbuilder->createTextArea($p, 'description',
 				_('記事内容'), $this->description);
+
+			$p = $xmlbuilder->createParagraph($form, _('タグ'));
+			$tags = $this->tags;
+			for($i = count($tags); --$i >= 0; )
+			{
+				$mtag = $tags[$i];
+				$xmlbuilder->createTextInput($p, 'text', 'tag_' . $i,
+					$mtag === null ? '' : $mtag->getTag()->getID(),
+					_('タグ') . $i, 1, 255, false);
+			}
+
 			$p = $xmlbuilder->createParagraph($form);
 			if($this->id !== null)
 			{
