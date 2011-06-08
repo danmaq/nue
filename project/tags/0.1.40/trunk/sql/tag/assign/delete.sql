@@ -1,3 +1,0 @@
-DELETE FROM	NUE_INDEX_TAG_ASSIGN
-	WHERE	NAME		= :name		AND
-			TOPIC_ID	= :topic_id;
