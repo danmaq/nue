@@ -62,15 +62,11 @@ class CSceneParseQuery
 			$this->parsePage($item);
 			$this->parseGUID($item);
 		}
-//		$this->setQueryIfNotExists('cat', CConfigure::DEFAULT_TAG);
+		$this->setQueryIfNotExists('t', CConfigure::DEFAULT_TAG);
 		$this->setQueryIfNotExists('from', 0);
 		$this->setQueryIfNotExists('to', 100);
 		$mode = 'core/article/view';
-		if(isset($_GET['q']) || isset($_GET['t']))
-		{
-			$mode = 'core/article/find';
-		}
-		elseif(isset($_GET['id']))
+		if(isset($_GET['id']))
 		{
 			$mode = 'core/article/topic/view';
 		}

@@ -15,6 +15,7 @@ class CTag
 	private static $format = array(
 		'name' => '',
 		'parent' => '',
+		'child' => array(),
 	);
 
 	/**	タグ数。 */
@@ -52,7 +53,7 @@ class CTag
 	public static function getAll($rollback = true)
 	{
 		$result = array();
-		if(self::$tags > 0)
+		if(self::getTotalCount() > 0)
 		{
 			foreach(CDBManager::getInstance()->execAndFetch(
 				CFileSQLTag::getInstance()->selectAll) as $item)
@@ -60,7 +61,7 @@ class CTag
 				$tag = new CTag($item['NAME'], $item['ENTITY_ID']);
 				if(!$rollback || $tag->rollback())
 				{
-					array_push($result);
+					array_push($result, $tag);
 				}
 			}
 		}
@@ -119,15 +120,20 @@ class CTag
 	{
 		CTagAssign::initialize();
 		return CDBManager::getInstance()->singleFetch(
-			CFileSQLTagAssign::getInstance()->selectCountFromName, 'COUNT', array('name' => $name));
+			CFileSQLTagAssign::getInstance()->selectCountFromName,
+			'COUNT', array('name' => $this->getID()));
 	}
 
 	/**
 	 *	タグ割り当て一覧を取得します。
 	 *
+	 *	注意: この処理は重いため、割り当て数を取得したい場合は
+	 *	getListFromTagCount()を使用してください。
+	 *
+	 *	@param boolean $loadBody 実体を読み込むかどうか。既定値はtrue。
 	 *	@return array 割り当てDAO一覧
 	 */
-	public function getListFromTag()
+	public function getListFromTag($loadBody = true)
 	{
 		$result = array();
 		$name = $this->getID();

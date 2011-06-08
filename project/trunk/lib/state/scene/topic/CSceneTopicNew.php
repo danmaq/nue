@@ -70,6 +70,7 @@ class CSceneTopicNew
 				{
 					$entity->setNextState($sceneBlank);
 				}
+				$tags = array();
 				if(isset($_GET['id']))
 				{
 					$topic = new CTopic($_GET['id']);
@@ -80,13 +81,13 @@ class CSceneTopicNew
 						$this->caption = $body['caption'];
 						$this->description = join("\n\n", $topic->getDescription());
 						$tags = $topic->getTagAssignList();
-						while(count($tags) < CConfigure::TAG_MAX)
-						{
-							array_unshift($tags, null);
-						}
-						$this->tags = $tags;
 					}
 				}
+				while(count($tags) < CConfigure::TAG_MAX)
+				{
+					array_unshift($tags, null);
+				}
+				$this->tags = $tags;
 				if(isset($_GET['caption']))
 				{
 					$this->caption = $_GET['caption'];
@@ -110,8 +111,9 @@ class CSceneTopicNew
 		{
 			$xmlbuilder = new CDocumentBuilder(_('POST'));
 			$xmlbuilder->createUserLogonInfo($this->user, false);
+			$newtopic = ($this->id === null);
 			$topic = $xmlbuilder->createTopic(
-				$this->id === null ? _('記事の新規作成') : _('記事の編集'));
+				$newtopic ? _('記事の新規作成') : _('記事の編集'));
 			$form = $xmlbuilder->createForm($topic, './');
 
 			$p = $xmlbuilder->createParagraph($form);
@@ -125,8 +127,10 @@ class CSceneTopicNew
 			for($i = count($tags); --$i >= 0; )
 			{
 				$mtag = $tags[$i];
-				$xmlbuilder->createTextInput($p, 'text', 'tag_' . $i,
-					$mtag === null ? '' : $mtag->getTag()->getID(),
+				$value = $mtag === null ?
+					($i == 0 && $newtopic ? CConfigure::DEFAULT_TAG : '') :
+					$mtag->getTag()->getID();
+				$xmlbuilder->createTextInput($p, 'text', 'tag_' . $i, $value,
 					sprintf('%s %02d', _('タグ'), CConfigure::TAG_MAX - $i), 1, 255, false);
 			}
 
