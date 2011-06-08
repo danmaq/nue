@@ -176,7 +176,6 @@ class CDocumentBuilder
 		if($user !== null)
 		{
 			$body =& $user->storage();
-			$result = $this->getDOM()->createElement('user');
 			if($enableLogoff)
 			{
 				$this->createAttribute($result, 'id', $user->getID());
@@ -184,6 +183,22 @@ class CDocumentBuilder
 			$this->createAttribute($result, 'name', $body['name']);
 		}
 		$this->getRootElement()->appendChild($result);
+		return $result;
+	}
+
+	/**
+	 *	検索ワード情報を作成します。
+	 *
+	 *	@param string $expr 検索ワード。
+	 *	@return DOMElement ユーザ情報 オブジェクト。
+	 */
+	public function createSearchInfo($expr = null)
+	{
+		$result = $this->getDOM()->createElement('search');
+		if($expr !== null)
+		{
+			$this->createAttribute($result, 'tag', $expr);
+		}
 		return $result;
 	}
 

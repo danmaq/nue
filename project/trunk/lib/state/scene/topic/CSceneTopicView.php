@@ -95,6 +95,7 @@ class CSceneTopicView
 				$body =& $topic->storage();
 				$xmlbuilder = new CDocumentBuilder(_('TOPIC'));
 				$xmlbuilder->createUserLogonInfo($user);
+				$xmlbuilder->createSearchInfo();
 				$t = $xmlbuilder->createTopic($body['caption']);
 				foreach($topic->getDescription() as $item)
 				{

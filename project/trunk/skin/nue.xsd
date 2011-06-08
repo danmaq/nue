@@ -7,6 +7,7 @@
 
 	<xsd:element name="body" type="BodyType" />
 	<xsd:element name="user" type="UserType" />
+	<xsd:element name="search" type="SearchType" />
 	<xsd:element name="topic" type="TopicType" />
 	<xsd:element name="form" type="FormType" />
 	<xsd:element name="p" type="ParagraphType" />
@@ -14,6 +15,7 @@
 		<xsd:sequence>
 			<xsd:attribute name="title" type="xsd:string" use="required" />
 			<xsd:element ref="user" maxOccurs="1" />
+			<xsd:element ref="search" maxOccurs="1" />
 			<xsd:element ref="topic" minOccurs="1" />
 		</xsd:sequence>
 	</xsd:complexType>
@@ -21,6 +23,11 @@
 		<xsd:sequence>
 			<xsd:attribute name="id" type="xsd:string" />
 			<xsd:attribute name="name" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SearchType">
+		<xsd:sequence>
+			<xsd:attribute name="tag" type="xsd:string" />
 		</xsd:sequence>
 	</xsd:complexType>
 	<xsd:complexType name="TopicType">

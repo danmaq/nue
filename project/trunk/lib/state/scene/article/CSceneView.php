@@ -102,12 +102,7 @@ class CSceneView
 					new CDocumentBuilder(
 						$tag === null ? _('ARTICLES') : sprintf(_('TAG: %s'), $tag));
 				$xmlbuilder->createUserLogonInfo($user);
-				if(!($rootPage || $tag === null))
-				{
-					$topic = $xmlbuilder->createTopic(_('タグで検索'));
-					$p = $xmlbuilder->createParagraph($topic);
-					$xmlbuilder->addText($p, sprintf(_('キーワード: %s'), $tag));
-				}
+				$xmlbuilder->createSearchInfo($rootPage ? null : $tag);
 				if(count($topics) == 0)
 				{
 					$topic = $xmlbuilder->createTopic(
@@ -142,6 +137,13 @@ class CSceneView
 						$xmlbuilder->createHTMLElement($p, 'a',
 							array('href' => '?f=core/article/topic/new'),
 							_('記事作成'));
+						if($tag !== null)
+						{
+							$xmlbuilder->createHTMLElement($p, 'br');
+							$xmlbuilder->createHTMLElement($p, 'a',
+								array('href' => '?f=core/tag/pref&t=' . urlencode($tag)),
+								sprintf(_('%s タグの設定'), $tag));
+						}
 					}
 				}
 				$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
