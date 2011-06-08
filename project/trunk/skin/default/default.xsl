@@ -74,7 +74,7 @@
 				<form action="./" method="get">
 					<p>
 						<label for="t">キーワード</label>
-						<input type="text" id="t" name="t" value="{@tag}" maxlength="255", placeholder="255字以内" />
+						<input type="text" id="t" name="t" value="{@tag}" maxlength="255" placeholder="255字以内" />
 						<input type="submit" value="検索" />
 					</p>
 					<xsl:if test="@tag">
