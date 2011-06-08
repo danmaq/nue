@@ -65,6 +65,7 @@ class CSceneAllTagList
 		{
 			$xmlbuilder = new CDocumentBuilder(_('TAGS'));
 			$xmlbuilder->createUserLogonInfo($this->user);
+			$xmlbuilder->createSearchInfo();
 			$t = $xmlbuilder->createTopic(_('全タグ一覧'));
 			$p = $xmlbuilder->createParagraph($t);
 			foreach($this->tags as $item)

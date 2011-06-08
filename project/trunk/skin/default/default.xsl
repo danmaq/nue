@@ -37,7 +37,8 @@
 					<h1>
 						<a href="./" rel="Start"><xsl:value-of select="@site" /></a>
 					</h1>
-					<xsl:apply-templates select="topic|user" />
+					<xsl:apply-templates select="user|serch" />
+					<xsl:apply-templates select="topic" />
 				</header>
 				<nav>
 				</nav>
@@ -60,6 +61,30 @@
 				<xsl:otherwise>ゲストさん | <a href="?f=core/user/new">ログオン / サインアップ</a></xsl:otherwise>
 			</xsl:choose>
 		</p>
+	</xsl:template>
+
+	<!-- 検索。 -->
+	<xsl:template match="user">
+		<!-- TODO : トピック使いまわせないか？ -->
+		<section>
+			<h2>
+				タグ検索
+			</h2>
+			<article>
+				<form action="./" method="get">
+					<p>
+						<label for="t">キーワード</label>
+						<input type="text" id="t" name="t" value="{@tag}" maxlength="255", placeholder="255字以内" />
+						<input type="submit" value="検索" />
+					</p>
+					<xsl:if test="@tag">
+						<p>
+							現在の検索タグ: <xsl:value-of select="@tag" />
+						</p>
+					</xsl:if>
+				</form>
+			</article>
+		</section>
 	</xsl:template>
 
 	<!-- トピック。 -->
