@@ -16,7 +16,7 @@ class CTopic
 	private static $format = array(
 		'created_user' => '',	// 実体IDを格納する
 		'caption' => '',
-		'description' => '',
+		'description' => array(''),
 	);
 
 	/**	記事数。 */

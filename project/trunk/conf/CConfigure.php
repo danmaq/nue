@@ -26,7 +26,7 @@ class CConfigure
 	 *	カテゴリを指定しなかった場合に表示される、既定のカテゴリです。
 	 *	現在のバージョンでは設定しても何も起きません。
 	 */
-	const DEFAULT_TAG = '';
+	const DEFAULT_TAG = 'Diary';
 
 	/**
 	 *	1記事に登録可能な最大タグ数です。

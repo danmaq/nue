@@ -104,10 +104,14 @@ class CSceneTopicView
 
 				$t = $xmlbuilder->createTopic(_('タグ'));
 				$p = $xmlbuilder->createParagraph($t);
+				$xmlbuilder->createHTMLElement($p, 'a', array('href' => '?f=core/tag/all'),
+					_('全タグ一覧表示'));
+				$p = $xmlbuilder->createParagraph($t);
 				foreach($topic->getTagAssignList() as $item)
 				{
-					$xmlbuilder->createHTMLElement($p, 'a', array('href' => '#'),
-						$item->getTag()->getID());
+					$id = $item->getTag()->getID();
+					$xmlbuilder->createHTMLElement($p, 'a',
+						array('href' => '?t=' . urlencode($id)), $id);
 					$xmlbuilder->createHTMLElement($p, 'br');
 				}
 
