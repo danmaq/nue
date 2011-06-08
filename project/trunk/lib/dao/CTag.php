@@ -24,7 +24,7 @@ class CTag
 	private $name;
 
 	/**
-	 *	記事数を取得します。
+	 *	タグ総数を取得します。
 	 *
 	 *	ここで同時にテーブルの初期化も行われます。
 	 *
@@ -41,6 +41,30 @@ class CTag
 			self::$tags = $db->singleFetch($fcache->selectCount, 'COUNT');
 		}
 		return self::$tags;
+	}
+
+	/**
+	 *	タグ一覧を取得します。
+	 *
+	 *	@param boolean $rollback 自動でロールバックするかどうか。規定値はtrue。
+	 *	@return array タグDAOオブジェクト一覧。
+	 */
+	public static function getAll($rollback = true)
+	{
+		$result = array();
+		if(self::$tags > 0)
+		{
+			foreach(CDBManager::getInstance()->execAndFetch(
+				CFileSQLTag::getInstance()->selectAll) as $item)
+			{
+				$tag = new CTag($item['NAME'], $item['ENTITY_ID']);
+				if(!$rollback || $tag->rollback())
+				{
+					array_push($result);
+				}
+			}
+		}
+		return $result;
 	}
 
 	/**
@@ -67,10 +91,11 @@ class CTag
 	 *	コンストラクタ。
 	 *
 	 *	@param string $name タグ名。
+	 *	@param string $entityID 実体ID。
 	 */
-	public function __construct($name)
+	public function __construct($name, $entityID = null)
 	{
-		parent::__construct(self::$format);
+		parent::__construct(self::$format, $entityID);
 		self::getTotalCount();
 		$this->name = $name;
 	}
@@ -83,6 +108,18 @@ class CTag
 	public function getID()
 	{
 		return $this->name;
+	}
+
+	/**
+	 *	このタグの記事への割り当てられた数を取得します。
+	 *
+	 *	@return int 割り当て数。
+	 */
+	public function getListFromTagCount()
+	{
+		CTagAssign::initialize();
+		return CDBManager::getInstance()->singleFetch(
+			CFileSQLTagAssign::getInstance()->selectCountFromName, 'COUNT', array('name' => $name);
 	}
 
 	/**
