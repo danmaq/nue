@@ -119,7 +119,7 @@ class CTag
 	{
 		CTagAssign::initialize();
 		return CDBManager::getInstance()->singleFetch(
-			CFileSQLTagAssign::getInstance()->selectCountFromName, 'COUNT', array('name' => $name);
+			CFileSQLTagAssign::getInstance()->selectCountFromName, 'COUNT', array('name' => $name));
 	}
 
 	/**
