@@ -37,7 +37,7 @@
 					<h1>
 						<a href="./" rel="Start"><xsl:value-of select="@site" /></a>
 					</h1>
-					<xsl:apply-templates select="user|serch" />
+					<xsl:apply-templates select="user|search" />
 					<xsl:apply-templates select="topic" />
 				</header>
 				<nav>
@@ -64,7 +64,7 @@
 	</xsl:template>
 
 	<!-- 検索。 -->
-	<xsl:template match="user">
+	<xsl:template match="search">
 		<!-- TODO : トピック使いまわせないか？ -->
 		<section>
 			<h2>タグ検索</h2>

@@ -199,6 +199,7 @@ class CDocumentBuilder
 		{
 			$this->createAttribute($result, 'tag', $expr);
 		}
+		$this->getRootElement()->appendChild($result);
 		return $result;
 	}
 
