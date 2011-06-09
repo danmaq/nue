@@ -410,6 +410,37 @@ class CDocumentBuilder
 	}
 
 	/**
+	 *	隠し入力を作成します。
+	 *
+	 *	@param DOMNode $parent 所属させるノード。
+	 *	@param string $id キーとなる文字列。
+	 *	@param string $value 既定値となる文字列。
+	 *	@return DOMElement input要素オブジェクト。
+	 */
+	public function createHiddenInput(
+		DOMNode $parent, $id, $value)
+	{
+		return $this->createHTMLElement($parent, 'input', array(
+			'type' => 'hidden',
+			'id' => $id, 'name' => $id,
+			'value' => $value));
+	}
+
+	/**
+	 *	送信ボタンを作成します。
+	 *
+	 *	@param DOMNode $parent 所属させるノード。
+	 *	@param string $caption ボタン名文字列。
+	 *	@return DOMElement input要素オブジェクト。
+	 */
+	public function createSubmitInput(
+		DOMNode $parent, $caption)
+	{
+		return $this->createHTMLElement($parent, 'input', array(
+			'type' => 'submit', 'value' => $value));
+	}
+
+	/**
 	 *	1行入力ボックスを作成します。
 	 *
 	 *	@param DOMNode $parent 所属させるノード。

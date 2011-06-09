@@ -100,7 +100,7 @@ class CTag
 		self::getTotalCount();
 		$this->name = $name;
 	}
-	
+
 	/**
 	 *	タグ名を取得します。
 	 *
@@ -109,6 +109,17 @@ class CTag
 	public function getID()
 	{
 		return $this->name;
+	}
+
+	/**
+	 *	子タグ一覧を取得します。
+	 *
+	 *	@return string 子タグ一覧。
+	 */
+	public function getChildTags()
+	{
+		$body =& $this->storage();
+		return self::createTagList($body['child']);
 	}
 
 	/**
