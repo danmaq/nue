@@ -1,6 +1,6 @@
 <?php
 
-require_once('CDataIndex.php');
+require_once('CTagAssign.php');
 require_once(NUE_LIB_ROOT . '/file/CFileSQLTag.php');
 require_once(NUE_LIB_ROOT . '/file/CFileSQLTagAssign.php');
 
