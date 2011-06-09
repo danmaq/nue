@@ -1,7 +1,7 @@
 <?php
 
 require_once(NUE_CONSTANTS);
-require_once(NUE_LIB_ROOT . '/dao/CTopic.php');
+require_once(NUE_LIB_ROOT . '/dao/CTag.php');
 require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
 require_once(NUE_LIB_ROOT . '/state/IState.php');
 

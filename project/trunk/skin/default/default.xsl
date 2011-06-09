@@ -67,9 +67,7 @@
 	<xsl:template match="user">
 		<!-- TODO : トピック使いまわせないか？ -->
 		<section>
-			<h2>
-				タグ検索
-			</h2>
+			<h2>タグ検索</h2>
 			<article>
 				<form action="./" method="get">
 					<p>
@@ -78,9 +76,7 @@
 						<input type="submit" value="検索" />
 					</p>
 					<xsl:if test="@tag">
-						<p>
-							現在の検索タグ: <xsl:value-of select="@tag" />
-						</p>
+						<p>現在の検索タグ: <em><xsl:value-of select="@tag" /></em></p>
 					</xsl:if>
 				</form>
 			</article>
