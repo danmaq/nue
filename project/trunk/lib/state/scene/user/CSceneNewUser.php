@@ -93,13 +93,8 @@ class CSceneNewUser
 		$xmlbuilder->createTextInput($result, 'text', 'id',
 			isset($_GET['id']) ? $_GET['id'] : '', _('ID(半角英数字)'), 1, 255);
 		$p = $xmlbuilder->createParagraph($form);
-		$xmlbuilder->createHTMLElement($p, 'input', array(
-			'type' => 'hidden',
-			'name' => 'f',
-			'value' => $action));
-		$xmlbuilder->createHTMLElement($p, 'input', array(
-			'type' => 'submit',
-			'value' => _('登録')));
+		$xmlbuilder->createHiddenInput($p, 'f', $action);
+		$xmlbuilder->createSubmitInput($p, _('登録'));
 		return $result;
 	}
 }

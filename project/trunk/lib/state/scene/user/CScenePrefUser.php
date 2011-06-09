@@ -88,15 +88,10 @@ class CScenePrefUser
 				'', _('新しいパスワード'), 1, 255);
 			$xmlbuilder->createTextInput($p, 'password', 'pwd2',
 				'', _('新しいパスワード(再入力)'), 1, 255);
-			$p = $xmlbuilder->createParagraph($form);
-			$xmlbuilder->createHTMLElement($p, 'input', array(
-				'type' => 'hidden',
-				'name' => 'f',
-				'value' => 'core/user/mod'));
-			$xmlbuilder->createHTMLElement($p, 'input', array(
-				'type' => 'submit',
-				'value' => _('登録')));
 
+			$p = $xmlbuilder->createParagraph($form);
+			$xmlbuilder->createHiddenInput($p, 'f', 'core/user/mod');
+			$xmlbuilder->createSubmitInput($p, _('登録'));
 			if(!$body['root'])
 			{
 				$topic = $xmlbuilder->createTopic(_('アカウント削除'));

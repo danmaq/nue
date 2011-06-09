@@ -16,8 +16,11 @@ class CSceneTagPref
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
 
-	/**	タグ一覧。 */
+	/**	タグDAOオブジェクト。 */
 	private $tag = null;
+
+	/**	親タグ名。 */
+	private $parent = '';
 
 	/**	エラー表示。 */
 	private $errors = null;
@@ -80,6 +83,8 @@ class CSceneTagPref
 					throw new Exception(_('管理者以外は編集不可。'));
 				}
 				$this->user = $user;
+				$body =& $tag->storage();
+				$this->parent = $body['parent'];
 			}
 			catch(Exception $e)
 			{
@@ -105,9 +110,16 @@ class CSceneTagPref
 				$xmlbuilder->createUserLogonInfo($this->user, false);
 				$t = $xmlbuilder->createTopic(sprintf(_('タグ %s の編集'), $tag->getID()));
 				$p = $xmlbuilder->createParagraph($t);
+				$xmlbuilder->createTextInput($p, 'text', 'parent',
+					$this->parent, _('親タグ'), 0, 255, false);
+				$xmlbuilder->createHTMLElement($parent, 'input', array(
+					'type' => 'checkbox',
+					'id' => $id, 'name' => $id,
+					'value' => '1'));
 
-				// TODO : 未実装
-				$xmlbuilder->addText($p, _('未実装'));
+				$p = $xmlbuilder->createParagraph($form);
+				$xmlbuilder->createHiddenInput($p, 'f', 'core/tag/mod');
+				$xmlbuilder->createSubmitInput($p, _('編集'));
 
 				$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
 			}

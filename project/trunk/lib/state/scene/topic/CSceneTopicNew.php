@@ -137,18 +137,10 @@ class CSceneTopicNew
 			$p = $xmlbuilder->createParagraph($form);
 			if($this->id !== null)
 			{
-				$xmlbuilder->createHTMLElement($p, 'input', array(
-					'type' => 'hidden',
-					'name' => 'id',
-					'value' => $this->id));
+				$xmlbuilder->createHiddenInput($p, 'id', $this->id);
 			}
-			$xmlbuilder->createHTMLElement($p, 'input', array(
-				'type' => 'hidden',
-				'name' => 'f',
-				'value' => 'core/article/topic/post'));
-			$xmlbuilder->createHTMLElement($p, 'input', array(
-				'type' => 'submit',
-				'value' => _('投稿')));
+			$xmlbuilder->createHiddenInput($p, 'f', 'core/article/topic/post');
+			$xmlbuilder->createSubmitInput($p, _('投稿'));
 			$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
 			$entity->dispose();
 		}
