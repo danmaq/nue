@@ -195,7 +195,7 @@ class CDocumentBuilder
 	public function createSearchInfo($expr = null)
 	{
 		$result = $this->getDOM()->createElement('search');
-		if($expr !== null)
+		if($expr !== null && strlen($expr) > 0)
 		{
 			$this->createAttribute($result, 'tag', $expr);
 		}
