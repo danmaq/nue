@@ -140,8 +140,6 @@ class CSceneView
 						if($tag !== null)
 						{
 							$xmlbuilder->createHTMLElement($p, 'br');
-							error_log('?f=core/tag/pref&t=' . urlencode($tag));
-							error_log(sprintf(_('%s タグの設定'), $tag));
 							$xmlbuilder->createHTMLElement($p, 'a',
 								array('href' => ('?f=core/tag/pref&amp;t=' . urlencode($tag))),
 								sprintf(_('%s タグの設定'), $tag));

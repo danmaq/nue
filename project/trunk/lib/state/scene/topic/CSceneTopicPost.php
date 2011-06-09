@@ -129,7 +129,7 @@ class CSceneTopicPost
 		}
 		catch(Exception $e)
 		{
-			$this->errors = $e->__toString();
+			$this->errors = $e->getMessage();
 		}
 	}
 
