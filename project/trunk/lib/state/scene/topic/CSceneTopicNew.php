@@ -118,7 +118,7 @@ class CSceneTopicNew
 
 			$p = $xmlbuilder->createParagraph($form);
 			$xmlbuilder->createTextInput($p, 'text', 'caption',
-				$this->caption, _('タイトル'), 1, 255, false);
+				$this->caption, _('タイトル'), 1, 255);
 			$xmlbuilder->createTextArea($p, 'description',
 				_('記事内容'), $this->description);
 
@@ -131,7 +131,7 @@ class CSceneTopicNew
 					($i == 0 && $newtopic ? CConfigure::DEFAULT_TAG : '') :
 					$mtag->getTag()->getID();
 				$xmlbuilder->createTextInput($p, 'text', 'tag_' . $i, $value,
-					sprintf('%s %02d', _('タグ'), CConfigure::TAG_MAX - $i), 1, 255, false);
+					sprintf('%s %02d', _('タグ'), CConfigure::TAG_MAX - $i), 1, 255);
 			}
 
 			$p = $xmlbuilder->createParagraph($form);

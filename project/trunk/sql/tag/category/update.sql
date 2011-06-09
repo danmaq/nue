@@ -1,0 +1,3 @@
+UPDATE		NUE_INDEX_TAG_CATEGORY
+	SET		SORT = :sort
+	WHERE	NAME = :name;

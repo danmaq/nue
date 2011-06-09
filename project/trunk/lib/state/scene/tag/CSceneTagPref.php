@@ -1,7 +1,7 @@
 <?php
 
 require_once(NUE_CONSTANTS);
-require_once(NUE_LIB_ROOT . '/dao/CTag.php');
+require_once(NUE_LIB_ROOT . '/dao/CTagCategory.php');
 require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
 require_once(NUE_LIB_ROOT . '/view/CRedirector.php');
 require_once(NUE_LIB_ROOT . '/state/IState.php');
@@ -18,6 +18,12 @@ class CSceneTagPref
 
 	/**	タグDAOオブジェクト。 */
 	private $tag = null;
+
+	/**	カテゴリタグとして指定されているかどうか。 */
+	private $category = false;
+
+	/**	カテゴリ並び順。 */
+	private $order = 0;
 
 	/**	親タグ名。 */
 	private $parent = '';
@@ -85,6 +91,9 @@ class CSceneTagPref
 				$this->user = $user;
 				$body =& $tag->storage();
 				$this->parent = $body['parent'];
+				$category = new CTagCategory($_GET['t']);
+				$this->category = $category->rollback();
+				$this->order = $category->order;
 			}
 			catch(Exception $e)
 			{
@@ -108,17 +117,21 @@ class CSceneTagPref
 			{
 				$xmlbuilder = new CDocumentBuilder(_('PREFERENCE'));
 				$xmlbuilder->createUserLogonInfo($this->user, false);
-				$t = $xmlbuilder->createTopic(sprintf(_('タグ %s の編集'), $tag->getID()));
-				$p = $xmlbuilder->createParagraph($t);
-				$xmlbuilder->createTextInput($p, 'text', 'parent',
-					$this->parent, _('親タグ'), 0, 255, false);
-				$xmlbuilder->createHTMLElement($parent, 'input', array(
-					'type' => 'checkbox',
-					'id' => $id, 'name' => $id,
-					'value' => '1'));
+				$topic = $xmlbuilder->createTopic(sprintf(_('タグ %s の編集'), $tag->getID()));
+				$form = $xmlbuilder->createForm($topic, './');
+				$p = $xmlbuilder->createParagraph($form);
+				$xmlbuilder->createHTMLElement($p, 'a', array('href' => '?f=core/tag/all'),
+					_('全タグ一覧表示'));
+				$p = $xmlbuilder->createParagraph($form);
+				$xmlbuilder->createTextInput($p, 'text', 'parent', $this->parent, _('親タグ'),
+					0, 255);
+				$xmlbuilder->createCheckInput($p, 'cat', $this->category, _('カテゴリ'));
+				$xmlbuilder->createTextInput($p, 'text', 'order', $this->order, _('並び順'),
+					1, 4, 0);
 
 				$p = $xmlbuilder->createParagraph($form);
 				$xmlbuilder->createHiddenInput($p, 'f', 'core/tag/mod');
+				$xmlbuilder->createHiddenInput($p, 't', $tag->getID());
 				$xmlbuilder->createSubmitInput($p, _('編集'));
 
 				$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);

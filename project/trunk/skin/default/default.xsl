@@ -38,8 +38,8 @@
 						<a href="./" rel="Start"><xsl:value-of select="@site" /></a>
 					</h1>
 					<xsl:apply-templates select="user|search" />
-					<xsl:apply-templates select="topic" />
 				</header>
+				<xsl:apply-templates select="topic" />
 				<nav>
 				</nav>
 				<footer>

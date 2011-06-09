@@ -61,9 +61,16 @@ class CSceneNewUser
 				$topicName = _('サインアップ');
 				$p = $this->createForm($xmlbuilder, _('ログオン'), 'core/user/logon');
 				$xmlbuilder->createTextInput(
-					$p, 'password', 'pwd', '', _('パスワード(半角英数字)'), 4, 255);
+					$p, 'password', 'pwd', '', _('パスワード(半角英数字)'), 4, 255, true);
 			}
 			$this->createForm($xmlbuilder, $topicName, 'core/user/add');
+			if(CUser::getTotalCount() > 0)
+			{
+				$topic = $xmlbuilder->createTopic(_('ユーザ登録でできること'));
+				$p = $xmlbuilder->createParagraph($topic);
+				$xmlbuilder->addText($p,
+					_('自分の名前を表示できます。……以上。(そのうち出来ることは増えていくはずです)'));
+			}
 			$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
 			$entity->dispose();
 		}

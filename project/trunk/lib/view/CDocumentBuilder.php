@@ -437,7 +437,33 @@ class CDocumentBuilder
 		DOMNode $parent, $caption)
 	{
 		return $this->createHTMLElement($parent, 'input', array(
-			'type' => 'submit', 'value' => $value));
+			'type' => 'submit', 'value' => $caption));
+	}
+
+	/**
+	 *	チェック ボックスを作成します。
+	 *
+	 *	@param DOMNode $parent 所属させるノード。
+	 *	@param string $id キーとなる文字列。
+	 *	@param boolean $value 有効かどうか。
+	 *	@param string $label ラベル。
+	 *	@return DOMElement input要素オブジェクト。
+	 */
+	public function createCheckInput(
+		DOMNode $parent, $id, $value, $label)
+	{
+		$this->createHTMLElement($parent, 'label', array('for' => $id),
+			$label);
+		$result = $this->createHTMLElement($parent, 'input', array(
+			'type' => 'checkbox',
+			'id' => $id, 'name' => $id,
+			'value' => 1));
+		if($value)
+		{
+			$this->createAttribute($result, 'checked', 'checked');
+		}
+		$this->createHTMLElement($parent, 'br');
+		return $result;
 	}
 
 	/**
@@ -450,16 +476,25 @@ class CDocumentBuilder
 	 *	@param string $label ラベル。
 	 *	@param integer $min 最小文字数。
 	 *	@param integer $max 最大文字数。
-	 *	@param boolean $ascii ASCII入力のみ受け付けるかどうか。
+	 *	@param mixed $ascii ASCII入力のみ受け付けるかどうか。
 	 *	@param boolean $enabled 有効なフィールドかどうか。
 	 *	@return DOMElement input要素オブジェクト。
 	 */
 	public function createTextInput(
 		DOMNode $parent, $type, $id, $value, $label, $min = 0, $max = 255,
-		$ascii = true, $enabled = true)
+		$ascii = false, $enabled = true)
 	{
 		$this->createHTMLElement($parent, 'label', array('for' => $id),
 			$label);
+		$regex = '.';
+		if($ascii === true)
+		{
+			$regex = '[0-9A-Za-z]';
+		}
+		elseif($ascii === 0)
+		{
+			$regex = '[0-9]';
+		}
 		$result = $this->createHTMLElement($parent, 'input', array(
 			'type' => $type,
 			'id' => $id, 'name' => $id,
