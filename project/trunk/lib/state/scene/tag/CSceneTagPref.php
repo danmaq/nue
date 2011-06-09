@@ -98,25 +98,21 @@ class CSceneTagPref
 		if($entity->getNextState() === null)
 		{
 			$err = $this->errors;
+			$tag = $this->tag;
 			if($err === null)
 			{
 				$xmlbuilder = new CDocumentBuilder(_('PREFERENCE'));
-				$xmlbuilder->createUserLogonInfo($user, false);
-				$t = $xmlbuilder->createTopic(_('全タグ一覧'));
+				$xmlbuilder->createUserLogonInfo($this->user, false);
+				$t = $xmlbuilder->createTopic(sprintf(_('タグ %s の編集'), $tag->getID()));
 				$p = $xmlbuilder->createParagraph($t);
-				foreach($this->tags as $item)
-				{
-					$id = $item->getID();
-					$xmlbuilder->createHTMLElement($p, 'a',
-						array('href' => '?t=' . urlencode($id)), $id);
-					$xmlbuilder->addText($p, sprintf(_('(%d件)'), $item->getListFromTagCount()));
-					$xmlbuilder->createHTMLElement($p, 'br');
-				}
+
+				// TODO : 未実装
+				$xmlbuilder->addText($p, _('未実装'));
+
 				$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
 			}
 			else
 			{
-				$tag = $this->tag;
 				$query = $tag === null ? array() : array('t' => $tag->getID());
 				CRedirector::seeOther($query);
 			}
