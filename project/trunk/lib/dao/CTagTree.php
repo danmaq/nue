@@ -1,6 +1,6 @@
 <?php
 
-require_once('CTag.php');
+require_once('CTagCategory.php');
 require_once(NUE_LIB_ROOT . '/file/CFileSQLTagTree.php');
 
 /**
@@ -10,9 +10,12 @@ class CTagTree
 	extends CDataIndex
 {
 
+	/**	ネスト検出深度。 */
+	const DEPTH = 5;
+
 	/**	実体のメンバとデフォルト値一覧。 */
 	private static $format = array(
-		'cache' => array(),
+		'cache' => null,
 	);
 
 	/**	初期化されたかどうか。 */
@@ -46,7 +49,7 @@ class CTagTree
 	public function __construct($name = null, $entityID = null)
 	{
 		parent::__construct(self::$format, $entityID);
-		self::getTotalCount();
+		self::initialize();
 		$this->name = $name;
 	}
 
@@ -61,51 +64,36 @@ class CTagTree
 	}
 
 	/**
-	 *	子タグ一覧を取得します。
+	 *	ツリー構造を取得します。
 	 *
-	 *	@return string 子タグ一覧。
+	 *	@return array ツリー構造の配列。
 	 */
-	public function getChildTags()
+	public function getTree()
 	{
-		$body =& $this->storage();
-		return self::createTagList($body['child']);
-	}
-
-	/**
-	 *	このタグの記事への割り当てられた数を取得します。
-	 *
-	 *	@return int 割り当て数。
-	 */
-	public function getListFromTagCount()
-	{
-		CTagAssign::initialize();
-		return CDBManager::getInstance()->singleFetch(
-			CFileSQLTagAssign::getInstance()->selectCountFromName,
-			'COUNT', array('name' => $this->getID()));
-	}
-
-	/**
-	 *	タグ割り当て一覧を取得します。
-	 *
-	 *	注意: この処理は重いため、割り当て数を取得したい場合は
-	 *	getListFromTagCount()を使用してください。
-	 *
-	 *	@param boolean $loadBody 実体を読み込むかどうか。既定値はtrue。
-	 *	@return array 割り当てDAO一覧
-	 */
-	public function getListFromTag($loadBody = true)
-	{
-		$result = array();
-		$name = $this->getID();
-		CTagAssign::initialize();
-		foreach(CDBManager::getInstance()->execAndFetch(
-			CFileSQLTagAssign::getInstance()->selectFromName, array('name' => $name)) as $item)
+		$result = null;
+		if($this->rollback())
 		{
-			$assign = new CTagAssign($name, $item['TOPIC_ID'], $item['ENTITY_ID']);
-			if($assign->rollback())
+			$body =& $this->storage();
+			$result = $body['cache'];
+		}
+		if($result === null)
+		{
+			$result = array();
+			$name = $this->getID();
+			if($name === null)
 			{
-				array_push($result, $assign);
+				foreach(CTagCategory::getAll(false) as $item)
+				{
+					$tag = new CTag($item->getID());
+					$result = $this->getChildTree($tag);
+				}
 			}
+			else
+			{
+				$tag = new CTag($name);
+				// TODO : 基準タグがある場合。
+			}
+			$this->commit();
 		}
 		return $result;
 	}
@@ -113,15 +101,13 @@ class CTagTree
 	/**
 	 *	データベースに保存されているかどうかを取得します。
 	 *
-	 *	注意: この関数は、コミットされているかどうかを保証するものではありません。
-	 *
 	 *	@return boolean 保存されている場合、true。
 	 */
 	public function isExists()
 	{
-		return self::getTotalCount() > 0 &&
-			CDBManager::getInstance()->singleFetch(CFileSQLTag::getInstance()->selectExists,
-				'EXIST', array('name' => $this->getID()));
+		self::initialize();
+		return CDBManager::getInstance()->singleFetch(CFileSQLTagTree::getInstance()->selectExists,
+			'EXIST', array('name' => $this->getID()));
 	}
 
 	/**
@@ -138,14 +124,13 @@ class CTagTree
 		{
 			self::getTotalCount();
 			$pdo->beginTransaction();
-			$result = $db->execute(CFileSQLTag::getInstance()->delete,
+			$result = $db->execute(CFileSQLTagTree::getInstance()->delete,
 				array('name' => $this->getID())) && parent::delete();
 			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));
 			}
 			$pdo->commit();
-			self::$tags--;
 		}
 		catch(Exception $e)
 		{
@@ -168,19 +153,14 @@ class CTagTree
 		try
 		{
 			$pdo->beginTransaction();
-			$exists = $this->isExists();
-			$result = $entity->commit() && ($exists || $db->execute(
-				CFileSQLTag::getInstance()->insert,
+			$result = $entity->commit() && ($this->isExists() || $db->execute(
+				CFileSQLTagTree::getInstance()->insert,
 				array('name' => $this->getID(), 'entity_id' => $entity->getID())));
 			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));
 			}
 			$pdo->commit();
-			if(!$exists)
-			{
-				self::$tags++;
-			}
 		}
 		catch(Exception $e)
 		{
@@ -199,11 +179,32 @@ class CTagTree
 	public function rollback()
 	{
 		$body = CDBManager::getInstance()->execAndFetch(
-			CFileSQLTag::getInstance()->select, array('name' => $this->getID()));
+			CFileSQLTagTree::getInstance()->select, array('name' => $this->getID()));
 		$result = count($body) > 0;
 		if($result)
 		{
 			$this->createEntity($body[0]['ENTITY_ID']);
+		}
+		return $result;
+	}
+
+	/**
+	 *	ツリー構造を取得します。
+	 *
+	 *	@param CTag $tag 親となるタグDAOオブジェクト。
+	 *	@param int $depth ネスト深度。
+	 *	@return array ツリー構造の配列。
+	 */
+	private function getChildTree(CTag $tag, $depth = 0)
+	{
+		$result = array();
+		if($tag->rollback() && depth < self::DEPTH)
+		{
+			foreach($tag->getChildTags() as $item)
+			{
+				$tags = $this->getChildTree($item, $depth + 1);
+				array_push(count($tags) === 0 ? $item->getID() : $tags);
+			}
 		}
 		return $result;
 	}
