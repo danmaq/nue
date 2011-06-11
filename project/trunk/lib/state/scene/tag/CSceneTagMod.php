@@ -1,7 +1,7 @@
 <?php
 
 require_once(NUE_CONSTANTS);
-require_once(NUE_LIB_ROOT . '/dao/CTagCategory.php');
+require_once(NUE_LIB_ROOT . '/dao/CTagTree.php');
 require_once(NUE_LIB_ROOT . '/view/CRedirector.php');
 require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
 require_once('CSceneTagPref.php');
@@ -127,6 +127,7 @@ class CSceneTagMod
 				{
 					$category->delete();
 				}
+				CTagTree::clear();
 			}
 		}
 		catch(Exception $e)

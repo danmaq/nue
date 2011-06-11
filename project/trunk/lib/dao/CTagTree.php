@@ -21,8 +21,11 @@ class CTagTree
 	/**	初期化されたかどうか。 */
 	private static $initialized = false;
 
-	/**	ベースとなるタグDAOオブジェクト。 */
-	private $base;
+	/**	タグ名。 */
+	private $name = '';
+
+	/**	カテゴリからの世代数。 */
+	private $cgen = 255;
 
 	/**
 	 *	テーブルの初期化を行います。
@@ -38,6 +41,87 @@ class CTagTree
 	}
 
 	/**
+	 *	キャッシュをクリアます。
+	 *
+	 *	@return boolean 削除に成功した場合、true。
+	 */
+	public static function clear()
+	{
+		$db = CDBManager::getInstance();
+		$pdo = $db->getPDO();
+		$result = false;
+		try
+		{
+			self::initialize();
+			$fcache = CFileSQLTagTree::getInstance();
+			$pdo->beginTransaction();
+			$result = $db->execute($fcache->deleteEntity) && $db->execute($fcache->truncate);
+			if(!$result)
+			{
+				throw new Exception(_('DB書き込みに失敗'));
+			}
+			$pdo->commit();
+		}
+		catch(Exception $e)
+		{
+			error_log($e);
+			$pdo->rollback();
+		}
+		return $result;
+	}
+
+	/**
+	 *	ツリー構造を取得します。
+	 *
+	 *	@param array $result 格納される配列。
+	 *	@param string $name タグ名。
+	 *	@param int $depth ネスト深度。
+	 *	@return array ツリー構造の配列。
+	 */
+	private static function getParentTree(&$result, $name, $depth = 0)
+	{
+		if($depth < self::DEPTH && strlen($name) > 0)
+		{
+			$tag = new CTag($name);
+			if($tag->rollback())
+			{
+				array_unshift($result, $name);
+				$body &= $tag->storage();
+				$category = new CTagCategory($name);
+				if(!$category->isExists())
+				{
+					self::getParent($result, $body['parent'], $depth + 1);
+				}
+			}
+		}
+	}
+
+	/**
+	 *	カテゴリから末端までのツリー構造を取得します。
+	 *
+	 *	@param CTag $tag 親となるタグDAOオブジェクト。
+	 *	@param int $depth ネスト深度。
+	 *	@return array ツリー構造の配列。
+	 */
+	private static function getChildTree(CTag $tag, $depth = 0)
+	{
+		$result = array();
+		if($depth < self::DEPTH && $tag->rollback())
+		{
+			foreach($tag->getChildTags() as $item)
+			{
+				$tags = self::getChildTree($item, $depth + 1);
+				if(count($tags) > 0)
+				{
+					$result[$item->getID()] = $tags;
+				}
+				array_push($result, $item->getID());
+			}
+		}
+		return $result;
+	}
+
+	/**
 	 *	コンストラクタ。
 	 *
 	 *	タグ名を指定した場合、カテゴリタグまたはルートからのパンくずを格納します。
@@ -46,7 +130,7 @@ class CTagTree
 	 *	@param string $name タグ名。省略可。
 	 *	@param string $entityID 実体ID。
 	 */
-	public function __construct($name = null, $entityID = null)
+	public function __construct($name = '', $entityID = null)
 	{
 		parent::__construct(self::$format, $entityID);
 		self::initialize();
@@ -76,23 +160,28 @@ class CTagTree
 			$body =& $this->storage();
 			$result = $body['cache'];
 		}
-		if($result === null)
+		if($result === null || count($result) == 0)
 		{
 			$result = array();
 			$name = $this->getID();
-			if($name === null)
+			if(strlen($name) === 0)
 			{
 				foreach(CTagCategory::getAll(false) as $item)
 				{
-					$tag = new CTag($item->getID());
-					$result = $this->getChildTree($tag);
+					$tags = self::getChildTree(new CTag($item->getID()));
+					if(count($tags) > 0)
+					{
+						$result[$item->getID()] = $tags;
+					}
+					array_push($result, $item->getID());
 				}
 			}
 			else
 			{
-				$tag = new CTag($name);
-				// TODO : 基準タグがある場合。
+				self::getParentTree($result, $name);
+				$this->cgen = count($result);
 			}
+			$body['cache'] = $result;
 			$this->commit();
 		}
 		return $result;
@@ -122,7 +211,7 @@ class CTagTree
 		$result = false;
 		try
 		{
-			self::getTotalCount();
+			self::initialize();
 			$pdo->beginTransaction();
 			$result = $db->execute(CFileSQLTagTree::getInstance()->delete,
 				array('name' => $this->getID())) && parent::delete();
@@ -152,10 +241,13 @@ class CTagTree
 		$pdo = $db->getPDO();
 		try
 		{
+			self::initialize();
 			$pdo->beginTransaction();
 			$result = $entity->commit() && ($this->isExists() || $db->execute(
-				CFileSQLTagTree::getInstance()->insert,
-				array('name' => $this->getID(), 'entity_id' => $entity->getID())));
+				CFileSQLTagTree::getInstance()->insert, array(
+					'name' => $this->getID(),
+					'sort' => $this->cgen,
+					'entity_id' => $entity->getID())));
 			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));
@@ -178,33 +270,14 @@ class CTagTree
 	 */
 	public function rollback()
 	{
+		self::initialize();
 		$body = CDBManager::getInstance()->execAndFetch(
 			CFileSQLTagTree::getInstance()->select, array('name' => $this->getID()));
 		$result = count($body) > 0;
 		if($result)
 		{
+			$this->cgen = $body[0]['SORT'];
 			$this->createEntity($body[0]['ENTITY_ID']);
-		}
-		return $result;
-	}
-
-	/**
-	 *	ツリー構造を取得します。
-	 *
-	 *	@param CTag $tag 親となるタグDAOオブジェクト。
-	 *	@param int $depth ネスト深度。
-	 *	@return array ツリー構造の配列。
-	 */
-	private function getChildTree(CTag $tag, $depth = 0)
-	{
-		$result = array();
-		if($tag->rollback() && depth < self::DEPTH)
-		{
-			foreach($tag->getChildTags() as $item)
-			{
-				$tags = $this->getChildTree($item, $depth + 1);
-				array_push(count($tags) === 0 ? $item->getID() : $tags);
-			}
 		}
 		return $result;
 	}

@@ -103,6 +103,7 @@ class CSceneView
 						$tag === null ? _('ARTICLES') : sprintf(_('TAG: %s'), $tag));
 				$xmlbuilder->createUserLogonInfo($user);
 				$xmlbuilder->createSearchInfo($rootPage ? null : $tag);
+				$xmlbuilder->createCategoryList();
 				if(count($topics) == 0)
 				{
 					$topic = $xmlbuilder->createTopic(

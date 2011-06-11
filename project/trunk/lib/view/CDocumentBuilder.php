@@ -2,6 +2,7 @@
 
 require_once(NUE_CONSTANTS);
 require_once(NUE_LIB_ROOT . '/dao/CUser.php');
+require_once(NUE_LIB_ROOT . '/dao/CTagTree.php');
 
 // TODO : これそろそろ分割考えたほうがいいんじゃねえの？
 
@@ -126,6 +127,10 @@ class CDocumentBuilder
 			$p = $this->createParagraph($topic);
 			$this->addText($p, $_GET['err']);
 		}
+		if(strlen(self::$trace) > 0)
+		{
+			$this->createCodeParagraph($this->createTopic(_('デバッグ用メッセージ')), self::$trace);
+		}
 		ob_start("ob_gzhandler");
 		if(self::DEBUG_OUTPUT_RAW_XML)
 		{
@@ -152,15 +157,26 @@ class CDocumentBuilder
 	 */
 	public function createHTML($xslpath)
 	{
-		if(strlen(self::$trace) > 0)
-		{
-			$this->createCodeParagraph($this->createTopic(_('デバッグ用メッセージ')), self::$trace);
-		}
 		$xslt = new XSLTProcessor();
 		$xsl = new DOMDocument();
 		$xsl->load(sprintf('%s/skin/%s/%s', NUE_ROOT, CConfigure::SKINSET, $xslpath));
 		$xslt->importStyleSheet($xsl);
 		return $xslt->transformToXML($this->getDOM());
+	}
+
+	/**
+	 *	カテゴリリストを作成します。
+	 *
+	 *	@return DOMElement カテゴリ一覧情報 オブジェクト。
+	 */
+	public function createCategoryList()
+	{
+		$dom = $this->getDOM();
+		$result = $dom->createElement('category');
+		$tree = new CTagTree();
+		$this->getRootElement()->appendChild($result);
+		$this->createCategoryListChild($result, $tree->getTree());
+		return $result;
 	}
 
 	/**
@@ -573,6 +589,39 @@ class CDocumentBuilder
 			}
 		}
 		return $result;
+	}
+
+	/**
+	 *	カテゴリリストを作成します。
+	 *
+	 *	@param DOMNode $topic 所属させるノード。
+	 *	@param array $tree カテゴリ ツリー情報。
+	 */
+	private function createCategoryListChild(DOMNode $parent, array $tree)
+	{
+		$dom = $this->getDOM();
+		$len = max(array_keys($tree));
+		for($i = 0; $i <= $len; $i++)
+		{
+			$li = $dom->createElement('li');
+			$parent->appendChild($li);
+			$item = $tree[$i];
+			if(isset($tree[$item]))
+			{
+				$ul = $dom->createElement('ul');
+				$lh = $dom->createElement('lh');
+				$this->createAttribute($lh, 'href', urlencode($item));
+				$this->addText($lh, $item);
+				$li->appendChild($ul);
+				$ul->appendChild($lh);
+				$this->createCategoryListChild($ul, $tree[$item]);
+			}
+			else
+			{
+				$this->createAttribute($li, 'href', urlencode($item));
+				$this->addText($li, $item);
+			}
+		}
 	}
 }
 
