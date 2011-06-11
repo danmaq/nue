@@ -119,7 +119,7 @@ class CTag
 	public function getChildTags()
 	{
 		$body =& $this->storage();
-		return self::createTagList($body['child']);
+		return self::createTagList($body['childs']);
 	}
 
 	/**

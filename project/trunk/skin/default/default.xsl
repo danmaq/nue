@@ -19,15 +19,14 @@
 				<meta charset="UTF-8" />
 				<xsl:if test="contains(@ua, ' IE ') or contains(@ua, ' MSIE ')">
 					<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+					<meta name="msapplication-navbutton-color" content="#BCC0DD" />
 				</xsl:if>
 				<meta name="application-name" content="Network Utterance Environment" />
 				<meta name="author" content="danmaq" />
-				<meta name="msapplication-navbutton-color" content="#BCC0DD" />
 				<title>
 					<xsl:if test="@title and string-length(@title) > 0"><xsl:value-of select="@title" /> - </xsl:if>
 					<xsl:value-of select="@site" />
 				</title>
-				<link href="./" rel="Start" />
 				<link href="./skin/default/default.css" rel="StyleSheet" />
 				<link href="http://twitter.com/danmaq" rel="Author" />
 				<xsl:comment> 評価中 </xsl:comment>
@@ -35,13 +34,12 @@
 			<body>
 				<header>
 					<h1>
-						<a href="./" rel="Start"><xsl:value-of select="@site" /></a>
+						<a href="./"><xsl:value-of select="@site" /></a>
 					</h1>
 					<xsl:apply-templates select="user|search" />
 				</header>
 				<xsl:apply-templates select="topic" />
-				<nav>
-				</nav>
+				<xsl:apply-templates select="category" />
 				<footer>
 					<hr />
 					<address><a href="http://nue.sourceforge.jp/">Network Utterance Environment</a> version <xsl:value-of select="@ver" /><br />by danmaq</address>
@@ -81,6 +79,32 @@
 				</form>
 			</article>
 		</section>
+	</xsl:template>
+
+	<!-- カテゴリ。 -->
+	<xsl:template match="category">
+		<nav>
+			<h2>カテゴリ</h2>
+			<ul><xsl:apply-templates select="li" /></ul>
+		</nav>
+	</xsl:template>
+
+	<!-- カテゴリ。 -->
+	<xsl:template match="li">
+		<li>
+			<xsl:choose>
+				<xsl:when test="count(ul) = 0">
+					<a href="?t={@href}"><xsl:value-of select="." /></a>
+				</xsl:when>
+				<xsl:otherwise><xsl:apply-templates /></xsl:otherwise>
+			</xsl:choose>
+		</li>
+	</xsl:template>
+
+	<!-- カテゴリ。 -->
+	<xsl:template match="ul">
+		<a href="?t={lh/@href}"><xsl:value-of select="lh" /></a>
+		<ul><xsl:apply-templates select="li" /></ul>
 	</xsl:template>
 
 	<!-- トピック。 -->
