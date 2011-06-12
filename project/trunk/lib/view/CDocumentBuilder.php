@@ -397,6 +397,8 @@ class CDocumentBuilder
 			if(preg_match('/\[\[\[(.*?):(.*?)\](.*)\]\]/', $match[0][0], $elm))
 			{
 				$tag = $elm[1];
+				$inner = $elm[3];
+				$result = $element;
 				$target = $this->getHLMLPath($tag);
 				if(file_exists($target))
 				{
@@ -412,9 +414,7 @@ class CDocumentBuilder
 					{
 						$paragraph = $element;
 					}
-					$inner = $elm[3];
 					$dom = $this->getDOM();
-					$result = $element;
 					require_once($target);
 					if($result !== $element)
 					{
