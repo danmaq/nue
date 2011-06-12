@@ -415,7 +415,7 @@ class CDocumentBuilder
 						$paragraph = $element;
 					}
 					$dom = $this->getDOM();
-					require_once($target);
+					require($target);
 					if($result !== $element)
 					{
 						$element->appendChild($result);
