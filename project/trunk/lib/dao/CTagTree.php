@@ -241,13 +241,14 @@ class CTagTree
 		$pdo = $db->getPDO();
 		try
 		{
-			self::initialize();
+			$params = array(
+				'name' => $this->getID(),
+				'sort' => $this->cgen);
+			$fcache = CFileSQLTagTree::getInstance();
 			$pdo->beginTransaction();
-			$result = $entity->commit() && ($this->isExists() || $db->execute(
-				CFileSQLTagTree::getInstance()->insert, array(
-					'name' => $this->getID(),
-					'sort' => $this->cgen,
-					'entity_id' => $entity->getID())));
+			$result = $entity->commit() &&
+				(($this->isExists() && $db->execute($fcache->update, $params)) || $db->execute(
+					$fcache->insert, $params + array('entity_id' => $entity->getID())));
 			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));

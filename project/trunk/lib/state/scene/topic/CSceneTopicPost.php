@@ -20,6 +20,7 @@ class CSceneTopicPost
 	private $format = array(
 		'caption' => '',
 		'description' => '',
+		'uts' => 0,
 	);
 
 	/**	エラー表示。 */
@@ -47,6 +48,7 @@ class CSceneTopicPost
 	 */
 	private function __construct()
 	{
+		$format['uts'] = time();
 	}
 
 	/**
@@ -99,8 +101,9 @@ class CSceneTopicPost
 				{
 					$topic = new CTopic();
 				}
+				$uts = strtotime($_POST['uts']);
+				$topic->userTimeStamp = ($uts !== false && $uts >= 0) ? $uts : time();
 				$body =& $topic->storage();
-				// TODO : HTML対応
 				$body['caption'] = htmlspecialchars($caption, ENT_COMPAT, 'UTF-8');
 				$descs = preg_split('/(\x0d\x0a|\x0d|\x0a){2,}/', trim($_POST['description']), -1, PREG_SPLIT_NO_EMPTY);
 				for($i = count($descs); --$i >= 0; )

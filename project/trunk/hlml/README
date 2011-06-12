@@ -18,8 +18,16 @@ HLML - Html Like Markup Language
 
 ■拡張用プラグイン開発者の方へ
 
+注意 : Version 0.3.59から、$attrsの内部構造が変更となりました。
+Version 0.3.58以前のバージョン向けで、かつ$attrsをsimpleHMLMConvert()関数以外で
+使用している場合、0.3.59以降で使用するために若干の改良が必要です。
+
 ○プリセット変数($result以外は変更しないでください)
 $dom：DOMDocumentオブジェクト。
 $tag：タグ名。
-$attrs：属性一覧。[[key,value][key,value]...]
+$attrs：属性一覧が格納された連想配列。
 $inner：タグ内テキスト。
+$result：変換結果を格納してください。
+$paragraph：段落DOMNode。
+$element：直属の親となる要素。
+(=$paragraphかもしれないし、さらにその配下かもしれない)

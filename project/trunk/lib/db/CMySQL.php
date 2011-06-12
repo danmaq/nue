@@ -142,6 +142,11 @@ class CMySQL
 		try
 		{
 			$stmt = $this->getPDO()->prepare($sql);
+			if(!$stmt)
+			{
+				error_log($sql);
+				throw new Exception($stmt);
+			}
 			if($stmt->execute($args))
 			{
 				$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -155,6 +160,7 @@ class CMySQL
 		catch(Exception $e)
 		{
 			$this->exception = $e;
+			throw $e;
 		}
 		return $result;
 	}

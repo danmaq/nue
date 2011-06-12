@@ -104,28 +104,17 @@ class CSceneView
 				$xmlbuilder->createUserLogonInfo($user);
 				$xmlbuilder->createSearchInfo($rootPage ? null : $tag);
 				$xmlbuilder->createCategoryList();
-				if(count($topics) == 0)
+				if(count($topics) === 0)
 				{
 					$topic = $xmlbuilder->createTopic(
 						_('そのタグはどの記事にも使用されていない。'));
 					$p = $xmlbuilder->createParagraph($topic);
-					$xmlbuilder->createHTMLElement($p, 'a', array('href' => '?f=core/tag/all'),
-						_('全タグ一覧表示'));
 				}
 				else
 				{
 					foreach($topics as $item)
 					{
-						$e = $item->getEntity();
-						$body =& $e->storage();
-						$topic = $xmlbuilder->createTopic(
-							date('[Y/m/d]', $e->getUpdated()) . $body['caption']);
-						$xmlbuilder->createAttribute($topic, 'id', $item->getID());
-						foreach($item->getDescription() as $d)
-						{
-							$p = $xmlbuilder->createParagraph($topic);
-							$xmlbuilder->addHLML($p, $d);
-						}
+						$xmlbuilder->createTopic($item);
 					}
 				}
 				if($user !== null)
@@ -138,7 +127,7 @@ class CSceneView
 						$xmlbuilder->createHTMLElement($p, 'a',
 							array('href' => '?f=core/article/topic/new'),
 							_('記事作成'));
-						if($tag !== null)
+						if($tag !== null && count($topics) > 0)
 						{
 							$xmlbuilder->createHTMLElement($p, 'br');
 							$xmlbuilder->createHTMLElement($p, 'a',

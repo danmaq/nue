@@ -26,6 +26,9 @@ class CSceneTopicNew
 	/**	内容。 */
 	private $description = ' ';
 
+	/**	ユーザ タイムスタンプ。 */
+	public $userTimeStamp;
+
 	/**	タグ一覧。 */
 	private $tags = array();
 
@@ -48,6 +51,7 @@ class CSceneTopicNew
 	 */
 	private function __construct()
 	{
+		$this->userTimeStamp = time();
 	}
 
 	/**
@@ -80,6 +84,7 @@ class CSceneTopicNew
 						$this->id = $_GET['id'];
 						$this->caption = $body['caption'];
 						$this->description = join("\n\n", $topic->getDescription());
+						$this->userTimeStamp = $topic->userTimeStamp;
 						$tags = $topic->getTagAssignList();
 					}
 				}
@@ -119,6 +124,8 @@ class CSceneTopicNew
 			$p = $xmlbuilder->createParagraph($form);
 			$xmlbuilder->createTextInput($p, 'text', 'caption',
 				$this->caption, _('タイトル'), 1, 255);
+			$xmlbuilder->createTextInput($p, 'text', 'uts',
+				date('Y-m-d H:i:s', $this->userTimeStamp), _('公開日時'), 1, 255);
 			$xmlbuilder->createTextArea($p, 'description',
 				_('記事内容'), $this->description);
 

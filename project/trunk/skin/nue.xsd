@@ -8,9 +8,14 @@
 	<xsd:element name="body" type="BodyType" />
 	<xsd:element name="user" type="UserType" />
 	<xsd:element name="search" type="SearchType" />
+	<xsd:element name="category" type="CategoryType" />
 	<xsd:element name="topic" type="TopicType" />
 	<xsd:element name="form" type="FormType" />
 	<xsd:element name="p" type="ParagraphType" />
+	<xsd:element name="lh" type="LHType" />
+	<xsd:element name="li" type="LIType" />
+	<xsd:element name="ul" type="ULType" />
+
 	<xsd:complexType name="BodyType">
 		<xsd:sequence>
 			<xsd:attribute name="title" type="xsd:string" use="required" />
@@ -19,31 +24,63 @@
 			<xsd:element ref="topic" minOccurs="1" />
 		</xsd:sequence>
 	</xsd:complexType>
+
 	<xsd:complexType name="UserType">
 		<xsd:sequence>
 			<xsd:attribute name="id" type="xsd:string" />
 			<xsd:attribute name="name" type="xsd:string" />
 		</xsd:sequence>
 	</xsd:complexType>
+
 	<xsd:complexType name="SearchType">
 		<xsd:sequence>
 			<xsd:attribute name="tag" type="xsd:string" />
 		</xsd:sequence>
 	</xsd:complexType>
+
+	<xsd:complexType name="CategoryType">
+		<xsd:sequence>
+			<xsd:element ref="li" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ULType">
+		<xsd:sequence>
+			<xsd:element ref="li" minOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="LIType">
+		<xsd:sequence>
+			<xsd:attribute name="href" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="LH">
+		<xsd:sequence>
+			<xsd:attribute name="href" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+
 	<xsd:complexType name="TopicType">
 		<xsd:sequence>
+			<xsd:attribute name="id" type="xsd:string" />
 			<xsd:attribute name="title" type="xsd:string" use="required" />
+			<xsd:attribute name="created" type="xsd:string" />
+			<xsd:attribute name="updated" type="xsd:string" />
 			<xsd:element ref="p" />
 			<xsd:element ref="form" />
 			<xsd:element ref="id" />
 		</xsd:sequence>
 	</xsd:complexType>
+
 	<xsd:complexType name="form">
 		<xsd:sequence>
 			<xsd:attribute name="action" type="xsd:anyURI" use="required" />
 			<xsd:element ref="p" />
 		</xsd:sequence>
 	</xsd:complexType>
+
 	<xsd:complexType name="p">
 		<xsd:sequence>
 			<xsd:attribute name="title" type="xsd:string" />

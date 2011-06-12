@@ -1,8 +1,10 @@
 INSERT INTO NUE_INDEX_TOPIC
 (
-	ID
+	ID,
+	SORT
 )
 VALUES
 (
-	:id
+	:id,
+	:sort
 );

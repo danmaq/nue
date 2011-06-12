@@ -22,6 +22,9 @@ class CTopic
 	/**	記事数。 */
 	private static $topics = -1;
 
+	/**	ユーザ タイムスタンプ。 */
+	public $userTimeStamp;
+
 	/**	ユーザDAOオブジェクト。 */
 	private $user = null;
 
@@ -41,6 +44,12 @@ class CTopic
 			$db = CDBManager::getInstance();
 			$db->execute($fcache->ddl);
 			self::$topics = $db->singleFetch($fcache->selectCount, 'COUNT');
+
+			// !!! Update patch v0.3.58->v0.3.59 !!!
+			if(count($db->execAndFetch($fcache->descExistSort)) === 0)
+			{
+				$db->execute($fcache->alterAddSort);
+			}
 		}
 		return self::$topics;
 	}
@@ -78,6 +87,7 @@ class CTopic
 		// IDなしはテンポラリ扱い
 		parent::__construct(self::$format, $id);
 		self::getTotalCount();
+		$this->userTimeStamp = time();
 	}
 
 	/**
@@ -235,10 +245,15 @@ class CTopic
 		$pdo = $db->getPDO();
 		try
 		{
+			$params = array(
+				'id' => $this->getID(),
+				'sort' => date('Y-m-d H:i:s', $this->userTimeStamp));
+			$fcache = CFileSQLTopic::getInstance();
 			$pdo->beginTransaction();
 			$exists = $this->isExists();
-			$result = $entity->commit() && ($exists || $db->execute(
-				CFileSQLTopic::getInstance()->insert, array('id' => $entity->getID())));
+			$result = $entity->commit() &&
+				$db->execute($exists ? $fcache->update : $fcache->insert, $params);
+			error_log(print_r($params, true));
 			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));
@@ -268,10 +283,12 @@ class CTopic
 		$result = false;
 		if($id !== null)	// IDなしはテンポラリ扱い
 		{
-			$db = CDBManager::getInstance();
-			$result = $this->isExists();
+			$body = CDBManager::getInstance()->execAndFetch(
+				CFileSQLTopic::getInstance()->select, array('id' => $id));
+			$result = count($body) > 0;
 			if($result)
 			{
+				$this->userTimeStamp = $body[0]['SORT'];
 				$entity = $this->createEntity($id);
 			}
 		}

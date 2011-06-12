@@ -96,17 +96,10 @@ class CSceneTopicView
 				$xmlbuilder = new CDocumentBuilder(_('TOPIC'));
 				$xmlbuilder->createUserLogonInfo($user);
 				$xmlbuilder->createSearchInfo();
-				$t = $xmlbuilder->createTopic($body['caption']);
-				foreach($topic->getDescription() as $item)
-				{
-					$p = $xmlbuilder->createParagraph($t);
-					$xmlbuilder->addHLML($p, $item);
-				}
+				$xmlbuilder->createTopic($topic);
 
 				$t = $xmlbuilder->createTopic(_('タグ'));
 				$p = $xmlbuilder->createParagraph($t);
-				$xmlbuilder->createHTMLElement($p, 'a', array('href' => '?f=core/tag/all'),
-					_('全タグ一覧表示'));
 				$p = $xmlbuilder->createParagraph($t);
 				foreach($topic->getTagAssignList() as $item)
 				{
@@ -119,7 +112,10 @@ class CSceneTopicView
 				$t = $xmlbuilder->createTopic(_('この記事について'));
 				$p = $xmlbuilder->createParagraph($t);
 				$xmlbuilder->addText(
-					$p, _('投稿日: ') . date('Y/m/d H:i', $topic->getEntity()->getUpdated()));
+					$p, _('投稿日: ') . date('Y/m/d H:i', $topic->userTimeStamp));
+				$xmlbuilder->createHTMLElement($p, 'br');
+				$xmlbuilder->addText(
+					$p, _('更新日: ') . date('Y/m/d H:i', $topic->getEntity()->getUpdated()));
 
 				$p = $xmlbuilder->createParagraph($t);
 				$xmlbuilder->addText(
@@ -138,6 +134,9 @@ class CSceneTopicView
 						$xmlbuilder->createHTMLElement($p, 'a',
 							array('href' => '?f=core/article/topic/remove&amp;id=' . $topic->getID()),
 							_('記事削除'));
+						$xmlbuilder->addText($p, ' | ');
+						$xmlbuilder->createHTMLElement($p, 'a',
+							array('href' => '?f=core/article/topic/new'), _('記事新規作成'));
 					}
 				}
 				$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);

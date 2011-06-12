@@ -2,6 +2,7 @@
 
 require_once(NUE_CONSTANTS);
 require_once(NUE_LIB_ROOT . '/dao/CUser.php');
+require_once(NUE_LIB_ROOT . '/dao/CTopic.php');
 require_once(NUE_LIB_ROOT . '/dao/CTagTree.php');
 
 // TODO : これそろそろ分割考えたほうがいいんじゃねえの？
@@ -222,13 +223,28 @@ class CDocumentBuilder
 	/**
 	 *	空のトピックを作成します。
 	 *
-	 *	@param string $caption 見出し。
+	 *	@param mixed $caption 見出し、または記事DAOオブジェクト。
 	 *	@return DOMElement 空のトピック オブジェクト。
 	 */
 	public function createTopic($caption)
 	{
 		$topic = $this->getDOM()->createElement('topic');
-		$this->createAttribute($topic, 'title', $caption);
+		$title = $caption;
+		if($caption instanceof CTopic)
+		{
+			$entity = $caption->getEntity();
+			$body =& $entity->storage();
+			$title = $body['caption'];
+			$this->createAttribute($topic, 'id', $caption->getID());
+			$this->createAttribute($topic, 'updated', date('Y/n/j', $entity->getUpdated()));
+			$this->createAttribute($topic, 'created', date('Y/n/j', $caption->userTimeStamp));
+			foreach($caption->getDescription() as $desc)
+			{
+				$p = $this->createParagraph($topic);
+				$this->addHLML($p, $desc);
+			}
+		}
+		$this->createAttribute($topic, 'title', $title);
 		$this->getRootElement()->appendChild($topic);
 		return $topic;
 	}
@@ -370,38 +386,44 @@ class CDocumentBuilder
 	 *
 	 *	@param DOMNode $element 所属させる要素。
 	 *	@param string $expr 文字列。
+	 *	@param string $paragraph 一番親となる要素。
 	 */
-	public function addHLML(DOMNode $element, $expr)
+	public function addHLML(DOMNode $element, $expr, DOMNode $paragraph = null)
 	{
-		$dom = $this->getDOM();
 		$result = array();
-		if(preg_match('/^(.*?)\[\[\[([a-zA-Z_]+?):(.*?)\](.*?)\]\](.*)$/',
-			$expr, $elm, PREG_OFFSET_CAPTURE))
+		if(preg_match('/\[((?>[^[\]]+)|(?R))*\]/', $expr, $match, PREG_OFFSET_CAPTURE))
 		{
-			$this->addText($element, $elm[1][0]);
-			$tag = $elm[2][0];
-			$elm[3][0] = preg_replace('/\\\,/', "\1\x00", $elm[3][0]);
-			$attrs = preg_split('/\,/', $elm[3][0], -1, PREG_SPLIT_NO_EMPTY);
-			for($i = count($attrs); --$i >= 0; )
+			$this->addText($element, substr($expr, 0, $match[0][1]));
+			if(preg_match('/\[\[\[(.*?):(.*?)\](.*)\]\]/', $match[0][0], $elm))
 			{
-				$attrs[$i] = preg_replace('/\x00/', ',', $attrs[$i]);
-				$attrs[$i] = preg_split('/=/', $attrs[$i], 2);
+				$tag = $elm[1];
+				$target = $this->getHLMLPath($tag);
+				if(file_exists($target))
+				{
+					$elm[2] = preg_replace('/\\\,/', "\x00", $elm[2]);
+					$attrs_base = preg_split('/\,/', $elm[2], -1, PREG_SPLIT_NO_EMPTY);
+					$attrs = array();
+					for($i = count($attrs_base); --$i >= 0; )
+					{
+						$kv = preg_split('/=/', preg_replace('/\x00/', ',', $attrs_base[$i]), 2);
+						$attrs[$kv[0]] = $kv[1];
+					}
+					if($paragraph === null)
+					{
+						$paragraph = $element;
+					}
+					$inner = $elm[3];
+					$dom = $this->getDOM();
+					$result = $element;
+					require_once($target);
+					if($result !== $element)
+					{
+						$element->appendChild($result);
+					}
+				}
+				$this->addHLML($result, $inner, $paragraph);
 			}
-			$inner = $elm[4][0];
-			$expr = substr($expr, $elm[5][1]);
-			$result = $element;
-			$target = $this->getHLMLPath($tag);
-			$exists = file_exists($target);
-			if($exists)
-			{
-				require_once($target);
-			}
-			if($exists && $result !== $element)
-			{
-				$element->appendChild($result);
-			}
-			$this->addHLML($result, $inner);
-			$this->addHLML($element, $expr);
+			$this->addHLML($element, substr($expr, $match[0][1] + strlen($match[0][0])), $paragraph);
 		}
 		else
 		{
@@ -568,7 +590,7 @@ class CDocumentBuilder
 	 *	既定のHLML変換をします。
 	 *
 	 *	@param string $tag 要素名。
-	 *	@param array $attrs 要素一覧。[[key,value][key,value]...]
+	 *	@param array $attrs 属性一覧が格納された連想配列。
 	 *	@param array $allow 許容する要素一覧。(全許容する場合null、全禁止する場合空の配列)
 	 *	@return DOMElement 要素オブジェクト。
 	 */
@@ -581,11 +603,11 @@ class CDocumentBuilder
 		{
 			$allow = array_merge($allow, self::$hlmlAutoAllow);
 		}
-		foreach($attrs as $item)
+		foreach(array_keys($attrs) as $item)
 		{
-			if($allAllow || in_array($item[0], $allow))
+			if($allAllow || in_array($item, $allow))
 			{
-				$this->createAttribute($result, $item[0], $item[1]);
+				$this->createAttribute($result, $item, $attrs[$item]);
 			}
 		}
 		return $result;
@@ -600,26 +622,30 @@ class CDocumentBuilder
 	private function createCategoryListChild(DOMNode $parent, array $tree)
 	{
 		$dom = $this->getDOM();
-		$len = max(array_keys($tree));
-		for($i = 0; $i <= $len; $i++)
+		$keys = array_keys($tree);
+		if(count($keys) > 0)
 		{
-			$li = $dom->createElement('li');
-			$parent->appendChild($li);
-			$item = $tree[$i];
-			if(isset($tree[$item]))
+			$len = max($keys);
+			for($i = 0; $i <= $len; $i++)
 			{
-				$ul = $dom->createElement('ul');
-				$lh = $dom->createElement('lh');
-				$this->createAttribute($lh, 'href', urlencode($item));
-				$this->addText($lh, $item);
-				$li->appendChild($ul);
-				$ul->appendChild($lh);
-				$this->createCategoryListChild($ul, $tree[$item]);
-			}
-			else
-			{
-				$this->createAttribute($li, 'href', urlencode($item));
-				$this->addText($li, $item);
+				$li = $dom->createElement('li');
+				$parent->appendChild($li);
+				$item = $tree[$i];
+				if(isset($tree[$item]))
+				{
+					$ul = $dom->createElement('ul');
+					$lh = $dom->createElement('lh');
+					$this->createAttribute($lh, 'href', urlencode($item));
+					$this->addText($lh, $item);
+					$li->appendChild($ul);
+					$ul->appendChild($lh);
+					$this->createCategoryListChild($ul, $tree[$item]);
+				}
+				else
+				{
+					$this->createAttribute($li, 'href', urlencode($item));
+					$this->addText($li, $item);
+				}
 			}
 		}
 	}
@@ -632,7 +658,7 @@ class CDocumentBuilder
  */
 function trace($body)
 {
-	CDocumentBuilder::$trace .= "\n" . $body;
+	CDocumentBuilder::$trace .= "\n\n" . $body;
 }
 
 ?>
