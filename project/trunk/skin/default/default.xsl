@@ -73,9 +73,10 @@
 						<input type="text" id="t" name="t" value="{@tag}" maxlength="255" placeholder="255字以内" />
 						<input type="submit" value="検索" />
 					</p>
-					<xsl:if test="@tag">
-						<p>現在の検索タグ: <em><xsl:value-of select="@tag" /></em></p>
-					</xsl:if>
+					<p>
+						<xsl:if test="@tag">現在の検索タグ: <em><xsl:value-of select="@tag" /></em><br /></xsl:if>
+						<a href="?f=core/tag/all">登録タグ一覧</a>
+					</p>
 				</form>
 			</article>
 		</section>
@@ -111,6 +112,7 @@
 	<xsl:template match="topic">
 		<section>
 			<h2>
+				<xsl:if test="@created">[<xsl:value-of select="@created" />]</xsl:if>
 				<xsl:choose>
 					<xsl:when test="@id">
 						<a href="?{@id}"><xsl:value-of select="@title" /></a>
