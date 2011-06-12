@@ -148,6 +148,10 @@ class CTag
 	{
 		$result = array();
 		$name = $this->getID();
+
+		// !!! Update patch v0.3.58->v0.3.59 !!!
+		CTopic::getTotalCount();
+
 		CTagAssign::initialize();
 		foreach(CDBManager::getInstance()->execAndFetch(
 			CFileSQLTagAssign::getInstance()->selectFromName, array('name' => $name)) as $item)
