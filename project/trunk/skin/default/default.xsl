@@ -104,6 +104,9 @@
 
 	<!-- カテゴリ。 -->
 	<xsl:template match="ul">
+		<xsl:if test="@title">
+			<h3><xsl:value-of select="@title" /></h3>
+		</xsl:if>
 		<a href="?t={lh/@href}"><xsl:value-of select="lh" /></a>
 		<ul><xsl:apply-templates select="li" /></ul>
 	</xsl:template>
@@ -121,7 +124,7 @@
 				</xsl:choose>
 			</h2>
 			<article>
-				<xsl:apply-templates select="p|form" />
+				<xsl:apply-templates select="p|ul|form" />
 			</article>
 		</section>
 	</xsl:template>
@@ -130,7 +133,7 @@
 	<xsl:template match="form">
 		<form onsubmit="return true;">
 			<xsl:copy-of select="@*" />
-			<xsl:apply-templates select="p" />
+			<xsl:apply-templates select="p|ul" />
 		</form>
 	</xsl:template>
 

@@ -256,14 +256,14 @@ class CDocumentBuilder
 					}
 					$li = $dom->createElement('li');
 					$ul->appendChild($li);
-					$this->addText($li, substr($desc, 1));
+					$this->addHLML($li, substr($desc, 1));
 				}
 				else
 				{
 					$ul = null;
+					$p = $this->createParagraph($topic);
+					$this->addHLML($p, $desc);
 				}
-				$p = $this->createParagraph($topic);
-				$this->addHLML($p, $desc);
 			}
 		}
 		$this->createAttribute($topic, 'title', $title);
