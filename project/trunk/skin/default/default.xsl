@@ -94,7 +94,7 @@
 	<xsl:template match="li">
 		<li>
 			<xsl:choose>
-				<xsl:when test="count(ul) = 0">
+				<xsl:when test="count(ul) = 0 or @href">
 					<a href="?t={@href}"><xsl:value-of select="." /></a>
 				</xsl:when>
 				<xsl:otherwise><xsl:apply-templates /></xsl:otherwise>
@@ -107,7 +107,9 @@
 		<xsl:if test="@title">
 			<h3><xsl:value-of select="@title" /></h3>
 		</xsl:if>
-		<a href="?t={lh/@href}"><xsl:value-of select="lh" /></a>
+		<xsl:if test="lh">
+			<a href="?t={lh/@href}"><xsl:value-of select="lh" /></a>
+		</xsl:if>
 		<ul><xsl:apply-templates select="li" /></ul>
 	</xsl:template>
 
