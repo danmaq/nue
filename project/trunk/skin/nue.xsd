@@ -54,6 +54,7 @@
 	<xsd:complexType name="LIType">
 		<xsd:sequence>
 			<xsd:attribute name="href" type="xsd:string" />
+			<xsd:element ref="ul" />
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -70,14 +71,15 @@
 			<xsd:attribute name="created" type="xsd:string" />
 			<xsd:attribute name="updated" type="xsd:string" />
 			<xsd:element ref="p" />
+			<xsd:element ref="ul" />
 			<xsd:element ref="form" />
-			<xsd:element ref="id" />
 		</xsd:sequence>
 	</xsd:complexType>
 
 	<xsd:complexType name="form">
 		<xsd:sequence>
 			<xsd:attribute name="action" type="xsd:anyURI" use="required" />
+			<xsd:element ref="ul" />
 			<xsd:element ref="p" />
 		</xsd:sequence>
 	</xsd:complexType>
