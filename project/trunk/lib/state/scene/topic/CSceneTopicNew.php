@@ -88,10 +88,6 @@ class CSceneTopicNew
 						$tags = $topic->getTagAssignList();
 					}
 				}
-				while(count($tags) < CConfigure::TAG_MAX)
-				{
-					array_unshift($tags, null);
-				}
 				$this->tags = $tags;
 				if(isset($_GET['caption']))
 				{
@@ -126,20 +122,11 @@ class CSceneTopicNew
 				$this->caption, _('タイトル'), 1, 255);
 			$xmlbuilder->createTextInput($p, 'text', 'uts',
 				date('Y-m-d H:i:s', $this->userTimeStamp), _('公開日時'), 1, 255);
+			$tags = join(' ', $this->tags);
+			$xmlbuilder->createTextInput($p, 'text', 'tags',
+				strlen($tags) > 0 ? $tags : CConfigure::DEFAULT_TAG, _('タグ'), 1, 255);
 			$xmlbuilder->createTextArea($p, 'description',
 				_('記事内容'), $this->description);
-
-			$p = $xmlbuilder->createParagraph($form, _('タグ'));
-			$tags = $this->tags;
-			for($i = count($tags); --$i >= 0; )
-			{
-				$mtag = $tags[$i];
-				$value = $mtag === null ?
-					($i == 0 && $newtopic ? CConfigure::DEFAULT_TAG : '') :
-					$mtag->getTag()->getID();
-				$xmlbuilder->createTextInput($p, 'text', 'tag_' . $i, $value,
-					sprintf('%s %02d', _('タグ'), CConfigure::TAG_MAX - $i), 1, 255);
-			}
 
 			$p = $xmlbuilder->createParagraph($form);
 			if($this->id !== null)

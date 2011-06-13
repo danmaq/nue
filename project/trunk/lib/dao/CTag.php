@@ -51,6 +51,21 @@ class CTag
 	{
 		self::getTotalCount();
 		CDBManager::getInstance()->execute(CFileSQLTag::getInstance()->deleteNoAssign);
+		function isRollback($v)
+		{
+			$tag = new CTag($v);
+			return $tag->rollback();
+		}
+		foreach(self::getAll() as $item)
+		{
+			$body =& $item->storage();
+			if(strlen($body['parent'] > 0) && !isRollback($body['parent']))
+			{
+				$body['parent'] = '';
+			}
+			$body['childs'] = array_filter($body['childs'], 'isRollback');
+			$item->commit();
+		}
 	}
 
 	/**
