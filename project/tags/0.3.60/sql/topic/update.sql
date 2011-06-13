@@ -1,0 +1,3 @@
+UPDATE		NUE_INDEX_TOPIC
+	SET		SORT = :sort
+	WHERE	ID = :id;
