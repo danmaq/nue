@@ -45,6 +45,15 @@ class CTag
 	}
 
 	/**
+	 *	割り当てられていないタグを削除します。
+	 */
+	public static function cleanup()
+	{
+		self::getTotalCount();
+		CDBManager::getInstance()->execute(CFileSQLTag::getInstance()->deleteNoAssign);
+	}
+
+	/**
 	 *	タグ一覧を取得します。
 	 *
 	 *	@param boolean $rollback 自動でロールバックするかどうか。規定値はtrue。
