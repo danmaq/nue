@@ -61,6 +61,7 @@ class CTagTree
 				throw new Exception(_('DB書き込みに失敗'));
 			}
 			$pdo->commit();
+			CTag::cleanup();
 		}
 		catch(Exception $e)
 		{

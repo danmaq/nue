@@ -29,6 +29,7 @@
 		<xsd:sequence>
 			<xsd:attribute name="id" type="xsd:string" />
 			<xsd:attribute name="name" type="xsd:string" />
+			<xsd:attribute name="root" type="xsd:string" />
 		</xsd:sequence>
 	</xsd:complexType>
 

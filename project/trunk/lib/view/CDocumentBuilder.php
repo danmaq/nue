@@ -177,6 +177,7 @@ class CDocumentBuilder
 		$tree = new CTagTree();
 		$this->getRootElement()->appendChild($result);
 		$this->createCategoryListChild($result, $tree->getTree());
+		$this->getRootElement()->appendChild($result);
 		return $result;
 	}
 
@@ -198,6 +199,10 @@ class CDocumentBuilder
 				$this->createAttribute($result, 'id', $user->getID());
 			}
 			$this->createAttribute($result, 'name', $body['name']);
+			if($body['root'])
+			{
+				$this->createAttribute($result, 'root', 'root');
+			}
 		}
 		$this->getRootElement()->appendChild($result);
 		return $result;
@@ -228,7 +233,8 @@ class CDocumentBuilder
 	 */
 	public function createTopic($caption)
 	{
-		$topic = $this->getDOM()->createElement('topic');
+		$dom = $this->getDOM();
+		$topic = $dom->createElement('topic');
 		$title = $caption;
 		if($caption instanceof CTopic)
 		{
@@ -238,8 +244,24 @@ class CDocumentBuilder
 			$this->createAttribute($topic, 'id', $caption->getID());
 			$this->createAttribute($topic, 'updated', date('Y/n/j', $entity->getUpdated()));
 			$this->createAttribute($topic, 'created', date('Y/n/j', $caption->userTimeStamp));
+			$ul = null;
 			foreach($caption->getDescription() as $desc)
 			{
+				if(preg_match('/^@/', $desc))
+				{
+					if($ul === null)
+					{
+						$ul = $dom->createElement('ul');
+						$topic->appendChild($ul);
+					}
+					$li = $dom->createElement('li');
+					$ul->appendChild($li);
+					$this->addText($li, substr($desc, 1));
+				}
+				else
+				{
+					$ul = null;
+				}
 				$p = $this->createParagraph($topic);
 				$this->addHLML($p, $desc);
 			}
