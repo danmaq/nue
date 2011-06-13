@@ -21,6 +21,7 @@ class CSceneTopicPost
 		'caption' => '',
 		'description' => '',
 		'uts' => 0,
+		'tags' => CConfigure::DEFAULT_TAG
 	);
 
 	/**	エラー表示。 */
@@ -118,15 +119,8 @@ class CSceneTopicPost
 				}
 				$this->topic = $topic;
 
-				$tags = array();
-				for($i = CConfigure::TAG_MAX; --$i >= 0; )
-				{
-					$ntag = trim($_POST['tag_' . $i]);
-					if($ntag !== '')
-					{
-						array_push($tags, $ntag);
-					}
-				}
+				$tags = preg_split('/[\s　]+/', trim($_POST['tags']));
+				$tags = array_splice($tags, 0, min(count($tags), CConfigure::TAG_MAX));
 				$topic->setTagAssignList($tags);
 			}
 		}
