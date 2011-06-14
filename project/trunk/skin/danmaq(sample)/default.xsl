@@ -37,10 +37,17 @@
 						<a href="./"><img alt="{@site}" src="danmaq(sample)/image/logo.png" height="60" width="236" /></a><br />
 						GAMES, ILLUSTRATIONS and MUSICS
 					</h1>
+					<div id="ads">
+						<p>
+							<img alt="広告" src="" height="60" width="468" />
+						</p>
+					</div>
 					<xsl:apply-templates select="user|search" />
+					<xsl:apply-templates select="category" />
 				</header>
-				<xsl:apply-templates select="topic" />
-				<xsl:apply-templates select="category" />
+				<div id="topics">
+					<xsl:apply-templates select="topic" />
+				</div>
 				<footer>
 					<hr />
 					<address><a href="http://nue.sourceforge.jp/">Network Utterance Environment</a> version <xsl:value-of select="@ver" /><br />by danmaq</address>
@@ -51,6 +58,7 @@
 
 	<!-- ログオン情報。 -->
 	<xsl:template match="user">
+		<h2>User session</h2>
 		<p>
 			<xsl:choose>
 				<xsl:when test="@id and @name">
@@ -66,7 +74,7 @@
 	<xsl:template match="search">
 		<!-- TODO : トピック使いまわせないか？ -->
 		<section>
-			<h2>タグ検索</h2>
+			<h2>Tag search</h2>
 			<article>
 				<form action="./" method="get">
 					<p>
@@ -86,7 +94,7 @@
 	<!-- カテゴリ。 -->
 	<xsl:template match="category">
 		<nav>
-			<h2>カテゴリ</h2>
+			<h2>Contents</h2>
 			<ul><xsl:apply-templates select="li" /></ul>
 		</nav>
 	</xsl:template>
