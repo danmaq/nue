@@ -83,12 +83,17 @@ class CSceneTopicNew
 						$body =& $topic->storage();
 						$this->id = $_GET['id'];
 						$this->caption = $body['caption'];
-						$this->description = join("\n\n", $topic->getDescription());
+						$this->description = implode("\n\n", $topic->getDescription());
 						$this->userTimeStamp = $topic->userTimeStamp;
 						$tags = $topic->getTagAssignList();
 					}
 				}
-				$this->tags = $tags;
+				$tagsname = array();
+				foreach($tags as $item)
+				{
+					array_push($tagsname, $item->getTag()->getID());
+				}
+				$this->tags = implode(' ', $tagsname);
 				if(isset($_GET['caption']))
 				{
 					$this->caption = $_GET['caption'];
@@ -122,7 +127,7 @@ class CSceneTopicNew
 				$this->caption, _('タイトル'), 1, 255);
 			$xmlbuilder->createTextInput($p, 'text', 'uts',
 				date('Y-m-d H:i:s', $this->userTimeStamp), _('公開日時'), 1, 255);
-			$tags = join(' ', $this->tags);
+			$tags = $this->tags;
 			$xmlbuilder->createTextInput($p, 'text', 'tags',
 				strlen($tags) > 0 ? $tags : CConfigure::DEFAULT_TAG, _('タグ'), 1, 255);
 			$xmlbuilder->createTextArea($p, 'description',
