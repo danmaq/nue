@@ -2,45 +2,155 @@
 
 @media all
 {
-	#ads
-	{
-	}
 
 	body
 	{
-		background-color: Black;
-		border: 1px tomato solid;
-		color: rgb( 188, 192, 221 );
-		font-family: "ÉÅÉCÉäÉI", sans-serif;
+		background: Black url("image/bg_default.png") no-repeat center center fixed;
+		color: rgb(188, 192, 221);
+		font-family: "„É°„Ç§„É™„Ç™", "Osaka", sans-serif;
 		margin: 0px;
-	}
-
-	footer
-	{
-		text-align: center;
 	}
 
 	h1
 	{
-		margin: 0px;
-		font-size: 100%;
+		margin-top: 0.5ex;
+		margin-bottom: 0px;
+		font-size: 78%;
 		font-weight: normal;
 	}
 
 	h2
 	{
-		border-left: 1ex double rgb( 188, 192, 221 );
+		border-left: 1ex solid rgb(188, 192, 221);
 		font-size: 120%;
+		margin-top: 0.5ex;
+		margin-bottom: 0px;
 		padding-left: 1ex;
 	}
 
-	header, nav
+	h3
 	{
-		width: 236px;
+		border-top: dotted 2px rgb(188, 192, 221);
+		clear: right;
+		font-size: 100%;
+		margin-bottom: 0px;
+	}
+
+	hr
+	{
+		display: none;
 	}
 
 	img
 	{
-		border-style: none;
+		border: 0px none Black;
+		vertical-align: bottom;
+	}
+
+	p
+	{
+		margin: 0px 0px 1em 0px;
+	}
+
+	ul
+	{
+		margin-top: 0px;
+		margin-bottom: 1em;
+	}
+
+	ul ul
+	{
+		margin-bottom: 0px;
+	}
+
+	.article
+	{
+		background-image: url("image/bg_mask.png");
+		border: solid 1px rgb(188, 192, 221);
+		margin-bottom: 1ex;
+		overflow: auto;
+		padding: 1ex;
+	}
+
+	.article img
+	{
+		float: right;
+		margin: 0px;
+	}
+
+	.article p, h3
+	{
+		border: solid 1px Tomato;
+	}
+
+	.clear
+	{
+		clear: right;
+ 	}
+
+	#ads p
+	{
+		border-bottom: solid 2px rgb(188, 192, 221);
+		margin: 0px;
+		text-align: center;
+	}
+
+	#footer
+	{
+		border-top: solid 2px rgb(188, 192, 221);
+		clear: both;
+		text-align: center;
+	}
+
+	#header
+	{
+		float: left;
+		margin-left: 4px;
+		width: 236px;
+	}
+
+	#header .article
+	{
+		font-size: 80%;
+	}
+
+	#header ul
+	{
+		list-style-type: none;
+		padding-left: 0em;
+		margin-left: 0em;
+	}
+
+	#header ul ul
+	{
+		padding-left: 1em;
+	}
+
+	#topics
+	{
+		margin-left: 252px;
+		margin-right: 4px;
+	}
+
+	a:link{
+		color: rgb(216, 233, 214);
+	}
+
+	a:visited{
+		color: rgb(255, 246, 199);
+	}
+
+	a.folder:visited{
+		color: rgb(151, 163, 149);
+	}
+
+	a:active{
+		background-color: rgb(255, 246, 199);
+		color: Black;
+	}
+
+	a:hover{
+		background-color: rgb(216, 233, 214);
+		color: Black;
 	}
 }
