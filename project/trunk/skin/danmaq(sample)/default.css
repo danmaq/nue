@@ -2,6 +2,10 @@
 
 @media all
 {
+	#ads
+	{
+	}
+
 	body
 	{
 		background-color: Black;
@@ -10,12 +14,31 @@
 		font-family: "ÉÅÉCÉäÉI", sans-serif;
 		margin: 0px;
 	}
+
+	footer
+	{
+		text-align: center;
+	}
+
 	h1
 	{
 		margin: 0px;
 		font-size: 100%;
 		font-weight: normal;
 	}
+
+	h2
+	{
+		border-left: 1ex double rgb( 188, 192, 221 );
+		font-size: 120%;
+		padding-left: 1ex;
+	}
+
+	header, nav
+	{
+		width: 236px;
+	}
+
 	img
 	{
 		border-style: none;
