@@ -1,0 +1,23 @@
+@charset "UTF-8";
+
+@media all
+{
+	body
+	{
+		background-color: Black;
+		border: 1px tomato solid;
+		color: Silver;
+		font-family: "ÉÅÉCÉäÉI", sans-serif;
+		margin: 0px;
+	}
+	h1
+	{
+		margin: 0px;
+		font-size: 100%;
+		font-weight: normal;
+	}
+	img
+	{
+		border-style: none;
+	}
+}
