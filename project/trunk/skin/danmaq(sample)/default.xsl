@@ -32,50 +32,57 @@
 				<xsl:comment> 評価中 </xsl:comment>
 			</head>
 			<body>
-				<header>
-					<h1>
-						<a href="./"><img alt="{@site}" src="danmaq(sample)/image/logo.png" height="60" width="236" /></a><br />
-						GAMES, ILLUSTRATIONS and MUSICS
-					</h1>
-					<div id="ads">
-						<p>
-							<img alt="広告" src="" height="60" width="468" />
-						</p>
-					</div>
-					<xsl:apply-templates select="user|search" />
-					<xsl:apply-templates select="category" />
-				</header>
+				<div id="ads">
+					<p>
+						<a href="http://danmaq.com/"><img alt="広告" src="" height="60" width="468" /></a>
+					</p>
+				</div>
+				<div id="header">
+					<header>
+						<h1>
+							<a href="./"><img alt="{@site}" src="danmaq(sample)/image/logo.png" height="60" width="236" /></a><br />
+							GAMES, ILLUSTRATIONS and MUSICS
+						</h1>
+						<xsl:apply-templates select="user|search" />
+						<xsl:apply-templates select="category" />
+					</header>
+				</div>
 				<div id="topics">
 					<xsl:apply-templates select="topic" />
 				</div>
-				<footer>
-					<hr />
-					<address><a href="http://nue.sourceforge.jp/">Network Utterance Environment</a> version <xsl:value-of select="@ver" /><br />by danmaq</address>
-				</footer>
+				<div id="footer">
+					<footer>
+						<hr />
+						<address><a href="http://nue.sourceforge.jp/">Network Utterance Environment</a> version <xsl:value-of select="@ver" /><br />by danmaq</address>
+					</footer>
+				</div>
 			</body>
 		</html>
 	</xsl:template>
 
 	<!-- ログオン情報。 -->
 	<xsl:template match="user">
-		<h2>User session</h2>
-		<p>
-			<xsl:choose>
-				<xsl:when test="@id and @name">
-					<a href="?f=core/user/pref"><xsl:value-of select="@name" /> さん</a> | <a href="?f=core/user/logoff">ログオフ</a>
-				</xsl:when>
-				<xsl:when test="not(@id) and @name"><xsl:value-of select="@name" /> さん</xsl:when>
-				<xsl:otherwise>ゲストさん | <a href="?f=core/user/new">ログオン / サインアップ</a></xsl:otherwise>
-			</xsl:choose>
-		</p>
+		<xsl:call-template name="topic">
+			<xsl:with-param name="title">User session</xsl:with-param>
+			<xsl:with-param name="body">
+				<p>
+					<xsl:choose>
+						<xsl:when test="@id and @name">
+							<a href="?f=core/user/pref"><xsl:value-of select="@name" /> さん</a> | <a href="?f=core/user/logoff">ログオフ</a>
+						</xsl:when>
+						<xsl:when test="not(@id) and @name"><xsl:value-of select="@name" /> さん</xsl:when>
+						<xsl:otherwise>ゲストさん | <a href="?f=core/user/new">ログオン / サインアップ</a></xsl:otherwise>
+					</xsl:choose>
+				</p>
+			</xsl:with-param>
+		</xsl:call-template>
 	</xsl:template>
 
 	<!-- 検索。 -->
 	<xsl:template match="search">
-		<!-- TODO : トピック使いまわせないか？ -->
-		<section>
-			<h2>Tag search</h2>
-			<article>
+		<xsl:call-template name="topic">
+			<xsl:with-param name="title">Tag Search</xsl:with-param>
+			<xsl:with-param name="body">
 				<form action="./" method="get">
 					<p>
 						<label for="t">キーワード</label>
@@ -87,15 +94,19 @@
 						<a href="?f=core/tag/all">登録タグ一覧</a>
 					</p>
 				</form>
-			</article>
-		</section>
+			</xsl:with-param>
+		</xsl:call-template>
 	</xsl:template>
 
 	<!-- カテゴリ。 -->
 	<xsl:template match="category">
 		<nav>
-			<h2>Contents</h2>
-			<ul><xsl:apply-templates select="li" /></ul>
+			<xsl:call-template name="topic">
+				<xsl:with-param name="title">Contents</xsl:with-param>
+				<xsl:with-param name="body">
+					<ul><xsl:apply-templates select="li" /></ul>
+				</xsl:with-param>
+			</xsl:call-template>
 		</nav>
 	</xsl:template>
 
@@ -123,20 +134,29 @@
 	</xsl:template>
 
 	<!-- トピック。 -->
-	<xsl:template match="topic">
+	<xsl:template name="topic" match="topic">
+		<xsl:param name="title"><xsl:value-of select="@title" /></xsl:param>
+		<xsl:param name="body">
+			<xsl:apply-templates select="p|ul|form" />
+			<xsl:if test="@id">
+				<ul>
+					<li><a href="?{@id}">&quot;<xsl:value-of select="@title" />&quot;の詳細を見る</a></li>
+				</ul>
+			</xsl:if>
+		</xsl:param>
 		<section>
 			<h2>
 				<xsl:if test="@created">[<xsl:value-of select="@created" />]</xsl:if>
-				<xsl:value-of select="@title" />
+				<xsl:value-of select="$title" />
 			</h2>
-			<article>
-				<xsl:apply-templates select="p|ul|form" />
-				<xsl:if test="@id">
-					<ul>
-						<li><a href="?{@id}">&quot;<xsl:value-of select="@title" />&quot;の詳細を見る</a></li>
-					</ul>
-				</xsl:if>
-			</article>
+			<div class="article">
+				<article>
+					<xsl:copy-of select="$body" />
+				</article>
+				<div class="clear">
+					a
+				</div>
+			</div>
 		</section>
 	</xsl:template>
 

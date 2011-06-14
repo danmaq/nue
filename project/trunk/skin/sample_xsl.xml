@@ -43,6 +43,7 @@
 			<li>リスト3</li>
 		</ul>
 		<p title="段落にもタイトルを設定することが可能です">
+			<xhtml:img alt="" src="" height="80" width="320" />
 			1トピック内に複数の段落を設定できます。
 		</p>
 	</topic>
