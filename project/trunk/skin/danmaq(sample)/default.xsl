@@ -8,6 +8,7 @@
 
 	<!-- メイン。 -->
 	<xsl:template match="/body">
+		<xsl:variable name="forceVisible">true</xsl:variable>
 
 		<!-- HTML5のためのDOCTYPE宣言。 -->
 		<xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;
@@ -41,7 +42,14 @@
 						<a href="http://danmaq.com/"><img alt="広告" src="" height="60" width="468" /></a>
 					</p>
 				</div>
-				<xsl:call-template name="body" />
+				<xsl:call-template name="body">
+					<xsl:with-param name="noscript">
+						<xsl:choose>
+							<xsl:when test="$forceVisible">true</xsl:when>
+							<xsl:otherwise>false</xsl:otherwise>
+						</xsl:choose>
+					</xsl:with-param>
+				</xsl:call-template>
 				<noscript>
 					<xsl:call-template name="body">
 						<xsl:with-param name="noscript">true</xsl:with-param>
@@ -197,10 +205,21 @@
 	<!-- HTML名前空間を持つモノは丸投げしてしまう。 -->
 	<xsl:template match="xhtml:*">
 		<!-- TODO : imgはjavascript有効時は別物に置き換える。 -->
-		<xsl:element name="{local-name()}">
-			<xsl:copy-of select="@*" />
-			<xsl:apply-templates />
-		</xsl:element>
+		<xsl:choose>
+			<xsl:when test="local-name() = 'img'">
+				<span class="{local-name()}">
+					<xsl:for-each select="@*">
+						<xsl:value-of select="." />
+					</xsl:for-each>
+				</span>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:element name="{local-name()}">
+					<xsl:copy-of select="@*" />
+					<xsl:apply-templates />
+				</xsl:element>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 </xsl:stylesheet>
