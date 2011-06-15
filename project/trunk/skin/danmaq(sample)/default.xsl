@@ -17,6 +17,8 @@
 		<html xml:lang="ja">
 			<head>
 				<meta charset="UTF-8" />
+				<meta content="text/css; charset=UTF-8" http-equiv="Content-Style-Type" />
+				<meta content="text/javascript; charset=UTF-8" http-equiv="Content-Script-Type" />
 				<xsl:if test="contains(@ua, ' IE ') or contains(@ua, ' MSIE ')">
 					<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 					<meta name="msapplication-navbutton-color" content="#BCC0DD" />
@@ -29,6 +31,7 @@
 				</title>
 				<link href="danmaq(sample)/default.css" rel="StyleSheet" />
 				<link href="http://twitter.com/danmaq" rel="Author" />
+				<script type="text/javascript" src="danmaq(sample)/jquery.js"></script>
 				<script type="text/javascript" src="danmaq(sample)/default.js"></script>
 				<xsl:comment> 評価中 </xsl:comment>
 			</head>
@@ -38,19 +41,12 @@
 						<a href="http://danmaq.com/"><img alt="広告" src="" height="60" width="468" /></a>
 					</p>
 				</div>
-				<div id="header">
-					<header>
-						<h1>
-							<a href="./"><img alt="{@site}" src="danmaq(sample)/image/logo.png" height="60" width="236" /></a><br />
-							GAMES, ILLUSTRATIONS and MUSICS
-						</h1>
-						<xsl:apply-templates select="user|search" />
-						<xsl:apply-templates select="category" />
-					</header>
-				</div>
-				<div id="topics">
-					<xsl:apply-templates select="topic" />
-				</div>
+				<xsl:call-template name="body" />
+				<noscript>
+					<xsl:call-template name="body">
+						<xsl:with-param name="noscript">true</xsl:with-param>
+					</xsl:call-template>
+				</noscript>
 				<div id="footer">
 					<footer>
 						<hr />
@@ -59,6 +55,28 @@
 				</div>
 			</body>
 		</html>
+	</xsl:template>
+
+	<xsl:template name="body">
+		<xsl:param name="noscript">false</xsl:param>
+		<div id="body">
+			<xsl:attribute name="style">
+				<xsl:if test="$noscript = 'false'">display: none;</xsl:if>
+			</xsl:attribute>
+			<div id="header">
+				<header>
+					<h1>
+						<a href="./"><img alt="{@site}" src="danmaq(sample)/image/logo.png" height="60" width="236" /></a><br />
+						GAMES, ILLUSTRATIONS and MUSICS
+					</h1>
+					<xsl:apply-templates select="user|search" />
+					<xsl:apply-templates select="category" />
+				</header>
+			</div>
+			<div id="topics">
+				<xsl:apply-templates select="topic" />
+			</div>
+		</div>
 	</xsl:template>
 
 	<!-- ログオン情報。 -->
@@ -178,6 +196,7 @@
 
 	<!-- HTML名前空間を持つモノは丸投げしてしまう。 -->
 	<xsl:template match="xhtml:*">
+		<!-- TODO : imgはjavascript有効時は別物に置き換える。 -->
 		<xsl:element name="{local-name()}">
 			<xsl:copy-of select="@*" />
 			<xsl:apply-templates />
