@@ -39,6 +39,21 @@ class CConfigure
 	const SKINSET = 'default';
 
 	/**
+	 *	XSLT処理をサーバで行わずにクライアントに任せる場合、trueに設定します。
+	 *	XSLT処理をクライアントに丸投げするため、PHPの負荷が軽くなります。
+	 *
+	 *	注意：携帯電話(特にガラケー)の場合、フルブラウザでしか閲覧できなくなります。
+	 *	PCブラウザでも、古いバージョンで正しく表示されない場合があります。
+	 *
+	 *	クライアントサイドXSLTを搭載しているブラウザ一覧
+	 *	Internet Explorer Version 6以降
+	 *	Mozilla Firefox Version 3以降
+	 *	Opera Version 9以降
+	 *	Apple Safari Version 3以降
+	 */
+	const USE_CLIENT_XSLT = false;
+
+	/**
 	 *	使用するDBMSを選択します。
 	 *
 	 *	現在のバージョンではMySQLのみ選択可能です。

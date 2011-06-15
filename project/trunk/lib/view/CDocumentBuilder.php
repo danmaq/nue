@@ -13,9 +13,6 @@ require_once(NUE_LIB_ROOT . '/dao/CTagTree.php');
 class CDocumentBuilder
 {
 
-	/**	生のXMLを出力するかどうか。 */
-	const DEBUG_OUTPUT_RAW_XML = false;
-
 	/**	XML名前空間URL。 */
 	const URI_XMLNS = 'http://www.w3.org/2000/xmlns/';
 
@@ -69,7 +66,7 @@ class CDocumentBuilder
 		$this->createAttribute($body, 'site', CConfigure::SITE_NAME);
 		$this->createAttribute($body, 'ver', CConstants::VERSION);
 		$this->createAttribute($body, 'ua', $_SERVER['HTTP_USER_AGENT']);
-		$body->setAttributeNS(self::URI_XSI, self::NS_XSI . ':noNamespaceSchemaLocation', './skin/nue.xsd');
+		$body->setAttributeNS(self::URI_XSI, self::NS_XSI . ':noNamespaceSchemaLocation', 'skin/nue.xsd');
 		$this->body = $body;
 		$this->title = $title;
 	}
@@ -133,10 +130,14 @@ class CDocumentBuilder
 			$this->createCodeParagraph($this->createTopic(_('デバッグ用メッセージ')), self::$trace);
 		}
 		ob_start("ob_gzhandler");
-		if(self::DEBUG_OUTPUT_RAW_XML)
+		if(CConfigure::USE_CLIENT_XSLT)
 		{
 			header('Content-Type: text/xml; charset=UTF-8');
-			echo $this->getDOM()->saveXML();
+			$dom = $this->getDOM();
+			$xsl = $dom->createProcessingInstruction('xml-stylesheet',
+				sprintf('type="text/xsl" href="skin/%s/%s"', CConfigure::SKINSET, $xslpath));
+			$dom->insertBefore($xsl, $dom->firstChild);
+			echo $dom->saveXML();
 		}
 		else
 		{
