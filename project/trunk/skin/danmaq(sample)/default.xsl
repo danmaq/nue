@@ -29,6 +29,7 @@
 				</title>
 				<link href="danmaq(sample)/default.css" rel="StyleSheet" />
 				<link href="http://twitter.com/danmaq" rel="Author" />
+				<script type="text/javascript" src="danmaq(sample)/default.js"></script>
 				<xsl:comment> 評価中 </xsl:comment>
 			</head>
 			<body>
@@ -139,7 +140,7 @@
 		<xsl:param name="body">
 			<xsl:apply-templates select="p|ul|form" />
 			<xsl:if test="@id">
-				<ul>
+				<ul class="clear">
 					<li><a href="?{@id}">&quot;<xsl:value-of select="@title" />&quot;の詳細を見る</a></li>
 				</ul>
 			</xsl:if>
@@ -153,9 +154,6 @@
 				<article>
 					<xsl:copy-of select="$body" />
 				</article>
-				<div class="clear">
-					a
-				</div>
 			</div>
 		</section>
 	</xsl:template>

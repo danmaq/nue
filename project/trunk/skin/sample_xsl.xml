@@ -35,7 +35,8 @@
 		<p>
 			文章。ここにHTMLのインライン要素が挿入できます。
 			(ただし、xhtml名前空間を使用すること)
-			<xhtml:strong>例</xhtml:strong>
+			<xhtml:em>HTML使用例</xhtml:em>
+			<xhtml:strong>HTML使用例</xhtml:strong>
 		</p>
 		<ul title="リストも設定可能です">
 			<li>リスト1</li>
@@ -43,7 +44,7 @@
 			<li>リスト3</li>
 		</ul>
 		<p title="段落にもタイトルを設定することが可能です">
-			<xhtml:img alt="" src="" height="80" width="320" />
+			<xhtml:img alt="" src="" height="128" width="320" />
 			1トピック内に複数の段落を設定できます。
 		</p>
 	</topic>
