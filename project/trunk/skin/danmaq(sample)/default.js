@@ -1,3 +1,5 @@
+var FADETIME = 500;
+
 
 ////////////////////////////////////////////////////////////
 
@@ -8,49 +10,59 @@
  */
 function CSection(section)
 {
+	this.visible = true;
 	this.section = $(section);
+	this.article = this.section.find('.article');
 	this.titleBar = this.section.find('h2.title');
-	this.id = null;
 	this.toString = function()
 	{
 		return "[CSection]";
 	}
 	this.toggleVisible = function()
 	{
-		alert(this);
+		this.visible = !this.visible;
+		var lamp = 'solid';
+		if(this.visible)
+		{
+			this.article.show(FADETIME);
+		}
+		else
+		{
+			lamp = 'double';
+			this.article.hide(FADETIME);
+		}
+		this.titleBar.css('border-left-style', lamp);
 	}
 
 	/** Constructor */
 	{
-		var titleBar = this.titleBar;
-		var id = this.section.attr('id');
-		if(id == undefined)
+		var getFalse = function()
 		{
-			id = ~(Math.random() * -16777215);
-		}
-		this.id = id;
+			return false;
+		};
+		var titleBar = this.titleBar;
 		var section = this;
 		titleBar.click(
 			function()
 			{
 				section.toggleVisible();
 			});
+		titleBar.mousedown(getFalse);
+		titleBar.select(getFalse);
 		titleBar.css('cursor', 'pointer');
+		titleBar.css('user-select', 'none');
 		// TODO : h2に下記設定
 		// :hover着色
 		// onClick: toggleVisible()
 	}
 }
 
-var m_sections = {};
-
 window.onload = function()
 {
 	var sections = $('.onscript .section');
 	for(var i = sections.length; --i >= 0; )
 	{
-		var section = new CSection(sections[i]);
-		m_sections[section.id] = section;
+		new CSection(sections[i]);
 	}
 
 	// TODO : コメント外す
