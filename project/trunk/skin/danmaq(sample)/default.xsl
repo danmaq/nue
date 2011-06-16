@@ -171,17 +171,19 @@
 				</ul>
 			</xsl:if>
 		</xsl:param>
-		<section>
-			<h2>
-				<xsl:if test="@created">[<xsl:value-of select="@created" />]</xsl:if>
-				<xsl:value-of select="$title" />
-			</h2>
-			<div class="article">
-				<article>
-					<xsl:copy-of select="$body" />
-				</article>
-			</div>
-		</section>
+		<div class="section">
+			<section>
+				<h2>
+					<xsl:if test="@created">[<xsl:value-of select="@created" />]</xsl:if>
+					<xsl:value-of select="$title" />
+				</h2>
+				<div class="article">
+					<article>
+						<xsl:copy-of select="$body" />
+					</article>
+				</div>
+			</section>
+		</div>
 	</xsl:template>
 
 	<!-- フォーム。 -->
