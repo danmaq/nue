@@ -10,38 +10,51 @@ function CSection(section)
 {
 	this.section = $(section);
 	this.titleBar = this.section.find('h2.title');
+	this.id = null;
 	this.toString = function()
 	{
 		return "[CSection]";
 	}
 	this.toggleVisible = function()
 	{
-		alert(this.titleBar);
+		alert(this);
 	}
 
 	/** Constructor */
 	{
 		var titleBar = this.titleBar;
+		var id = this.section.attr('id');
+		if(id == undefined)
+		{
+			id = ~(Math.random() * -16777215);
+		}
+		this.id = id;
+		var section = this;
+		titleBar.click(
+			function()
+			{
+				section.toggleVisible();
+			});
 		titleBar.css('cursor', 'pointer');
-		titleBar.click(this.toggleVisible);
 		// TODO : h2に下記設定
 		// :hover着色
 		// onClick: toggleVisible()
 	}
 }
 
-var m_sections = new Array();
+var m_sections = {};
 
 window.onload = function()
 {
 	var sections = $('.onscript .section');
 	for(var i = sections.length; --i >= 0; )
 	{
-		m_sections.push(new CSection(sections[i]));
+		var section = new CSection(sections[i]);
+		m_sections[section.id] = section;
 	}
 
 	// TODO : コメント外す
-	//$('#body').attr('style', 'display: relative;');
+	$('#body').attr('style', 'display: relative;');
 };
 
 // TODO : 折り畳みメニュー
