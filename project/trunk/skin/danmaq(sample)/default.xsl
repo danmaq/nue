@@ -31,17 +31,14 @@
 					<xsl:if test="@title and string-length(@title) > 0"><xsl:value-of select="@title" /> - </xsl:if>
 					<xsl:value-of select="@site" />
 				</title>
-				<link href="danmaq(sample)/default.css" rel="StyleSheet" />
+				<link href="skin/danmaq(sample)/default.css" rel="StyleSheet" />
 				<link href="http://twitter.com/danmaq" rel="Author" />
-				<script type="text/javascript" src="danmaq(sample)/jquery.js"></script>
-				<script type="text/javascript" src="danmaq(sample)/default.js"></script>
+				<script type="text/javascript" src="skin/danmaq(sample)/jquery.js"></script>
+				<script type="text/javascript" src="skin/danmaq(sample)/default.js"></script>
 				<xsl:comment> 評価中 </xsl:comment>
 			</head>
 			<body>
 				<div id="ads">
-					<p>
-						<a href="http://danmaq.com/"><img alt="広告" src="" height="60" width="468" /></a>
-					</p>
 				</div>
 				<div class="onscript">
 					<xsl:call-template name="body">
@@ -78,7 +75,7 @@
 			<div id="header">
 				<header>
 					<h1>
-						<a href="./"><img alt="{@site}" src="danmaq(sample)/image/logo.png" height="60" width="236" /></a><br />
+						<a href="./"><img alt="{@site}" src="skin/danmaq(sample)/image/logo.png" height="60" width="236" /></a><br />
 						GAMES, ILLUSTRATIONS and MUSICS
 					</h1>
 					<xsl:apply-templates select="user|search" />

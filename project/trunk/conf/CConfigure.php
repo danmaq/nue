@@ -36,7 +36,7 @@ class CConfigure
 	/**
 	 *	使用するスキンを設定します。
 	 */
-	const SKINSET = 'default';
+	const SKINSET = 'danmaq(sample)';
 
 	/**
 	 *	XSLT処理をサーバで行わずにクライアントに任せる場合、trueに設定します。
