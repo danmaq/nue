@@ -77,7 +77,7 @@
 			<div id="header">
 				<header>
 					<h1>
-						<a href="./"><img alt="{@site}" src="danmaq(sample)/image/logo.png" height="60" width="236" /></a><br />
+						<a href="./"><img alt="{@site}" src="danmaq(sample)/image/" height="60" width="236" /></a><br />
 						GAMES, ILLUSTRATIONS and MUSICS
 					</h1>
 					<xsl:apply-templates select="user|search" />
@@ -175,6 +175,9 @@
 			</xsl:if>
 		</xsl:param>
 		<div class="section">
+			<xsl:if test="@id">
+				<xsl:attribute name="id"><xsl:value-of select="@id" /></xsl:attribute>
+			</xsl:if>
 			<section>
 				<h2 class="title">
 					<xsl:if test="@created">[<xsl:value-of select="@created" />]</xsl:if>
