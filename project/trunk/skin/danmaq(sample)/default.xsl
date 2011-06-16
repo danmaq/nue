@@ -54,6 +54,7 @@
 					</xsl:call-template>
 				</div>
 				<noscript>
+					ほげ
 					<xsl:call-template name="body">
 						<xsl:with-param name="noscript">true</xsl:with-param>
 					</xsl:call-template>
@@ -61,7 +62,7 @@
 				<div id="footer">
 					<footer>
 						<hr />
-						<address><a href="http://nue.sourceforge.jp/">Network Utterance Environment</a> version <xsl:value-of select="@ver" /></address>
+						<address><a href="http://nue.sourceforge.jp/">Network Utterance Environment</a> version <xsl:value-of select="@ver" /><br />©2011 danmaq All rights reserved.</address>
 					</footer>
 				</div>
 			</body>
@@ -71,9 +72,9 @@
 	<xsl:template name="body">
 		<xsl:param name="noscript">false</xsl:param>
 		<div id="body">
-			<xsl:attribute name="style">
-				<xsl:if test="$noscript = 'false'">display: none;</xsl:if>
-			</xsl:attribute>
+			<xsl:if test="$noscript = 'false'">
+				<xsl:attribute name="style">display: none;</xsl:attribute>
+			</xsl:if>
 			<div id="header">
 				<header>
 					<h1>
@@ -93,6 +94,7 @@
 	<!-- ログオン情報。 -->
 	<xsl:template match="user">
 		<xsl:call-template name="topic">
+			<xsl:with-param name="id">user</xsl:with-param>
 			<xsl:with-param name="title">User session</xsl:with-param>
 			<xsl:with-param name="body">
 				<p>
@@ -101,7 +103,7 @@
 							<a href="?f=core/user/pref"><xsl:value-of select="@name" /> さん</a> | <a href="?f=core/user/logoff">ログオフ</a>
 						</xsl:when>
 						<xsl:when test="not(@id) and @name"><xsl:value-of select="@name" /> さん</xsl:when>
-						<xsl:otherwise>ゲストさん | <a href="?f=core/user/new">ログオン / サインアップ</a></xsl:otherwise>
+						<xsl:otherwise>ゲストさん | <a href="?f=core/user/new">ログオン</a></xsl:otherwise>
 					</xsl:choose>
 				</p>
 			</xsl:with-param>
@@ -111,6 +113,7 @@
 	<!-- 検索。 -->
 	<xsl:template match="search">
 		<xsl:call-template name="topic">
+			<xsl:with-param name="id">search</xsl:with-param>
 			<xsl:with-param name="title">Tag Search</xsl:with-param>
 			<xsl:with-param name="body">
 				<form action="./" method="get">
@@ -130,14 +133,17 @@
 
 	<!-- カテゴリ。 -->
 	<xsl:template match="category">
-		<nav>
-			<xsl:call-template name="topic">
-				<xsl:with-param name="title">Contents</xsl:with-param>
-				<xsl:with-param name="body">
-					<ul><xsl:apply-templates select="li" /></ul>
-				</xsl:with-param>
-			</xsl:call-template>
-		</nav>
+		<div id="nav">
+			<nav>
+				<xsl:call-template name="topic">
+					<xsl:with-param name="id">category</xsl:with-param>
+					<xsl:with-param name="title">Contents</xsl:with-param>
+					<xsl:with-param name="body">
+						<ul><xsl:apply-templates select="li" /></ul>
+					</xsl:with-param>
+				</xsl:call-template>
+			</nav>
+		</div>
 	</xsl:template>
 
 	<!-- カテゴリ。 -->
@@ -166,6 +172,7 @@
 	<!-- トピック。 -->
 	<xsl:template name="topic" match="topic">
 		<xsl:param name="title"><xsl:value-of select="@title" /></xsl:param>
+		<xsl:param name="id"><xsl:value-of select="@id" /></xsl:param>
 		<xsl:param name="body">
 			<xsl:apply-templates select="p|ul|form" />
 			<xsl:if test="@id">
@@ -175,8 +182,8 @@
 			</xsl:if>
 		</xsl:param>
 		<div class="section">
-			<xsl:if test="@id">
-				<xsl:attribute name="id"><xsl:value-of select="@id" /></xsl:attribute>
+			<xsl:if test="string-length($id) > 0">
+				<xsl:attribute name="id"><xsl:value-of select="$id" /></xsl:attribute>
 			</xsl:if>
 			<section>
 				<h2 class="title">
@@ -215,10 +222,10 @@
 		<xsl:choose>
 			<xsl:when test="local-name() = 'img'">
 				<span class="{local-name()}">
-					<!-- TODO : 未完成品。 -->
 					<xsl:for-each select="@*">
-						<xsl:value-of select="." />
+						<span class="{name()}"><xsl:value-of select="." /></span>
 					</xsl:for-each>
+					<span class="__body__"><xsl:value-of select="." /></span>
 				</span>
 			</xsl:when>
 			<xsl:otherwise>
