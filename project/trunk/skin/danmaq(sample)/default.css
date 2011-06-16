@@ -61,6 +61,11 @@
 		vertical-align: bottom;
 	}
 
+	input
+	{
+		font-family: "メイリオ", "Osaka", sans-serif;
+	}
+
 	p
 	{
 		margin: 0px 0px 1em 0px;
@@ -85,6 +90,7 @@
 	{
 		background-image: url("image/bg_mask.png");
 		border: solid 1px rgb(188, 192, 221);
+		border-radius: 0px 4px 4px 4px / 0px 4px 4px 4px;
 		margin-bottom: 1ex;
 		overflow: auto;
 		padding: 1ex;
@@ -122,9 +128,11 @@
 		width: 236px;
 	}
 
-	#header .article
+	#header input.text
 	{
-		font-size: 80%;
+		max-width: 208px;
+		width: auto !important;
+		width: 208px;
 	}
 
 	#header ul
@@ -137,6 +145,11 @@
 	#header ul ul
 	{
 		padding-left: 1em;
+	}
+
+	#header .article
+	{
+		font-size: 80%;
 	}
 
 	#topics

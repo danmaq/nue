@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="danmaq(sample)/default.xsl"?>
-<body title="ページ タイトル" site="ブログ タイトル" ver="0.0.21"
+<body title="ページ タイトル" site="ブログ タイトル" ver="0.4.64"
 	ua="Mozilla/4.0 (compatible; MSIE 5.17; Mac_PowerPC)"
 	xmlns:xhtml="http://www.w3.org/1999/xhtml"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -23,16 +23,29 @@
 			<ul>
 				<lh href="%e3(省略)%b0">サブカテゴリを持つタグ</lh>
 				<li href="%e3(省略)%b01">サブカテゴリタグ1</li>
+				<li>
+					<ul>
+						<lh href="%e3(省略)%b0">サブカテゴリを持つタグ</lh>
+						<li href="%e3(省略)%b01">サブカテゴリタグ1</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<lh href="%e3(省略)%b0">サブカテゴリを持つタグ</lh>
+						<li href="%e3(省略)%99">ここでは割愛しますが無限に入れ子できます</li>
+						<li href="%28(省略)%29">(既定の設定では5階層までに制約をかけています)</li>
+					</ul>
+				</li>
 				<li href="%e3(省略)%b02">サブカテゴリタグ2</li>
-				<li href="%e3(省略)%99">ここでは割愛しますが無限に入れ子できます</li>
-				<li href="%28(省略)%29">(既定の設定では5階層までに制約をかけています)</li>
 			</ul>
 		</li>
+		<li href="%e3(省略)%a7">カテゴリタグ一覧</li>
 	</category>
 
 	<topic title="トピック タイトル" id="550E8400-E29B-41D4-A716-446655440000"
 		created="2011/06/12" updated="2011/06/12">
 		<p>
+			<xhtml:img alt="danmaq" src="danmaq(sample)/image/logo.png" height="128" width="320" />
 			文章。ここにHTMLのインライン要素が挿入できます。
 			(ただし、xhtml名前空間を使用すること)
 			<xhtml:em>HTML使用例</xhtml:em>
@@ -44,7 +57,7 @@
 			<li>リスト3</li>
 		</ul>
 		<p title="段落にもタイトルを設定することが可能です">
-			<xhtml:img alt="" src="" height="128" width="320" />
+			<xhtml:img alt="danmaq" src="danmaq(sample)/image/logo.png" height="128" width="320" />
 			1トピック内に複数の段落を設定できます。
 		</p>
 	</topic>
