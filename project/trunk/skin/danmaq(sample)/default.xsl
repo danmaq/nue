@@ -8,10 +8,11 @@
 
 	<!-- メイン。 -->
 	<xsl:template match="/body">
-		<xsl:variable name="forceVisible">true</xsl:variable>
+		<xsl:variable name="forceVisible">false</xsl:variable>
 
 		<!-- HTML5のためのDOCTYPE宣言。 -->
-		<xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;
+		<xsl:text disable-output-escaping='yes'>
+&lt;!DOCTYPE html&gt;
 </xsl:text>
 		<!-- 出力のインデントが乱れるため、意図して改行しています。 -->
 
@@ -42,14 +43,16 @@
 						<a href="http://danmaq.com/"><img alt="広告" src="" height="60" width="468" /></a>
 					</p>
 				</div>
-				<xsl:call-template name="body">
-					<xsl:with-param name="noscript">
-						<xsl:choose>
-							<xsl:when test="$forceVisible">true</xsl:when>
-							<xsl:otherwise>false</xsl:otherwise>
-						</xsl:choose>
-					</xsl:with-param>
-				</xsl:call-template>
+				<div class="onscript">
+					<xsl:call-template name="body">
+						<xsl:with-param name="noscript">
+							<xsl:choose>
+								<xsl:when test="$forceVisible = 'true'">true</xsl:when>
+								<xsl:otherwise>false</xsl:otherwise>
+							</xsl:choose>
+						</xsl:with-param>
+					</xsl:call-template>
+				</div>
 				<noscript>
 					<xsl:call-template name="body">
 						<xsl:with-param name="noscript">true</xsl:with-param>
@@ -58,7 +61,7 @@
 				<div id="footer">
 					<footer>
 						<hr />
-						<address><a href="http://nue.sourceforge.jp/">Network Utterance Environment</a> version <xsl:value-of select="@ver" /><br />by danmaq</address>
+						<address><a href="http://nue.sourceforge.jp/">Network Utterance Environment</a> version <xsl:value-of select="@ver" /></address>
 					</footer>
 				</div>
 			</body>
@@ -173,7 +176,7 @@
 		</xsl:param>
 		<div class="section">
 			<section>
-				<h2>
+				<h2 class="title">
 					<xsl:if test="@created">[<xsl:value-of select="@created" />]</xsl:if>
 					<xsl:value-of select="$title" />
 				</h2>
@@ -206,10 +209,10 @@
 
 	<!-- HTML名前空間を持つモノは丸投げしてしまう。 -->
 	<xsl:template match="xhtml:*">
-		<!-- TODO : imgはjavascript有効時は別物に置き換える。 -->
 		<xsl:choose>
 			<xsl:when test="local-name() = 'img'">
 				<span class="{local-name()}">
+					<!-- TODO : 未完成品。 -->
 					<xsl:for-each select="@*">
 						<xsl:value-of select="." />
 					</xsl:for-each>
