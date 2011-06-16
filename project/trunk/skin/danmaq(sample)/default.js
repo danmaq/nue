@@ -90,7 +90,6 @@ function CSection(section)
 			var target = this.article.find('span.' + span2TagTarget[i]);
 			if(target.length > 0)
 			{
-/*
 				var element = $(document.createElement(target.attr('class')));
 				var attrs = target.children('*');
 				for(var i = attrs.length; --i >= 0; )
@@ -110,14 +109,6 @@ function CSection(section)
 						element.attr(key, value);
 					}
 				}
-//				this.article.append(element);
-//				target.get()[0].appendChild(element);
-*/
-				var element = $(document.createElement('img'));
-				element.attr('src', 'danmaq(sample)/image/logo.png');
-				element.attr('alt', '236');
-				element.attr('width', '236');
-				element.attr('height', '60');
 				target.after(element);
 				target.remove();
 			}
