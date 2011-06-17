@@ -51,7 +51,6 @@
 					</xsl:call-template>
 				</div>
 				<noscript>
-					ほげ
 					<xsl:call-template name="body">
 						<xsl:with-param name="noscript">true</xsl:with-param>
 					</xsl:call-template>
