@@ -33,7 +33,7 @@
 				</title>
 				<link href="skin/danmaq(sample)/default.css" rel="StyleSheet" />
 				<link href="http://twitter.com/danmaq" rel="Author" />
-				<script type="text/javascript" src="skin/danmaq(sample)/jquery.js"></script>
+				<script type="text/javascript" src="skin/danmaq(sample)/jquery.jgz"></script>
 				<script type="text/javascript" src="skin/danmaq(sample)/default.js"></script>
 				<xsl:comment> 評価中 </xsl:comment>
 			</head>
@@ -120,7 +120,7 @@
 						<input type="submit" value="検索" />
 					</p>
 					<p>
-						<xsl:if test="@tag">現在の検索タグ: <em><xsl:value-of select="@tag" /></em><br /></xsl:if>
+						<xsl:if test="@tag">現在の検索タグ: <em id="tag"><xsl:value-of select="@tag" /></em><br /></xsl:if>
 						<a href="?f=core/tag/all">登録タグ一覧</a>
 					</p>
 				</form>
