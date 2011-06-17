@@ -1,6 +1,9 @@
 /**	フェード時間。 */
 var FADETIME = 50;
 
+/**	現在検索しているタグ キーワード。 */
+var m_current_tag = null;
+
 ////////////////////////////////////////////////////////////
 
 /**
@@ -67,6 +70,40 @@ function CSection(section)
 		titleBar.css('user-select', 'none');
 	}
 
+	/**
+	 *	特定タグを変換します。
+	 *
+	 *	@param name 変換するタグ名。
+	 */
+	this.span2Tag = function(name)
+	{
+		var target = this.article.find('span.' + name);
+		if(target.length > 0)
+		{
+			var element = $(document.createElement(target.attr('class')));
+			var attrs = target.children('*');
+			for(var i = attrs.length; --i >= 0; )
+			{
+				var attr = $(attrs[i]);
+				var key = attr.attr('class');
+				var value = attr.text();
+				if(key == '__body__')
+				{
+					if(value.length > 0)
+					{
+						element.text(value);
+					}
+				}
+				else
+				{
+					element.attr(key, value);
+				}
+			}
+			target.after(element);
+			target.remove();
+		}
+	}
+
 	/** Constructor */
 	{
 		this.initializeTitleBar();
@@ -87,31 +124,7 @@ function CSection(section)
 		// 特定タグ変換
 		for(var i = span2TagTarget.length; --i >= 0; )
 		{
-			var target = this.article.find('span.' + span2TagTarget[i]);
-			if(target.length > 0)
-			{
-				var element = $(document.createElement(target.attr('class')));
-				var attrs = target.children('*');
-				for(var i = attrs.length; --i >= 0; )
-				{
-					var attr = $(attrs[i]);
-					var key = attr.attr('class');
-					var value = attr.text();
-					if(key == '__body__')
-					{
-						if(value.length > 0)
-						{
-							element.text(value);
-						}
-					}
-					else
-					{
-						element.attr(key, value);
-					}
-				}
-				target.after(element);
-				target.remove();
-			}
+			this.span2Tag(span2TagTarget[i]);
 		}
 	}
 }
@@ -158,13 +171,17 @@ function CCategory(cat)
 		}
 
 		// TODO : 要素置換よりもテキスト置換の方が良くね？
+		var folder = this.folder;
 		folder.find('span').remove();
 		var openFlag = $(document.createElement('span'));
 		openFlag.append(strOpenFlag);
 		folder.prepend(openFlag);
 	}
 
-	/** Constructor */
+	/**
+	 *	リンクをフォルダとして初期化します。
+	 */
+	this.initializeFolder = function()
 	{
 		var folder = this.folder;
 		var folderIndex = folder.clone();
@@ -178,7 +195,17 @@ function CCategory(cat)
 				instance.toggleVisible();
 				return false;
 			});
+	}
+
+	/** Constructor */
+	{
+		this.initializeFolder();
 		this.toggleVisible(true);
+		// Prefixを付けるために、「一旦閉じてから」開く
+		if(this.child.find(':contains("' + m_current_tag + '")').length > 0)
+		{
+			this.toggleVisible(true);
+		}
 	}
 }
 
@@ -188,6 +215,11 @@ try
 {
 	window.onload = function()
 	{
+		var currentTag = $('#tag');
+		if(currentTag.length > 0)
+		{
+			m_current_tag = currentTag.text();
+		}
 		var sections = $('.onscript .section');
 		for(var i = sections.length; --i >= 0; new CSection(sections[i]))
 			;
@@ -196,7 +228,6 @@ try
 			;
 		$('#body').show();
 	};
-	// TODO : 画像の変換(XSLもまだ途中)
 }
 catch(err)
 {
