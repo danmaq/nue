@@ -250,7 +250,8 @@ class CDocumentBuilder
 			{
 				if(preg_match('/^@/', $desc))
 				{
-					if(preg_match('/^@@/', $desc))
+					$separate = preg_match('/^@@/', $desc);
+					if($separate)
 					{
 						$ul = null;
 					}
@@ -261,7 +262,7 @@ class CDocumentBuilder
 					}
 					$li = $dom->createElement('li');
 					$ul->appendChild($li);
-					$this->addHLML($li, substr($desc, 1), $ul);
+					$this->addHLML($li, substr($desc, $separate ? 2 : 1), $ul);
 				}
 				else
 				{
