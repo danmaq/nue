@@ -3,6 +3,7 @@
 require_once('CTagAssign.php');
 require_once(NUE_LIB_ROOT . '/file/CFileSQLTag.php');
 require_once(NUE_LIB_ROOT . '/file/CFileSQLTagAssign.php');
+require_once(NUE_LIB_ROOT . '/util/CPager.php');
 
 /**
  *	タグDAOクラス。
@@ -166,12 +167,17 @@ class CTag
 	 *	getListFromTagCount()を使用してください。
 	 *
 	 *	@param boolean $loadBody 実体を読み込むかどうか。既定値はtrue。
+	 *	@param CPager $pager ページャ オブジェクト。
 	 *	@return array 割り当てDAO一覧
 	 */
-	public function getListFromTag($loadBody = true)
+	public function getListFromTag($loadBody = true, CPager $pager = null)
 	{
 		$result = array();
 		$name = $this->getID();
+		if($pager === null)
+		{
+			$pager = new CPager();
+		}
 
 		// !!! Update patch v0.3.58->v0.3.59 !!!
 		CTopic::getTotalCount();

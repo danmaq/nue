@@ -4,6 +4,7 @@ require_once(NUE_CONSTANTS);
 require_once(NUE_LIB_ROOT . '/dao/CUser.php');
 require_once(NUE_LIB_ROOT . '/dao/CTopic.php');
 require_once(NUE_LIB_ROOT . '/dao/CTagTree.php');
+require_once(NUE_LIB_ROOT . '/util/CPager.php');
 
 // TODO : これそろそろ分割考えたほうがいいんじゃねえの？
 
@@ -43,19 +44,25 @@ class CDocumentBuilder
 	/**	XMLルートのタイトル属性。 */
 	private $title;
 
+	/**
+	 *	ルート要素を作成します。
+	 *
+	 *	@param DOMDocument $dom DOMオブジェクト。
+	 *	@return DOMElement ルート要素。
+	 */
 	public static function createBody(DOMDocument $dom)
 	{
-		$body = $dom->createElement('body');
-		$body->setAttributeNS(self::URI_XMLNS , 'xmlns:' . self::NS_XHTML, self::URI_XHTML);
-		$body->setAttributeNS(self::URI_XMLNS , 'xmlns:' . self::NS_XSI, self::URI_XSI);
-		$dom->appendChild($body);
-		return $body;
+		$result = $dom->createElement('body');
+		$result->setAttributeNS(self::URI_XMLNS , 'xmlns:' . self::NS_XHTML, self::URI_XHTML);
+		$result->setAttributeNS(self::URI_XMLNS , 'xmlns:' . self::NS_XSI, self::URI_XSI);
+		$dom->appendChild($result);
+		return $result;
 	}
 
 	/**
 	 *	コンストラクタ。
 	 *
-	 *	param string $title タイトル メッセージ。
+	 *	@param string $title タイトル メッセージ。
 	 */
 	public function __construct($title = '')
 	{
@@ -229,15 +236,19 @@ class CDocumentBuilder
 	/**
 	 *	ページャ情報を作成します。
 	 *
+	 *	@param CPager $pager ページャ オブジェクト。
 	 *	@return DOMElement ユーザ情報 オブジェクト。
 	 */
-	public function createPagerInfo()
+	public function createPagerInfo(CPager $pager = null)
 	{
+		if($pager === null)
+		{
+			$pager = new CPager();
+		}
 		$result = $this->getDOM()->createElement('pager');
-		// TODO : ここに実際のページ番号を指定する。
-		$this->createAttribute($result, 'page' => 1);
-		$this->createAttribute($result, 'tpp' => 10);
-		$this->createAttribute($result, 'max' => 0);
+		$this->createAttribute($result, 'page', $pager->target);
+		$this->createAttribute($result, 'tpp', $pager->TopicsPerPage);
+		$this->createAttribute($result, 'max', $pager->maxPage);
 		$this->getRootElement()->appendChild($result);
 		return $result;
 	}

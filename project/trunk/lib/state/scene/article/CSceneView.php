@@ -112,6 +112,7 @@ class CSceneView
 				}
 				else
 				{
+					$xmlbuilder->createPagerInfo();
 					foreach($topics as $item)
 					{
 						$xmlbuilder->createTopic($item);
