@@ -34,6 +34,11 @@ class CConfigure
 	const TAG_MAX = 10;
 
 	/**
+	 *	デフォルトの1ページあたりの記事数です。
+	 */
+	const DEFAULT_TOPIC_PER_PAGE = 10;
+
+	/**
 	 *	使用するスキンを設定します。
 	 */
 	const SKINSET = 'danmaq(sample)';

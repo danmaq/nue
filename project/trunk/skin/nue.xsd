@@ -8,6 +8,7 @@
 	<xsd:element name="body" type="BodyType" />
 	<xsd:element name="user" type="UserType" />
 	<xsd:element name="search" type="SearchType" />
+	<xsd:element name="pager" type="PagerType" />
 	<xsd:element name="category" type="CategoryType" />
 	<xsd:element name="topic" type="TopicType" />
 	<xsd:element name="form" type="FormType" />
@@ -36,6 +37,14 @@
 	<xsd:complexType name="SearchType">
 		<xsd:sequence>
 			<xsd:attribute name="tag" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="PagerType">
+		<xsd:sequence>
+			<xsd:attribute name="page" type="xsd:positiveInteger" />
+			<xsd:attribute name="tpp" type="xsd:positiveInteger" />
+			<xsd:attribute name="max" type="xsd:positiveInteger" />
 		</xsd:sequence>
 	</xsd:complexType>
 
