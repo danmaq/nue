@@ -14,7 +14,7 @@ var m_current_tag = null;
 function CSection(section)
 {
 
-	var defaultHidden = Array('search');
+	var defaultHidden = Array();
 	var span2TagTarget = Array('img');
 	var jSection = $(section);
 

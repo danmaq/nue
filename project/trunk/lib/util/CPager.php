@@ -1,51 +1,44 @@
 <?php
 
+require_once(NUE_CONSTANTS);
+
 /**
  *	ページャ クラス。
  */
 class CPager
 {
 
-	/**	クラス オブジェクト。 */
-	private static $instance = null;
+	/**	最大ページ数。 */
+	public $maxPage = 0;
 
 	/**	現在のページ番号。 */
-	private $now;
+	public $target = 0;
 
 	/**	1ページの最大記事数。 */
-	private $TopicsPerPage;
-
-	/**
-	 *	この状態のオブジェクトを取得します。
-	 *
-	 *	@return IState この状態のオブジェクト。
-	 */
-	public static function getInstance()
-	{
-		if(self::$instance == null)
-		{
-			self::$instance = new CPager();
-		}
-		return self::$instance;
-	}
+	public $TopicsPerPage = CConfigure::DEFAULT_TOPIC_PER_PAGE;
 
 	/**
 	 *	コンストラクタ。
+	 *
+	 *	@param int $target 要求するページ。
+	 *	@param int $tpp 1ページの最大記事数。
 	 */
-	private function __construct()
+	public function __construct($target = 0, $topicPerPage = null)
 	{
+		$this->target = $target;
+		$this->topicPerPage =
+			$topicPerPage === null ? CConfigure::DEFAULT_TOPIC_PER_PAGE : $topicPerPage;
 	}
 
 	/**
-	 *	要求する情報を設定します。
+	 *	データベースに渡すリミット情報を取得します。
 	 *
-	 *	@param int $now 要求するページ。
-	 *	@param int $tpp 1ページの最大記事数。
+	 *	@return array リミット情報。[0]:開始レコード、[1]:レコード数。
 	 */
-	public function setInfo($now, $topicPerPage)
+	public function getLimit()
 	{
-		$this->now = $now;
-		$this->topicPerPage = $topicPerPage;
+		$tpp = $this->$TopicsPerPage;
+		return array($this->target * $tpp, $tpp);
 	}
 }
 
