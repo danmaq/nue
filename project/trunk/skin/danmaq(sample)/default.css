@@ -36,8 +36,9 @@
 	h2
 	{
 		border-left: 1ex solid rgb(188, 192, 221);
-		font-size: 120%;
-		margin-top: 0.5ex;
+		font-size: 100%;
+		padding: 0.5ex 1ex;
+		margin-top: 0.8ex;
 		margin-bottom: 0px;
 		padding-left: 1ex;
 	}
