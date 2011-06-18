@@ -227,6 +227,22 @@ class CDocumentBuilder
 	}
 
 	/**
+	 *	ページャ情報を作成します。
+	 *
+	 *	@return DOMElement ユーザ情報 オブジェクト。
+	 */
+	public function createPagerInfo()
+	{
+		$result = $this->getDOM()->createElement('pager');
+		// TODO : ここに実際のページ番号を指定する。
+		$this->createAttribute($result, 'page' => 1);
+		$this->createAttribute($result, 'tpp' => 10);
+		$this->createAttribute($result, 'max' => 0);
+		$this->getRootElement()->appendChild($result);
+		return $result;
+	}
+
+	/**
 	 *	空のトピックを作成します。
 	 *
 	 *	@param mixed $caption 見出し、または記事DAOオブジェクト。

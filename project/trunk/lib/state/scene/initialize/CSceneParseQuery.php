@@ -126,7 +126,7 @@ class CSceneParseQuery
 				unset($_GET[$item]);
 			}
 			$item = preg_replace('/^\//', '', $this->parsePage($item));
-			$_GET['cat'] = $this->parsePage($item);
+			$_GET['t'] = $this->parsePage($item);
 		}
 	}
 
@@ -139,7 +139,7 @@ class CSceneParseQuery
 	private function parsePage($item)
 	{
 		$result = array();
-		if(preg_match('/\((\d*)-(\d*)\)$/', $item, $result))
+		if(preg_match('/^\[(\d*)\/(\d*)\:(\d*)\]$/', $item, $result))
 		{
 			if(isset($_GET[$result[0]]))
 			{
@@ -147,7 +147,7 @@ class CSceneParseQuery
 			}
 			$item = preg_replace('/\((\d*)-(\d*)\)$/', '', $item);
 			$result[1] = $result[1] ? $result[1] : 0;
-			$result[2] = $result[2] ? $result[2] : 100;
+			$result[2] = $result[2] ? $result[2] : CConfigure::DEFAULT_TOPIC_PER_PAGE;
 			$rev = $result[1] > $result[2];
 			$_GET['from'] = $rev ? $result[2] : $result[1];
 			$_GET['to'] = $rev ? $result[1] : $result[2];
