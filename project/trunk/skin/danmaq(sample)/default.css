@@ -107,6 +107,7 @@
 	{
 		font-family: "ＭＳ Ｐゴシック", "IPA モナー Pゴシック", sans-serif;
 		font-size: 12pt;
+		line-height: 1em !important;
 	}
 
 	.clear
