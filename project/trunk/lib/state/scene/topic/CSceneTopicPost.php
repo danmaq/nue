@@ -119,7 +119,7 @@ class CSceneTopicPost
 				}
 				$this->topic = $topic;
 
-				$tags = preg_split('/[\s　]+/', trim($_POST['tags']));
+				$tags = preg_split('/[\s　]+/u', trim($_POST['tags']));
 				$tags = array_splice($tags, 0, min(count($tags), CConfigure::TAG_MAX));
 				$topic->setTagAssignList($tags);
 			}

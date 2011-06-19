@@ -71,14 +71,15 @@ _____________________________________________________________________
 説明のないものは、HTMLと同じ機能を持ちます。
 ・a (href, rel, target)
 ・br ()
-・params (title, class) ：段落にサブタイトルやCSSクラスを設定できます。
 ・code ()
 ・del (cite, datetime)
 ・dfn ()
 ・em ()
+・fsize(path) ：ファイルサイズを取得します。
 ・img (alt, src, height, width)
 ・ins (cite, datetime)
 ・kbd ()
+・params (title, class) ：段落にサブタイトルやCSSクラスを設定できます。
 ・q (cite)
 ・samp ()
 ・strong ()

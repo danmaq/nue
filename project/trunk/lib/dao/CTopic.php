@@ -253,7 +253,6 @@ class CTopic
 			$exists = $this->isExists();
 			$result = $entity->commit() &&
 				$db->execute($exists ? $fcache->update : $fcache->insert, $params);
-			error_log(print_r($params, true));
 			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));

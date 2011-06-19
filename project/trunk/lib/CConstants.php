@@ -14,7 +14,7 @@ class CConstants
 {
 
 	/** バージョン情報。 */
-	const VERSION = '0.4.68';
+	const VERSION = '0.4.69';
 
 	/** セッション名。 */
 	const SESSION_CORE = 'NUE_Core';
