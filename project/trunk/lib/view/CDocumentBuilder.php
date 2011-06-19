@@ -463,7 +463,7 @@ class CDocumentBuilder
 					for($i = count($attrs_base); --$i >= 0; )
 					{
 						$kv = preg_split('/=/', preg_replace('/\x00/', ',', $attrs_base[$i]), 2);
-						$attrs[$kv[0]] = $kv[1];
+						$attrs[$kv[0]] = count($kv) == 2 ? $kv[1] : null;
 					}
 					if($paragraph === null)
 					{

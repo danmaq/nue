@@ -77,9 +77,10 @@ function CSection(section)
 	 */
 	this.span2Tag = function(name)
 	{
-		var target = this.article.find('span.' + name);
-		if(target.length > 0)
+		var targets = this.article.find('span.' + name);
+		for(var j = targets.length; --j >= 0; )
 		{
+			var target = $(targets[j]);
 			var element = $(document.createElement(target.attr('class')));
 			var attrs = target.children('*');
 			for(var i = attrs.length; --i >= 0; )
