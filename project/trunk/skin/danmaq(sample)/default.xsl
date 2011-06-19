@@ -33,13 +33,15 @@
 				</title>
 				<link href="skin/danmaq(sample)/default.css" rel="StyleSheet" />
 				<link href="http://twitter.com/danmaq" rel="Author" />
-				<script type="text/javascript" src="skin/danmaq(sample)/jquery.jgz"></script>
-				<script type="text/javascript" src="skin/danmaq(sample)/default.js"></script>
+				<script type="text/javascript" src="skin/danmaq(sample)/jquery.js">;</script>
+				<script type="text/javascript" src="skin/danmaq(sample)/default.js">;</script>
 				<xsl:comment> 評価中 </xsl:comment>
 			</head>
 			<body>
+<!--
 				<div id="ads">
 				</div>
+-->
 				<div class="onscript">
 					<xsl:call-template name="body">
 						<xsl:with-param name="noscript">
@@ -82,7 +84,9 @@
 				</header>
 			</div>
 			<div id="topics">
-				<xsl:apply-templates select="topic" />
+				<xsl:apply-templates select="topic">
+					<xsl:with-param name="noscript"><xsl:value-of select="$noscript" /></xsl:with-param>
+				</xsl:apply-templates>
 			</div>
 		</div>
 	</xsl:template>
@@ -114,8 +118,7 @@
 			<xsl:with-param name="body">
 				<form action="./" method="get">
 					<p>
-						<label for="t">キーワード</label>
-						<input type="text" id="t" name="t" value="{@tag}" maxlength="255" placeholder="255字以内" />
+						<input class="text" type="text" id="t" name="t" value="{@tag}" maxlength="255" placeholder="255字以内" />
 						<input type="submit" value="検索" />
 					</p>
 					<p>
@@ -144,33 +147,49 @@
 
 	<!-- カテゴリ。 -->
 	<xsl:template match="li">
+		<xsl:param name="noscript">false</xsl:param>
 		<li>
 			<xsl:choose>
 				<xsl:when test="count(ul) = 0 and @href">
 					<a href="?/{@href}"><xsl:value-of select="." /></a>
 				</xsl:when>
-				<xsl:otherwise><xsl:apply-templates /></xsl:otherwise>
+				<xsl:otherwise>
+					<xsl:apply-templates>
+						<xsl:with-param name="noscript"><xsl:value-of select="$noscript" /></xsl:with-param>
+					</xsl:apply-templates>
+				</xsl:otherwise>
 			</xsl:choose>
 		</li>
 	</xsl:template>
 
 	<!-- カテゴリ。 -->
 	<xsl:template match="ul">
+		<xsl:param name="noscript">false</xsl:param>
 		<xsl:if test="@title">
 			<h3><xsl:value-of select="@title" /></h3>
 		</xsl:if>
 		<xsl:if test="lh">
 			<a href="?/{lh/@href}"><xsl:value-of select="lh" /></a>
 		</xsl:if>
-		<ul><xsl:apply-templates select="li" /></ul>
+		<ul>
+			<xsl:if test="@class">
+				<xsl:attribute name="class"><xsl:value-of select="@class" /></xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates select="li">
+				<xsl:with-param name="noscript"><xsl:value-of select="$noscript" /></xsl:with-param>
+			</xsl:apply-templates>
+		</ul>
 	</xsl:template>
 
 	<!-- トピック。 -->
 	<xsl:template name="topic" match="topic">
+		<xsl:param name="noscript">false</xsl:param>
 		<xsl:param name="title"><xsl:value-of select="@title" /></xsl:param>
 		<xsl:param name="id"><xsl:value-of select="@id" /></xsl:param>
 		<xsl:param name="body">
-			<xsl:apply-templates select="p|ul|form" />
+			<xsl:apply-templates select="p|ul|form">
+				<xsl:with-param name="noscript"><xsl:value-of select="$noscript" /></xsl:with-param>
+			</xsl:apply-templates>
 			<xsl:if test="@id">
 				<ul class="clear">
 					<li><a href="?{@id}">&quot;<xsl:value-of select="@title" />&quot;の詳細を見る</a></li>
@@ -197,26 +216,36 @@
 
 	<!-- フォーム。 -->
 	<xsl:template match="form">
+		<xsl:param name="noscript">false</xsl:param>
 		<form onsubmit="return true;">
 			<xsl:copy-of select="@*" />
-			<xsl:apply-templates select="p|ul" />
+			<xsl:apply-templates select="p|ul">
+				<xsl:with-param name="noscript"><xsl:value-of select="$noscript" /></xsl:with-param>
+			</xsl:apply-templates>
 		</form>
 	</xsl:template>
 
 	<!-- 段落。 -->
 	<xsl:template match="p">
+		<xsl:param name="noscript">false</xsl:param>
 		<xsl:if test="@title">
 			<h3><xsl:value-of select="@title" /></h3>
 		</xsl:if>
 		<p>
-			<xsl:apply-templates />
+			<xsl:if test="@class">
+				<xsl:attribute name="class"><xsl:value-of select="@class" /></xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates>
+				<xsl:with-param name="noscript"><xsl:value-of select="$noscript" /></xsl:with-param>
+			</xsl:apply-templates>
 		</p>
 	</xsl:template>
 
 	<!-- HTML名前空間を持つモノは丸投げしてしまう。 -->
 	<xsl:template match="xhtml:*">
+		<xsl:param name="noscript">false</xsl:param>
 		<xsl:choose>
-			<xsl:when test="local-name() = 'img'">
+			<xsl:when test="$noscript = 'false' and (local-name() = 'img')">
 				<span class="{local-name()}">
 					<xsl:for-each select="@*">
 						<span class="{name()}"><xsl:value-of select="." /></span>
@@ -227,7 +256,9 @@
 			<xsl:otherwise>
 				<xsl:element name="{local-name()}">
 					<xsl:copy-of select="@*" />
-					<xsl:apply-templates />
+					<xsl:apply-templates>
+						<xsl:with-param name="noscript"><xsl:value-of select="$noscript" /></xsl:with-param>
+					</xsl:apply-templates>
 				</xsl:element>
 			</xsl:otherwise>
 		</xsl:choose>

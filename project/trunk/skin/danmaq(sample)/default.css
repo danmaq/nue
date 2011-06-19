@@ -103,6 +103,12 @@
 		margin: 1ex;
 	}
 
+	.article .aa
+	{
+		font-family: "ＭＳ Ｐゴシック", "IPA モナー Pゴシック", sans-serif;
+		font-size: 12pt;
+	}
+
 	.clear
 	{
 		clear: right;
