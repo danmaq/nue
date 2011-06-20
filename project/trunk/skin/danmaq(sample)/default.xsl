@@ -101,10 +101,10 @@
 				<p>
 					<xsl:variable name="query"><xsl:if test="../search/@tag">/<xsl:value-of select="../search/@tag" /></xsl:if>&amp;</xsl:variable>
 					<xsl:if test="@page &gt; 0">
-						<a href="?{$query}({@page}/{@tpp})">&lt;前のページへ</a>
+						<a href="?{$query}({@page - 1}/{@tpp})">&lt;前のページへ</a>
 					</xsl:if>
-					<span> | <xsl:value-of select="@page + 1" />ページ | </span>
-					<xsl:if test="@page &lt; @max">
+					<span> | <xsl:value-of select="@page + 1" />ページ目(<xsl:value-of select="@tpp" />件/ページ) | </span>
+					<xsl:if test="@page + 1 &lt; @max">
 						<a href="?{$query}({@page + 1}/{@tpp})">次のページへ&gt;</a>
 					</xsl:if>
 				</p>

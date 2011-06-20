@@ -106,7 +106,7 @@ class CSceneParseQuery
 	 */
 	private function setQueryIfNotExists($key, $value)
 	{
-		if(!isset($_GET[$key]))
+		if(!isset($_GET[$key]) || strlen($_GET[$key]) === 0)
 		{
 			$_GET[$key] = $value;
 		}
@@ -139,7 +139,7 @@ class CSceneParseQuery
 	private function parsePage($item)
 	{
 		$result = array();
-		if(preg_match('/^\[(\d*)\/(\d*)\]$/', $item, $result))
+		if(preg_match('/^\((\d*)\/(\d*)\)$/', $item, $result))
 		{
 			if(isset($_GET[$result[0]]))
 			{

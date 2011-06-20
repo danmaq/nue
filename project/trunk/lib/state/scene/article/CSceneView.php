@@ -62,25 +62,18 @@ class CSceneView
 		{
 			$entity->startSession();
 			$this->user = $entity->getUser();
-			if(isset($_GET['t']) && strlen($_GET['t']) > 0)
+			$pager = new CPager($_GET['from'], $_GET['tpp']);
+			$this->pager = $pager;
+			$this->tag = $_GET['t'];
+			$tag = new CTag($_GET['t']);
+			if($tag->rollback())
 			{
-				$this->tag = $_GET['t'];
-				$tag = new CTag($_GET['t']);
-				if($tag->rollback())
+				$topics = array();
+				foreach($tag->getListFromTag(false, $pager) as $item)
 				{
-					$topics = array();
-					$pager = new CPager($_GET['from'], $_GET['tpp']);
-					$this->pager = $pager;
-					foreach($tag->getListFromTag(false, $pager) as $item)
-					{
-						array_push($topics, $item->getTopic());
-					}
-					$this->topics = $topics;
+					array_push($topics, $item->getTopic());
 				}
-			}
-			else
-			{
-				$this->topics = CTopic::getAll();
+				$this->topics = $topics;
 			}
 		}
 	}

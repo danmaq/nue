@@ -154,7 +154,7 @@ class CTopic
 		CTagAssign::initialize();
 		foreach(CDBManager::getInstance()->execAndFetch(
 			CFileSQLTagAssign::getInstance()->selectFromTopic,
-				array('topic_id' => array($id, , PDO::PARAM_STR)))
+				array('topic_id' => array($id, PDO::PARAM_STR)))
 			as $item)
 		{
 			$assign = new CTagAssign($item['NAME'], $this, $item['ENTITY_ID']);

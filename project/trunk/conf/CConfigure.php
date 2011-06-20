@@ -36,7 +36,7 @@ class CConfigure
 	/**
 	 *	デフォルトの1ページあたりの記事数です。
 	 */
-	const DEFAULT_TOPIC_PER_PAGE = 20;
+	const DEFAULT_TOPIC_PER_PAGE = 10;
 
 	/**
 	 *	使用するスキンを設定します。
