@@ -33,7 +33,7 @@
 				</title>
 				<link href="skin/danmaq(sample)/default.css" rel="StyleSheet" />
 				<link href="http://twitter.com/danmaq" rel="Author" />
-				<script type="text/javascript" src="skin/danmaq(sample)/jquery.js">;</script>
+				<script type="text/javascript" src="skin/danmaq(sample)/jquery.jgz">;</script>
 				<script type="text/javascript" src="skin/danmaq(sample)/default.js">;</script>
 				<xsl:comment> 評価中 </xsl:comment>
 			</head>
