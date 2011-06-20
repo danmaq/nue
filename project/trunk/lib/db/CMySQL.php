@@ -120,7 +120,7 @@ class CMySQL
 		$result = false;
 		try
 		{
-			$result = $this->getPDO()->prepare($sql)->execute($args);
+			$result = $this->bind($sql, $args)->execute();
 		}
 		catch(Exception $e)
 		{
@@ -141,31 +141,7 @@ class CMySQL
 		$result = null;
 		try
 		{
-			$stmt = $this->getPDO()->prepare($sql);
-			if(!$stmt)
-			{
-				error_log($sql);
-				throw new Exception($stmt);
-			}
-			$obsolete = false;
-			foreach(array_keys($args) as $item)
-			{
-				$name = ':' . $item;
-				if(is_array($args[$item]))
-				{
-					$stmt->bindParam($name, $args[$item][0], $args[$item][1]);
-				}
-				else
-				{
-					$stmt->bindParam($name, $args[$item]);
-					$obsolete = true;
-				}
-			}
-			if($obsolete)
-			{
-				error_log(sprintf("[NUE]Using default type is not recommended:\n%s\n%s",
-					$sql, print_r($args, true)));
-			}
+			$stmt = $this->bind($sql, $args);
 			if($stmt->execute())
 			{
 				$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -200,6 +176,43 @@ class CMySQL
 			throw $this->getException();
 		}
 		return $body[0][$column];
+	}
+
+	/**
+	 *	SQLにパラメータを設定します。
+	 *
+	 *	@param string $sql データベースに投入するクエリ。
+	 *	@param string $args 引数一覧。
+	 *	@return PDOStatement PreparedStatement オブジェクト。
+	 */
+	private function bind($sql, $args = array())
+	{
+		$stmt = $this->getPDO()->prepare($sql);
+		if(!$stmt)
+		{
+			error_log($sql);
+			throw new Exception($stmt);
+		}
+		$obsolete = false;
+		foreach(array_keys($args) as $item)
+		{
+			$name = ':' . $item;
+			if(is_array($args[$item]))
+			{
+				$stmt->bindParam($name, $args[$item][0], $args[$item][1]);
+			}
+			else
+			{
+				$stmt->bindParam($name, $args[$item]);
+				$obsolete = true;
+			}
+		}
+		if($obsolete)
+		{
+			error_log(sprintf("[NUE]Using default type is not recommended:\n%s\n%s",
+				$sql, print_r($args, true)));
+		}
+		return $stmt;
 	}
 }
 

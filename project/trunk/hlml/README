@@ -27,7 +27,7 @@ $dom：DOMDocumentオブジェクト。
 $tag：タグ名。
 $attrs：属性一覧が格納された連想配列。
 $inner：タグ内テキスト。
-$result：変換結果を格納してください。
+$result：変換結果となるDOMNodeを格納してください。
 $paragraph：段落DOMNode。
 $element：直属の親となる要素。
 (=$paragraphかもしれないし、さらにその配下かもしれない)

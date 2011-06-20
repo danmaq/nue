@@ -27,7 +27,7 @@
 					<xsl:if test="@title and string-length(@title) > 0"><xsl:value-of select="@title" /> - </xsl:if>
 					<xsl:value-of select="@site" />
 				</title>
-				<link href="./skin/default/default.css" rel="StyleSheet" />
+				<link href="skin/default/default.css" rel="StyleSheet" />
 				<link href="http://twitter.com/danmaq" rel="Author" />
 				<xsl:comment> 評価中 </xsl:comment>
 			</head>
@@ -40,12 +40,33 @@
 				</header>
 				<xsl:apply-templates select="topic" />
 				<xsl:apply-templates select="category" />
+				<xsl:apply-templates select="pager" />
 				<footer>
 					<hr />
 					<address><a href="http://nue.sourceforge.jp/">Network Utterance Environment</a> version <xsl:value-of select="@ver" /><br />by danmaq</address>
 				</footer>
 			</body>
 		</html>
+	</xsl:template>
+
+
+	<!-- ページャ情報。 -->
+	<xsl:template match="pager">
+		<xsl:call-template name="topic">
+			<xsl:with-param name="title">Page</xsl:with-param>
+			<xsl:with-param name="body">
+				<p>
+					<xsl:variable name="query"><xsl:if test="../search/@tag">/<xsl:value-of select="../search/@tag" /></xsl:if>&amp;</xsl:variable>
+					<xsl:if test="@page &gt; 0">
+						<a href="?{$query}({@page - 1}/{@tpp})">&lt;前のページへ</a>
+					</xsl:if>
+					<span> | <xsl:value-of select="@page + 1" />ページ目(<xsl:value-of select="@tpp" />件/ページ) | </span>
+					<xsl:if test="@page + 1 &lt; @max">
+						<a href="?{$query}({@page + 1}/{@tpp})">次のページへ&gt;</a>
+					</xsl:if>
+				</p>
+			</xsl:with-param>
+		</xsl:call-template>
 	</xsl:template>
 
 	<!-- ログオン情報。 -->
@@ -63,23 +84,21 @@
 
 	<!-- 検索。 -->
 	<xsl:template match="search">
-		<!-- TODO : トピック使いまわせないか？ -->
-		<section>
-			<h2>タグ検索</h2>
-			<article>
+		<xsl:call-template name="topic">
+			<xsl:with-param name="title">タグ検索</xsl:with-param>
+			<xsl:with-param name="body">
 				<form action="./" method="get">
 					<p>
-						<label for="t">キーワード</label>
-						<input type="text" id="t" name="t" value="{@tag}" maxlength="255" placeholder="255字以内" />
+						<input class="text" type="text" id="t" name="t" value="{@tag}" maxlength="255" placeholder="255字以内" />
 						<input type="submit" value="検索" />
 					</p>
 					<p>
-						<xsl:if test="@tag">現在の検索タグ: <em><xsl:value-of select="@tag" /></em><br /></xsl:if>
+						<xsl:if test="@tag">現在の検索タグ: <em id="tag"><xsl:value-of select="@tag" /></em><br /></xsl:if>
 						<a href="?f=core/tag/all">登録タグ一覧</a>
 					</p>
 				</form>
-			</article>
-		</section>
+			</xsl:with-param>
+		</xsl:call-template>
 	</xsl:template>
 
 	<!-- カテゴリ。 -->
@@ -95,7 +114,7 @@
 		<li>
 			<xsl:choose>
 				<xsl:when test="count(ul) = 0 and @href">
-					<a href="?t={@href}"><xsl:value-of select="." /></a>
+					<a href="?/{@href}"><xsl:value-of select="." /></a>
 				</xsl:when>
 				<xsl:otherwise><xsl:apply-templates /></xsl:otherwise>
 			</xsl:choose>
@@ -108,25 +127,29 @@
 			<h3><xsl:value-of select="@title" /></h3>
 		</xsl:if>
 		<xsl:if test="lh">
-			<a href="?t={lh/@href}"><xsl:value-of select="lh" /></a>
+			<a href="?/{lh/@href}"><xsl:value-of select="lh" /></a>
 		</xsl:if>
 		<ul><xsl:apply-templates select="li" /></ul>
 	</xsl:template>
 
 	<!-- トピック。 -->
-	<xsl:template match="topic">
+	<xsl:template name="topic" match="topic">
+		<xsl:param name="title"><xsl:value-of select="@title" /></xsl:param>
+		<xsl:param name="body">
+			<xsl:apply-templates select="p|ul|form" />
+		</xsl:param>
 		<section>
 			<h2>
 				<xsl:if test="@created">[<xsl:value-of select="@created" />]</xsl:if>
 				<xsl:choose>
 					<xsl:when test="@id">
-						<a href="?{@id}"><xsl:value-of select="@title" /></a>
+						<a href="?{@id}"><xsl:value-of select="$title" /></a>
 					</xsl:when>
-					<xsl:otherwise><xsl:value-of select="@title" /></xsl:otherwise>
+					<xsl:otherwise><xsl:value-of select="$title" /></xsl:otherwise>
 				</xsl:choose>
 			</h2>
 			<article>
-				<xsl:apply-templates select="p|ul|form" />
+				<xsl:copy-of select="$body" />
 			</article>
 		</section>
 	</xsl:template>

@@ -110,6 +110,14 @@
 		line-height: 1em !important;
 	}
 
+	.article .ss
+	{
+		letter-spacing: 0.4ex !important;
+		line-height: 2em !important;
+		margin-left: 1.5em;
+		margin-right:1.5em;
+	}
+
 	.clear
 	{
 		clear: right;
