@@ -1,0 +1,231 @@
+@charset "UTF-8";
+
+@media all
+{
+
+	a, .uri{
+		letter-spacing: 0px;
+	}
+
+	body
+	{
+		background: Black url("image/bg_default.png") no-repeat center center fixed;
+		color: rgb(188, 192, 221);
+		font-family: "メイリオ", "Osaka", sans-serif;
+		margin: 0px;
+	}
+
+	em{
+		font-style: normal;
+		letter-spacing: 0.4ex;
+	}
+
+	em, strong{
+		font-stretch: expanded;
+		color: White;
+	}
+
+	h1
+	{
+		margin-top: 0.5ex;
+		margin-bottom: 0px;
+		font-size: 78%;
+		font-weight: normal;
+	}
+
+	h2
+	{
+		border-left: 1ex solid rgb(188, 192, 221);
+		font-size: 100%;
+		padding: 0.5ex 1ex;
+		margin-top: 0.8ex;
+		margin-bottom: 0px;
+		padding-left: 1ex;
+	}
+
+	h3
+	{
+		border-top: dotted 2px rgb(188, 192, 221);
+		clear: right;
+		font-size: 100%;
+		margin-bottom: 0px;
+	}
+
+	hr
+	{
+		display: none;
+	}
+
+	img
+	{
+		border: 0px none Black;
+		vertical-align: bottom;
+	}
+
+	input
+	{
+		font-family: "メイリオ", "Osaka", sans-serif;
+	}
+
+	p
+	{
+		margin: 0px 0px 1em 0px;
+	}
+
+	ul
+	{
+		margin-top: 0px;
+		margin-bottom: 1em;
+	}
+
+	ul ul
+	{
+		margin-bottom: 0px;
+	}
+
+	var{
+		letter-spacing: 0px;
+	}
+
+	.article
+	{
+		background-image: url("image/bg_mask.png");
+		border: solid 1px rgb(188, 192, 221);
+		border-radius: 0px 4px 4px 4px / 0px 4px 4px 4px;
+		margin-bottom: 1ex;
+		overflow: auto;
+		padding: 1ex;
+	}
+
+	.article img
+	{
+		float: right;
+		margin: 1ex;
+	}
+
+	.article .aa
+	{
+		font-family: "ＭＳ Ｐゴシック", "IPA モナー Pゴシック", sans-serif;
+		font-size: 12pt;
+		line-height: 1em !important;
+	}
+
+	.article .ss
+	{
+		letter-spacing: 0.4ex !important;
+		line-height: 2em !important;
+		margin-left: 1.5em;
+		margin-right:1.5em;
+	}
+
+	.clear
+	{
+		clear: right;
+ 	}
+
+	#ads p
+	{
+		border-bottom: solid 2px rgb(188, 192, 221);
+		margin: 0px;
+		text-align: center;
+	}
+
+	#footer
+	{
+		border-top: solid 2px rgb(188, 192, 221);
+		clear: both;
+		text-align: center;
+	}
+
+	#header
+	{
+		float: left;
+		margin-left: 4px;
+		width: 236px;
+	}
+
+	#header input.text
+	{
+		max-width: 208px;
+		width: auto !important;
+		width: 208px;
+	}
+
+	#header ul
+	{
+		list-style-type: none;
+		padding-left: 0em;
+		margin-left: 0em;
+	}
+
+	#header ul ul
+	{
+		padding-left: 1em;
+	}
+
+	#header .article
+	{
+		font-size: 80%;
+	}
+
+	#topics
+	{
+		margin-left: 252px;
+		margin-right: 4px;
+	}
+
+	#topics p
+	{
+		text-indent: 1em;
+	}
+
+	#topics p, #topics li
+	{
+		letter-spacing: 0.2ex;
+		line-height: 1.3em;
+	}
+
+	a:link
+	{
+		color: rgb(216, 233, 214);
+	}
+
+	a.folder:link
+	{
+		color: rgb(151, 163, 149);
+	}
+
+	a:visited
+	{
+		color: rgb(255, 246, 199);
+	}
+
+	a.folder:visited
+	{
+		color: rgb(151, 163, 149);
+	}
+
+	a:active
+	{
+		background-color: rgb(255, 246, 199);
+		color: Black;
+	}
+
+	a.folder:active
+	{
+		background-color: rgb(204, 196, 159);
+		color: Black;
+	}
+
+	a:hover
+	{
+		background-color: rgb(216, 233, 214);
+		color: Black;
+	}
+
+	a.folder:hover
+	{
+		background-color: rgb(178, 172, 139);
+		color: Black;
+	}
+}
