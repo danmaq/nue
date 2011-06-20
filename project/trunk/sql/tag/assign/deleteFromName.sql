@@ -1,3 +1,2 @@
 DELETE FROM	NUE_INDEX_TAG_ASSIGN
-	WHERE	NAME = :name
-	LIMIT	:start, :length;
+	WHERE	NAME = :name;

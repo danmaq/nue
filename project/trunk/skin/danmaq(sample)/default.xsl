@@ -84,11 +84,32 @@
 				</header>
 			</div>
 			<div id="topics">
+				<xsl:apply-templates select="pager" />
 				<xsl:apply-templates select="topic">
 					<xsl:with-param name="noscript"><xsl:value-of select="$noscript" /></xsl:with-param>
 				</xsl:apply-templates>
+				<xsl:apply-templates select="pager" />
 			</div>
 		</div>
+	</xsl:template>
+
+	<!-- ページャ情報。 -->
+	<xsl:template match="pager">
+		<xsl:call-template name="topic">
+			<xsl:with-param name="title">Page</xsl:with-param>
+			<xsl:with-param name="body">
+				<p>
+					<xsl:variable name="query"><xsl:if test="../search/@tag">/<xsl:value-of select="../search/@tag" /></xsl:if>&amp;</xsl:variable>
+					<xsl:if test="@page &gt; 0">
+						<a href="?{$query}({@page}/{@tpp})">&lt;前のページへ</a>
+					</xsl:if>
+					<span> | <xsl:value-of select="@page + 1" />ページ | </span>
+					<xsl:if test="@page &lt; @max">
+						<a href="?{$query}({@page + 1}/{@tpp})">次のページへ&gt;</a>
+					</xsl:if>
+				</p>
+			</xsl:with-param>
+		</xsl:call-template>
 	</xsl:template>
 
 	<!-- ログオン情報。 -->

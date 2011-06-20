@@ -27,7 +27,7 @@ class CSceneView
 	private $topics = array();
 
 	/**	ページャ オブジェクト。 */
-	private $pager = new CPager();
+	private $pager;
 
 	/**
 	 *	この状態のオブジェクトを取得します。
@@ -48,6 +48,7 @@ class CSceneView
 	 */
 	private function __construct()
 	{
+		$pager = new CPager();
 	}
 
 	/**
@@ -68,7 +69,7 @@ class CSceneView
 				if($tag->rollback())
 				{
 					$topics = array();
-					$pager = new CPager($_GET['from'], $_GET['len']);
+					$pager = new CPager($_GET['from'], $_GET['tpp']);
 					$this->pager = $pager;
 					foreach($tag->getListFromTag(false, $pager) as $item)
 					{

@@ -37,8 +37,8 @@ class CPager
 	 */
 	public function getLimit()
 	{
-		$tpp = $this->$TopicsPerPage;
-		return array('start' => $this->target * $tpp, 'length'=> $tpp);
+		$tpp = $this->TopicsPerPage;
+		return array('start' => $this->target * $tpp, 'length' => $tpp);
 	}
 
 	/**
@@ -49,9 +49,9 @@ class CPager
 	 */
 	public function setMaxPagesFromCount($value)
 	{
-		$result = ceil($value / $TopicsPerPage);
+		$result = (int)($value / $this->TopicsPerPage);
 		$this->maxPage = $result;
-		$return $result;
+		return $result;
 	}
 }
 
