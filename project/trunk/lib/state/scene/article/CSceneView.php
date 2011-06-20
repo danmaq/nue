@@ -3,6 +3,7 @@
 require_once(NUE_CONSTANTS);
 require_once(NUE_LIB_ROOT . '/dao/CTag.php');
 require_once(NUE_LIB_ROOT . '/dao/CTopic.php');
+require_once(NUE_LIB_ROOT . '/util/CPager.php');
 require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
 require_once('CSceneBlank.php');
 
@@ -24,6 +25,9 @@ class CSceneView
 
 	/**	記事DAO一覧。 */
 	private $topics = array();
+
+	/**	ページャ オブジェクト。 */
+	private $pager = new CPager();
 
 	/**
 	 *	この状態のオブジェクトを取得します。
@@ -64,7 +68,9 @@ class CSceneView
 				if($tag->rollback())
 				{
 					$topics = array();
-					foreach($tag->getListFromTag(false) as $item)
+					$pager = new CPager($_GET['from'], $_GET['len']);
+					$this->pager = $pager;
+					foreach($tag->getListFromTag(false, $pager) as $item)
 					{
 						array_push($topics, $item->getTopic());
 					}
@@ -112,7 +118,7 @@ class CSceneView
 				}
 				else
 				{
-					$xmlbuilder->createPagerInfo();
+					$xmlbuilder->createPagerInfo($this->pager);
 					foreach($topics as $item)
 					{
 						$xmlbuilder->createTopic($item);

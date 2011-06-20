@@ -4,6 +4,7 @@ require_once('CUser.php');
 require_once('CTagAssign.php');
 require_once(NUE_LIB_ROOT . '/file/CFileSQLTopic.php');
 require_once(NUE_LIB_ROOT . '/file/CFileSQLTagAssign.php');
+require_once(NUE_LIB_ROOT . '/util/CPager.php');
 
 /**
  *	記事DAOクラス。
@@ -57,14 +58,21 @@ class CTopic
 	/**
 	 *	記事数を全件取得します。
 	 *
+	 *	@param CPager pager ページャ オブジェクト。
 	 *	@return integer 記事数。
 	 */
-	public static function getAll()
+	public static function getAll(CPager $pager = null)
 	{
 		$result = array();
-		if(self::getTotalCount() > 0)
+		$totalCount = self::getTotalCount();
+		if($totalCount > 0)
 		{
-			$all = CDBManager::getInstance()->execAndFetch(CFileSQLTopic::getInstance()->selectAll);
+			if($pager === null)
+			{
+				$pager = new CPager();
+			}
+			$all = CDBManager::getInstance()->execAndFetch(CFileSQLTopic::getInstance()->selectAll,
+				$pager->getLimit());
 			foreach($all as $item)
 			{
 				$topic = new CTopic($item['ID']);
@@ -73,6 +81,7 @@ class CTopic
 					array_push($result, $topic);
 				}
 			}
+			$pager->setMaxPageFromCount($totalCount);
 		}
 		return $result;
 	}

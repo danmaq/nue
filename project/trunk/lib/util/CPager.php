@@ -33,12 +33,25 @@ class CPager
 	/**
 	 *	データベースに渡すリミット情報を取得します。
 	 *
-	 *	@return array リミット情報。[0]:開始レコード、[1]:レコード数。
+	 *	@return array リミット情報。['start']:開始レコード、['length']:レコード数。
 	 */
 	public function getLimit()
 	{
 		$tpp = $this->$TopicsPerPage;
-		return array($this->target * $tpp, $tpp);
+		return array('start' => $this->target * $tpp, 'length'=> $tpp);
+	}
+
+	/**
+	 *	件数から最大ページ番号を設定し、返します。
+	 *
+	 *	@param int $value 件数。
+	 *	@return int 最大ページ番号。
+	 */
+	public function setMaxPagesFromCount($value)
+	{
+		$result = ceil($value / $TopicsPerPage);
+		$this->maxPage = $result;
+		$return $result;
 	}
 }
 

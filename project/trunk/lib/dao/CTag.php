@@ -184,7 +184,8 @@ class CTag
 
 		CTagAssign::initialize();
 		foreach(CDBManager::getInstance()->execAndFetch(
-			CFileSQLTagAssign::getInstance()->selectFromName, array('name' => $name)) as $item)
+			CFileSQLTagAssign::getInstance()->selectFromName,
+			array('name' => $name) + $pager->getLimit()) as $item)
 		{
 			$assign = new CTagAssign($name, $item['TOPIC_ID'], $item['ENTITY_ID']);
 			if($assign->rollback())
@@ -192,6 +193,7 @@ class CTag
 				array_push($result, $assign);
 			}
 		}
+		$pager->setMaxPageFromCount($this->getListFromTagCount());
 		return $result;
 	}
 
