@@ -12,6 +12,7 @@ NUE - Network Utterance Environment
 ・RSS出力。
 
 ■BUGS
+・PDO::PARAM_INT(至急)
 ・ページャまだ未完成。
 ・子タグのソート問題。
 ・記事表示中でもContents表示を
