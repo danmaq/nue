@@ -64,7 +64,7 @@ class CSceneParseQuery
 		}
 		$this->setQueryIfNotExists('t', CConfigure::DEFAULT_TAG);
 		$this->setQueryIfNotExists('from', 0);
-		$this->setQueryIfNotExists('len', 100);
+		$this->setQueryIfNotExists('tpp', CConfigure::DEFAULT_TOPIC_PER_PAGE);
 		$mode = 'core/article/view';
 		if(isset($_GET['id']))
 		{
@@ -139,18 +139,16 @@ class CSceneParseQuery
 	private function parsePage($item)
 	{
 		$result = array();
-		if(preg_match('/^\[(\d*)\/(\d*)\:(\d*)\]$/', $item, $result))
+		if(preg_match('/^\[(\d*)\/(\d*)\]$/', $item, $result))
 		{
 			if(isset($_GET[$result[0]]))
 			{
 				unset($_GET[$result[0]]);
 			}
-			$item = preg_replace('/\((\d*)-(\d*)\)$/', '', $item);
 			$result[1] = $result[1] ? $result[1] : 0;
 			$result[2] = $result[2] ? $result[2] : CConfigure::DEFAULT_TOPIC_PER_PAGE;
-			$rev = $result[1] > $result[2];
-			$_GET['from'] = $rev ? $result[2] : $result[1];
-			$_GET['to'] = $rev ? $result[1] : $result[2];
+			$_GET['from'] = $result[1];
+			$_GET['tpp'] = $result[2];
 		}
 		return $item;
 	}

@@ -81,7 +81,7 @@ class CTopic
 					array_push($result, $topic);
 				}
 			}
-			$pager->setMaxPageFromCount($totalCount);
+			$pager->setMaxPagesFromCount($totalCount);
 		}
 		return $result;
 	}

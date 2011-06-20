@@ -193,7 +193,7 @@ class CTag
 				array_push($result, $assign);
 			}
 		}
-		$pager->setMaxPageFromCount($this->getListFromTagCount());
+		$pager->setMaxPagesFromCount($this->getListFromTagCount());
 		return $result;
 	}
 

@@ -31,12 +31,12 @@ class CConfigure
 	/**
 	 *	1記事に登録可能な最大タグ数です。
 	 */
-	const TAG_MAX = 20;
+	const TAG_MAX = 10;
 
 	/**
 	 *	デフォルトの1ページあたりの記事数です。
 	 */
-	const DEFAULT_TOPIC_PER_PAGE = 10;
+	const DEFAULT_TOPIC_PER_PAGE = 20;
 
 	/**
 	 *	使用するスキンを設定します。
