@@ -136,6 +136,7 @@ class CTagAssign
 			}
 			$pdo->commit();
 			$tag = $this->getTag();
+			// ロールバック失敗したら→ノーカウント
 			if(count($tag->getListFromTag()) === 0)
 			{
 				$tag->delete();

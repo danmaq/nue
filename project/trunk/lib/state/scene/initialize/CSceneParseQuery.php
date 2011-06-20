@@ -64,7 +64,7 @@ class CSceneParseQuery
 		}
 		$this->setQueryIfNotExists('t', CConfigure::DEFAULT_TAG);
 		$this->setQueryIfNotExists('from', 0);
-		$this->setQueryIfNotExists('to', 100);
+		$this->setQueryIfNotExists('len', 100);
 		$mode = 'core/article/view';
 		if(isset($_GET['id']))
 		{

@@ -31,7 +31,7 @@ class CConfigure
 	/**
 	 *	1記事に登録可能な最大タグ数です。
 	 */
-	const TAG_MAX = 10;
+	const TAG_MAX = 20;
 
 	/**
 	 *	デフォルトの1ページあたりの記事数です。
