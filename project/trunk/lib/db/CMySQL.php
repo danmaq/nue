@@ -147,7 +147,26 @@ class CMySQL
 				error_log($sql);
 				throw new Exception($stmt);
 			}
-			if($stmt->execute($args))
+			$obsolete = false;
+			foreach(array_keys($args) as $item)
+			{
+				$name = ':' . $item;
+				if(is_array($args[$item]))
+				{
+					$stmt->bindParam($name, $args[$item][0], $args[$item][1]);
+				}
+				else
+				{
+					$stmt->bindParam($name, $args[$item]);
+					$obsolete = true;
+				}
+			}
+			if($obsolete)
+			{
+				error_log(sprintf("[NUE]Using default type is not recommended:\n%s\n%s",
+					$sql, print_r($args, true)));
+			}
+			if($stmt->execute())
 			{
 				$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 			}

@@ -38,7 +38,9 @@ class CPager
 	public function getLimit()
 	{
 		$tpp = $this->TopicsPerPage;
-		return array('start' => $this->target * $tpp, 'length' => $tpp);
+		return array(
+			'start' => array($this->target * $tpp, PDO::PARAM_INT),
+			'length' => array($tpp, PDO::PARAM_INT));
 	}
 
 	/**
