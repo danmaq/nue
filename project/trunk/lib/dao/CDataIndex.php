@@ -71,6 +71,16 @@ abstract class CDataIndex
 		}
 		$this->entity = $entity;
 	}
+
+	/**
+	 *	DB受渡し用のパラメータを生成します。
+	 *
+	 *	@return array DB受渡し用のパラメータ。
+	 */
+	protected function createDBParamsOnlyEID()
+	{
+		return array('entity_id' => array($this->getEntity()->getID(), PDO::PARAM_STR));
+	}
 }
 
 ?>

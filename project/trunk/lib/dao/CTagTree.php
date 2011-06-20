@@ -197,7 +197,7 @@ class CTagTree
 	{
 		self::initialize();
 		return CDBManager::getInstance()->singleFetch(CFileSQLTagTree::getInstance()->selectExists,
-			'EXIST', array('name' => $this->getID()));
+			'EXIST', $this->createDBParams());
 	}
 
 	/**
@@ -215,7 +215,7 @@ class CTagTree
 			self::initialize();
 			$pdo->beginTransaction();
 			$result = $db->execute(CFileSQLTagTree::getInstance()->delete,
-				array('name' => $this->getID())) && parent::delete();
+				$this->createDBParams()) && parent::delete();
 			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));
@@ -242,14 +242,13 @@ class CTagTree
 		$pdo = $db->getPDO();
 		try
 		{
-			$params = array(
-				'name' => $this->getID(),
-				'sort' => $this->cgen);
+			$params = $this->createDBParams() + array(
+				'sort' => array($this->cgen, PDO::PARAM_INT));
 			$fcache = CFileSQLTagTree::getInstance();
 			$pdo->beginTransaction();
 			$result = $entity->commit() &&
 				(($this->isExists() && $db->execute($fcache->update, $params)) || $db->execute(
-					$fcache->insert, $params + array('entity_id' => $entity->getID())));
+					$fcache->insert, $params + $this->createDBParamsOnlyEID()));
 			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));
@@ -274,7 +273,7 @@ class CTagTree
 	{
 		self::initialize();
 		$body = CDBManager::getInstance()->execAndFetch(
-			CFileSQLTagTree::getInstance()->select, array('name' => $this->getID()));
+			CFileSQLTagTree::getInstance()->select, $this->createDBParams());
 		$result = count($body) > 0;
 		if($result)
 		{
@@ -282,6 +281,16 @@ class CTagTree
 			$this->createEntity($body[0]['ENTITY_ID']);
 		}
 		return $result;
+	}
+
+	/**
+	 *	DB受渡し用のパラメータを生成します。
+	 *
+	 *	@return array DB受渡し用のパラメータ。
+	 */
+	private function createDBParams()
+	{
+		return array('name' => array($this->getID(), PDO::PARAM_STR));
 	}
 }
 

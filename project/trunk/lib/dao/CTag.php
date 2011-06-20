@@ -157,7 +157,7 @@ class CTag
 		CTagAssign::initialize();
 		return CDBManager::getInstance()->singleFetch(
 			CFileSQLTagAssign::getInstance()->selectCountFromName,
-			'COUNT', array('name' => $this->getID()));
+			'COUNT', $this->createDBParams());
 	}
 
 	/**
@@ -185,7 +185,7 @@ class CTag
 		CTagAssign::initialize();
 		foreach(CDBManager::getInstance()->execAndFetch(
 			CFileSQLTagAssign::getInstance()->selectFromName,
-			array('name' => $name) + $pager->getLimit()) as $item)
+			$this->createDBParams() + $pager->getLimit()) as $item)
 		{
 			$assign = new CTagAssign($name, $item['TOPIC_ID'], $item['ENTITY_ID']);
 			if($assign->rollback())
@@ -208,7 +208,7 @@ class CTag
 	{
 		return self::getTotalCount() > 0 &&
 			CDBManager::getInstance()->singleFetch(CFileSQLTag::getInstance()->selectExists,
-				'EXIST', array('name' => $this->getID()));
+				'EXIST', $this->createDBParams());
 	}
 
 	/**
@@ -226,7 +226,7 @@ class CTag
 			self::getTotalCount();
 			$pdo->beginTransaction();
 			$result = $db->execute(CFileSQLTag::getInstance()->delete,
-				array('name' => $this->getID())) && parent::delete();
+				$this->createDBParams()) && parent::delete();
 			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));
@@ -258,7 +258,7 @@ class CTag
 			$exists = $this->isExists();
 			$result = $entity->commit() && ($exists || $db->execute(
 				CFileSQLTag::getInstance()->insert,
-				array('name' => $this->getID(), 'entity_id' => $entity->getID())));
+				$this->createDBParams() + $this->createDBParamsOnlyEID()));
 			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));
@@ -286,13 +286,23 @@ class CTag
 	public function rollback()
 	{
 		$body = CDBManager::getInstance()->execAndFetch(
-			CFileSQLTag::getInstance()->select, array('name' => $this->getID()));
+			CFileSQLTag::getInstance()->select, $this->createDBParams());
 		$result = count($body) > 0;
 		if($result)
 		{
 			$this->createEntity($body[0]['ENTITY_ID']);
 		}
 		return $result;
+	}
+
+	/**
+	 *	DB受渡し用のパラメータを生成します。
+	 *
+	 *	@return array DB受渡し用のパラメータ。
+	 */
+	private function createDBParams()
+	{
+		return array('name' => array($this->getID(), PDO::PARAM_STR));
 	}
 }
 
