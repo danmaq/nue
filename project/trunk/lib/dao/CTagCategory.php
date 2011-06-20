@@ -103,7 +103,7 @@ class CTagCategory
 	{
 		return self::getTotalCount() > 0 &&
 			CDBManager::getInstance()->singleFetch(CFileSQLTagCategory::getInstance()->selectExists,
-				'EXIST', array('name' => $this->getID()));
+				'EXIST', $this->createDBParams());
 	}
 
 	/**
@@ -121,7 +121,7 @@ class CTagCategory
 			self::getTotalCount();
 			$pdo->beginTransaction();
 			$result = $db->execute(CFileSQLTagCategory::getInstance()->delete,
-				array('name' => $this->getID())) && parent::delete();
+				$this->createDBParams()) && parent::delete();
 			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));
@@ -149,14 +149,13 @@ class CTagCategory
 		$pdo = $db->getPDO();
 		try
 		{
-			$params = array(
-				'name' => $this->getID(),
-				'sort' => $this->order);
+			$params = $this->createDBParams() + array(
+				'sort' => array($this->order, PDO::PARAM_INT));
 			$fcache = CFileSQLTagCategory::getInstance();
 			$pdo->beginTransaction();
 			$exists = $this->isExists();
 			$result = $entity->commit() && (($exists && $db->execute($fcache->update, $params)) ||
-				$db->execute($fcache->insert, $params + array('entity_id' => $entity->getID())));
+				$db->execute($fcache->insert, $params + $this->createDBParamsOnlyEID()));
 			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));
@@ -184,7 +183,7 @@ class CTagCategory
 	public function rollback()
 	{
 		$body = CDBManager::getInstance()->execAndFetch(
-			CFileSQLTagCategory::getInstance()->select, array('name' => $this->getID()));
+			CFileSQLTagCategory::getInstance()->select, $this->createDBParams());
 		$result = count($body) > 0;
 		if($result)
 		{
@@ -192,6 +191,16 @@ class CTagCategory
 			$this->createEntity($body[0]['ENTITY_ID']);
 		}
 		return $result;
+	}
+
+	/**
+	 *	DB受渡し用のパラメータを生成します。
+	 *
+	 *	@return array DB受渡し用のパラメータ。
+	 */
+	private function createDBParams()
+	{
+		return array('name' => array($this->getID(), PDO::PARAM_STR));
 	}
 }
 

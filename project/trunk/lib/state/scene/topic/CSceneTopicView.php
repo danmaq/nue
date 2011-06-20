@@ -96,6 +96,7 @@ class CSceneTopicView
 				$xmlbuilder = new CDocumentBuilder(_('TOPIC'));
 				$xmlbuilder->createUserLogonInfo($user);
 				$xmlbuilder->createSearchInfo();
+				$xmlbuilder->createCategoryList();
 				$xmlbuilder->createTopic($topic);
 
 				$t = $xmlbuilder->createTopic(_('タグ'));

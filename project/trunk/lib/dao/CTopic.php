@@ -153,7 +153,8 @@ class CTopic
 		$id = $this->getID();
 		CTagAssign::initialize();
 		foreach(CDBManager::getInstance()->execAndFetch(
-			CFileSQLTagAssign::getInstance()->selectFromTopic, array('topic_id' => $id))
+			CFileSQLTagAssign::getInstance()->selectFromTopic,
+				array('topic_id' => array($id, , PDO::PARAM_STR)))
 			as $item)
 		{
 			$assign = new CTagAssign($item['NAME'], $this, $item['ENTITY_ID']);
@@ -200,7 +201,7 @@ class CTopic
 	{
 		return self::getTotalCount() > 0 &&
 			CDBManager::getInstance()->singleFetch(CFileSQLTopic::getInstance()->selectExists,
-			'EXIST', array('id' => $this->getID()));
+			'EXIST', $this->createDBParams());
 	}
 
 	/**
@@ -221,7 +222,7 @@ class CTopic
 				self::getTotalCount();
 				$pdo->beginTransaction();
 				$result = $db->execute(CFileSQLTopic::getInstance()->delete,
-					array('id' => $id)) && parent::delete();
+					$this->createDBParams()) && parent::delete();
 				if(!$result)
 				{
 					throw new Exception(_('DB書き込みに失敗'));
@@ -254,9 +255,8 @@ class CTopic
 		$pdo = $db->getPDO();
 		try
 		{
-			$params = array(
-				'id' => $this->getID(),
-				'sort' => date('Y-m-d H:i:s', $this->userTimeStamp));
+			$params = $this->createDBParams() + array(
+				'sort' => array(date('Y-m-d H:i:s', $this->userTimeStamp), PDO::PARAM_STR));
 			$fcache = CFileSQLTopic::getInstance();
 			$pdo->beginTransaction();
 			$exists = $this->isExists();
@@ -292,7 +292,7 @@ class CTopic
 		if($id !== null)	// IDなしはテンポラリ扱い
 		{
 			$body = CDBManager::getInstance()->execAndFetch(
-				CFileSQLTopic::getInstance()->select, array('id' => $id));
+				CFileSQLTopic::getInstance()->select, $this->createDBParams());
 			$result = count($body) > 0;
 			if($result)
 			{
@@ -301,6 +301,16 @@ class CTopic
 			}
 		}
 		return $result;
+	}
+
+	/**
+	 *	DB受渡し用のパラメータを生成します。
+	 *
+	 *	@return array DB受渡し用のパラメータ。
+	 */
+	private function createDBParams()
+	{
+		return array('id' => array($this->getID(), PDO::PARAM_STR));
 	}
 }
 

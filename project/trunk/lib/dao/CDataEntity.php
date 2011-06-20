@@ -134,7 +134,7 @@ class CDataEntity
 	{
 		self::initializeTable();
 		return CDBManager::getInstance()->singleFetch(CFileSQLEntity::getInstance()->selectExists,
-			'EXIST', array('id' => $this->getID()));
+			'EXIST', $this->createDBParams());
 	}
 
 	/**
@@ -146,7 +146,7 @@ class CDataEntity
 	{
 		self::initializeTable();
 		return CDBManager::getInstance()->execute(
-			CFileSQLEntity::getInstance()->delete, array('id' => $this->getID()));
+			CFileSQLEntity::getInstance()->delete, $this->createDBParams());
 	}
 
 	/**
@@ -168,7 +168,8 @@ class CDataEntity
 		}
 		return $db->execute(
 			$overwrite && $this->isExists() ? $fcache->update : $fcache->insert,
-			array('id' => $id, 'body' => serialize($this->storage())));
+			$this->createDBParams() +
+				array('body' => array(serialize($this->storage()), PDO::PARAM_STR)));
 	}
 
 	/**
@@ -180,7 +181,7 @@ class CDataEntity
 	{
 		self::initializeTable();
 		$body = CDBManager::getInstance()->execAndFetch(
-			CFileSQLEntity::getInstance()->select, array('id' => $this->getID()));
+			CFileSQLEntity::getInstance()->select, $this->createDBParams());
 		$result = count($body) > 0;
 		if($result)
 		{
@@ -209,6 +210,16 @@ class CDataEntity
 			$body =& $this->body;
 			$body += $format;
 		}
+	}
+
+	/**
+	 *	DB受渡し用のパラメータを生成します。
+	 *
+	 *	@return array DB受渡し用のパラメータ。
+	 */
+	private function createDBParams()
+	{
+		return array('id' => array($this->getID(), PDO::PARAM_STR));
 	}
 }
 

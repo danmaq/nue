@@ -111,7 +111,7 @@ class CTagAssign
 	{
 		self::initialize();
 		return CDBManager::getInstance()->singleFetch(
-			CFileSQLTagAssign::getInstance()->selectExists, 'EXIST', $this->getDBParameters());
+			CFileSQLTagAssign::getInstance()->selectExists, 'EXIST', $this->createDBParams());
 	}
 
 	/**
@@ -129,7 +129,7 @@ class CTagAssign
 			self::initialize();
 			$pdo->beginTransaction();
 			$result = $db->execute(CFileSQLTagAssign::getInstance()->delete,
-				$this->getDBParameters()) && parent::delete();
+				$this->createDBParams()) && parent::delete();
 			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));
@@ -167,7 +167,7 @@ class CTagAssign
 			$pdo->beginTransaction();
 			$result = $entity->commit() && ($this->isExists() || $db->execute(
 				CFileSQLTagAssign::getInstance()->insert,
-				$this->getDBParameters() + array('entity_id' => $entity->getID())));
+				$this->createDBParams() + $this->createDBParamsOnlyEID()));
 			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));
@@ -192,7 +192,7 @@ class CTagAssign
 	{
 		self::initialize();
 		$body = CDBManager::getInstance()->execAndFetch(
-			CFileSQLTagAssign::getInstance()->select, $this->getDBParameters());
+			CFileSQLTagAssign::getInstance()->select, $this->createDBParams());
 		$result = count($body) > 0;
 		if($result)
 		{
@@ -206,11 +206,11 @@ class CTagAssign
 	 *
 	 *	@return array パラメータ。
 	 */
-	private function getDBParameters()
+	private function createDBParams()
 	{
 		return array(
-			'name'		=> $this->getTag()->getID(),
-			'topic_id'	=> $this->getTopic()->getID());
+			'name'		=> array($this->getTag()->getID(), PDO::PARAM_STR),
+			'topic_id'	=> array($this->getTopic()->getID(), PDO::PARAM_STR));
 	}
 }
 

@@ -60,7 +60,7 @@ class CUser
 			$entity = null;
 			foreach(CDBManager::getInstance()->execAndFetch(
 				CFileSQLUser::getInstance()->selectFromEntityID,
-				array('entity_id' => $entityID)) as $item)
+				array('entity_id' => array($entityID, PDO::PARAM_STR))) as $item)
 			{
 				$user = new CUser($item['ID']);
 				if($entity === null && $user->rollback())
@@ -110,7 +110,7 @@ class CUser
 	{
 		return self::getTotalCount() > 0 &&
 			CDBManager::getInstance()->singleFetch(CFileSQLUser::getInstance()->selectExists,
-			'EXIST', array('id' => $this->getID()));
+			'EXIST', $this->createDBParams());
 	}
 
 	/**
@@ -131,7 +131,7 @@ class CUser
 				self::getTotalCount();
 				$pdo->beginTransaction();
 				$result = $db->execute(CFileSQLUser::getInstance()->delete,
-					array('id' => $id)) && parent::delete();
+					$this->createDBParams()) && parent::delete();
 				if(!$result)
 				{
 					throw new Exception(_('DB書き込みに失敗'));
@@ -169,7 +169,7 @@ class CUser
 				$exists = $this->isExists();
 				$result = $entity->commit() && ($exists || $db->execute(
 					CFileSQLUser::getInstance()->insert,
-					array('id' => $id, 'entity_id' => $entity->getID())));
+					$this->createDBParams() + $this->createDBParamsOnlyEID()));
 				if(!$result)
 				{
 					throw new Exception(_('DB書き込みに失敗'));
@@ -201,7 +201,7 @@ class CUser
 		if(!$result)
 		{
 			$body = CDBManager::getInstance()->execAndFetch(
-				CFileSQLUser::getInstance()->select, array('id' => $id));
+				CFileSQLUser::getInstance()->select, $this->createDBParams());
 			$result = count($body) > 0;
 			if($result)
 			{
@@ -232,6 +232,16 @@ class CUser
 		list($id, $eid) = unserialize($serialized);
 		self::__construct($id);
 		$this->createEntity($eid);
+	}
+
+	/**
+	 *	DB受渡し用のパラメータを生成します。
+	 *
+	 *	@return array DB受渡し用のパラメータ。
+	 */
+	private function createDBParams()
+	{
+		return array('id' => array($this->getID(), PDO::PARAM_STR));
 	}
 }
 
