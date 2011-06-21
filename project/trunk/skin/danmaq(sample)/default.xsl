@@ -25,13 +25,17 @@
 				</xsl:if>
 				<meta name="application-name" content="Network Utterance Environment" />
 				<meta name="author" content="danmaq" />
+				<meta  name="viewport" content="width=789" />
 				<title>
 					<xsl:if test="@title and string-length(@title) > 0"><xsl:value-of select="@title" /> - </xsl:if>
 					<xsl:value-of select="@site" />
 				</title>
 				<link href="skin/danmaq(sample)/default.css" rel="StyleSheet" />
 				<link href="http://twitter.com/danmaq" rel="Author" />
-				<script type="text/javascript" src="skin/danmaq(sample)/jquery.jgz">;</script>
+				<xsl:choose>
+					<xsl:when test="contains(@ua, 'Safari')"><script type="text/javascript" src="skin/danmaq(sample)/jquery.js">;</script></xsl:when>
+					<xsl:otherwise><script type="text/javascript" src="skin/danmaq(sample)/jquery.jgz">;</script></xsl:otherwise>
+				</xsl:choose>
 				<script type="text/javascript" src="skin/danmaq(sample)/default.js">;</script>
 				<xsl:comment> 評価中 </xsl:comment>
 			</head>
