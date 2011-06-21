@@ -19,8 +19,6 @@
 		<html xml:lang="ja">
 			<head>
 				<meta charset="UTF-8" />
-				<meta content="text/css; charset=UTF-8" http-equiv="Content-Style-Type" />
-				<meta content="text/javascript; charset=UTF-8" http-equiv="Content-Script-Type" />
 				<xsl:if test="contains(@ua, ' IE ') or contains(@ua, ' MSIE ')">
 					<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 					<meta name="msapplication-navbutton-color" content="#BCC0DD" />
@@ -67,23 +65,35 @@
 		</html>
 	</xsl:template>
 
+	<!-- 本体。 -->
 	<xsl:template name="body">
 		<xsl:param name="noscript">false</xsl:param>
-		<div id="body">
+		<div>
 			<xsl:if test="$noscript = 'false'">
+				<xsl:attribute name="id">body</xsl:attribute>
 				<xsl:attribute name="style">display: none;</xsl:attribute>
 			</xsl:if>
-			<div id="header">
+			<div>
+				<xsl:if test="$noscript = 'false'">
+					<xsl:attribute name="id">header</xsl:attribute>
+				</xsl:if>
 				<header>
 					<h1>
 						<a href="./"><img alt="{@site}" src="skin/danmaq(sample)/image/logo.png" height="60" width="236" /></a><br />
 						GAMES, ILLUSTRATIONS and MUSICS
 					</h1>
-					<xsl:apply-templates select="user|search" />
-					<xsl:apply-templates select="category" />
+					<xsl:apply-templates select="user|search">
+						<xsl:with-param name="noscript"><xsl:value-of select="$noscript" /></xsl:with-param>
+					</xsl:apply-templates>
+					<xsl:apply-templates select="category">
+						<xsl:with-param name="noscript"><xsl:value-of select="$noscript" /></xsl:with-param>
+					</xsl:apply-templates>
 				</header>
 			</div>
-			<div id="topics">
+			<div>
+				<xsl:if test="$noscript = 'false'">
+					<xsl:attribute name="id">topics</xsl:attribute>
+				</xsl:if>
 				<xsl:apply-templates select="pager" />
 				<xsl:apply-templates select="topic">
 					<xsl:with-param name="noscript"><xsl:value-of select="$noscript" /></xsl:with-param>
@@ -95,8 +105,10 @@
 
 	<!-- ページャ情報。 -->
 	<xsl:template match="pager">
+		<xsl:param name="noscript">false</xsl:param>
 		<xsl:call-template name="topic">
 			<xsl:with-param name="title">Page</xsl:with-param>
+			<xsl:with-param name="noscript"><xsl:value-of select="$noscript" /></xsl:with-param>
 			<xsl:with-param name="body">
 				<p>
 					<xsl:variable name="query"><xsl:if test="../search/@tag">/<xsl:value-of select="../search/@tag" /></xsl:if>&amp;</xsl:variable>
@@ -114,9 +126,11 @@
 
 	<!-- ログオン情報。 -->
 	<xsl:template match="user">
+		<xsl:param name="noscript">false</xsl:param>
 		<xsl:call-template name="topic">
 			<xsl:with-param name="id">user</xsl:with-param>
 			<xsl:with-param name="title">User session</xsl:with-param>
+			<xsl:with-param name="noscript"><xsl:value-of select="$noscript" /></xsl:with-param>
 			<xsl:with-param name="body">
 				<p>
 					<xsl:choose>
@@ -133,17 +147,24 @@
 
 	<!-- 検索。 -->
 	<xsl:template match="search">
+		<xsl:param name="noscript">false</xsl:param>
 		<xsl:call-template name="topic">
 			<xsl:with-param name="id">search</xsl:with-param>
 			<xsl:with-param name="title">Tag Search</xsl:with-param>
+			<xsl:with-param name="noscript"><xsl:value-of select="$noscript" /></xsl:with-param>
 			<xsl:with-param name="body">
 				<form action="./" method="get">
 					<p>
-						<input class="text" type="text" id="t" name="t" value="{@tag}" maxlength="255" placeholder="255字以内" />
+						<input class="text" type="text" name="t" value="{@tag}" maxlength="255" placeholder="255字以内" />
 						<input type="submit" value="検索" />
 					</p>
 					<p>
-						<xsl:if test="@tag">現在の検索タグ: <em id="tag"><xsl:value-of select="@tag" /></em><br /></xsl:if>
+						<xsl:if test="@tag">現在の検索タグ: <em>
+							<xsl:if test="$noscript = 'false'">
+								<xsl:attribute name="id">tag</xsl:attribute>
+							</xsl:if>
+							<xsl:value-of select="@tag" />
+						</em><br /></xsl:if>
 						<a href="?f=core/tag/all">登録タグ一覧</a>
 					</p>
 				</form>
@@ -153,11 +174,16 @@
 
 	<!-- カテゴリ。 -->
 	<xsl:template match="category">
-		<div id="nav">
+		<xsl:param name="noscript">false</xsl:param>
+		<div>
+			<xsl:if test="$noscript = 'false'">
+				<xsl:attribute name="id">nav</xsl:attribute>
+			</xsl:if>
 			<nav>
 				<xsl:call-template name="topic">
 					<xsl:with-param name="id">category</xsl:with-param>
 					<xsl:with-param name="title">Contents</xsl:with-param>
+					<xsl:with-param name="noscript"><xsl:value-of select="$noscript" /></xsl:with-param>
 					<xsl:with-param name="body">
 						<ul><xsl:apply-templates select="li" /></ul>
 					</xsl:with-param>
@@ -218,7 +244,7 @@
 			</xsl:if>
 		</xsl:param>
 		<div class="section">
-			<xsl:if test="string-length($id) > 0">
+			<xsl:if test="string-length($id) > 0 and $noscript = 'false'">
 				<xsl:attribute name="id"><xsl:value-of select="$id" /></xsl:attribute>
 			</xsl:if>
 			<section>
@@ -269,9 +295,16 @@
 			<xsl:when test="$noscript = 'false' and (local-name() = 'img')">
 				<span class="{local-name()}">
 					<xsl:for-each select="@*">
-						<span class="{name()}"><xsl:value-of select="." /></span>
+						<span class="{name()}">
+							<xsl:choose>
+								<xsl:when test="string-length(.) > 0"><xsl:value-of select="." /></xsl:when>
+								<xsl:otherwise><xsl:text> </xsl:text></xsl:otherwise>
+							</xsl:choose>
+						</span>
 					</xsl:for-each>
+<!--
 					<span class="__body__"><xsl:value-of select="." /></span>
+-->
 				</span>
 			</xsl:when>
 			<xsl:otherwise>

@@ -101,7 +101,6 @@ class CSceneTopicView
 
 				$t = $xmlbuilder->createTopic(_('タグ'));
 				$p = $xmlbuilder->createParagraph($t);
-				$p = $xmlbuilder->createParagraph($t);
 				foreach($topic->getTagAssignList() as $item)
 				{
 					$id = $item->getTag()->getID();
