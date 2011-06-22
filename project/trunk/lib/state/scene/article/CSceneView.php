@@ -125,16 +125,16 @@ class CSceneView
 					{
 						$topic = $xmlbuilder->createTopic(_('管理'));
 						$p = $xmlbuilder->createParagraph($topic);
-						$xmlbuilder->createHTMLElement($p, 'a',
-							array('href' => '?f=core/article/topic/new'),
-							_('記事作成'));
 						if($tag !== null && count($topics) > 0)
 						{
-							$xmlbuilder->createHTMLElement($p, 'br');
 							$xmlbuilder->createHTMLElement($p, 'a',
 								array('href' => ('?f=core/tag/pref&amp;t=' . urlencode($tag))),
 								sprintf(_('%s タグの設定'), $tag));
+							$xmlbuilder->addText($p, ' | ');
 						}
+						$xmlbuilder->createHTMLElement($p, 'a',
+							array('href' => '?f=core/article/topic/new'),
+							_('記事作成'));
 					}
 				}
 				$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);

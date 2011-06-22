@@ -2,7 +2,7 @@
 var FADETIME = 50;
 
 /**	現在検索しているタグ キーワード。 */
-var m_current_tag = null;
+var m_current_tag = '';
 
 ////////////////////////////////////////////////////////////
 
@@ -202,8 +202,8 @@ function CCategory(cat)
 	{
 		this.initializeFolder();
 		this.toggleVisible(true);
-		// Prefixを付けるために、「一旦閉じてから」開く
-		if(this.child.find(':contains("' + m_current_tag + '")').length > 0)
+		// Prefixを付けるために、「一旦閉じた後に」開く
+		if(this.child.text().toLowerCase().indexOf(m_current_tag.toLowerCase()) >= 0)
 		{
 			this.toggleVisible(true);
 		}
@@ -220,6 +220,10 @@ try
 		if(currentTag.length > 0)
 		{
 			m_current_tag = currentTag.text();
+			if(!m_current_tag)
+			{
+				m_current_tag = '';
+			}
 		}
 		var sections = $('.onscript .section');
 		for(var i = sections.length; --i >= 0; new CSection(sections[i]))

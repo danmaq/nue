@@ -60,7 +60,7 @@
 					<xsl:if test="@page &gt; 0">
 						<a href="?{$query}({@page - 1}/{@tpp})">&lt;前のページへ</a>
 					</xsl:if>
-					<span> | <xsl:value-of select="@page + 1" />ページ目(<xsl:value-of select="@tpp" />件/ページ) | </span>
+					<span> | <xsl:value-of select="@page + 1" />/<xsl:value-of select="@max" />ページ目(<xsl:value-of select="@tpp" />件/ページ) | </span>
 					<xsl:if test="@page + 1 &lt; @max">
 						<a href="?{$query}({@page + 1}/{@tpp})">次のページへ&gt;</a>
 					</xsl:if>

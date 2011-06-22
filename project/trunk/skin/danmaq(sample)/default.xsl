@@ -6,9 +6,12 @@
 	exclude-result-prefixes="xhtml">
 	<xsl:output method="xml" encoding="UTF-8" indent="yes" media-type="application/xhtml+xml" />
 
+	<!-- グローバル変数宣言。 -->
+	<!-- 強制的に非表示を解除するかどうか。 -->
+	<xsl:variable name="forceVisible">false</xsl:variable>
+
 	<!-- メイン。 -->
 	<xsl:template match="/body">
-		<xsl:variable name="forceVisible">false</xsl:variable>
 
 		<!-- HTML5のためのDOCTYPE宣言。 -->
 		<xsl:text disable-output-escaping='yes'>
@@ -25,7 +28,10 @@
 				</xsl:if>
 				<meta name="application-name" content="Network Utterance Environment" />
 				<meta name="author" content="danmaq" />
-				<meta  name="viewport" content="width=789" />
+				<meta name="viewport" content="width=789" />
+				<xsl:if test="pager">
+					<meta name="{pager/@page + 1}" content="page" />
+				</xsl:if>
 				<title>
 					<xsl:if test="@title and string-length(@title) > 0"><xsl:value-of select="@title" /> - </xsl:if>
 					<xsl:value-of select="@site" />
@@ -119,7 +125,7 @@
 					<xsl:if test="@page &gt; 0">
 						<a href="?{$query}({@page - 1}/{@tpp})">&lt;前のページへ</a>
 					</xsl:if>
-					<span> | <xsl:value-of select="@page + 1" />ページ目(<xsl:value-of select="@tpp" />件/ページ) | </span>
+					<span> | <xsl:value-of select="@page + 1" />/<xsl:value-of select="@max" />ページ目(<xsl:value-of select="@tpp" />件/ページ) | </span>
 					<xsl:if test="@page + 1 &lt; @max">
 						<a href="?{$query}({@page + 1}/{@tpp})">次のページへ&gt;</a>
 					</xsl:if>
@@ -235,17 +241,12 @@
 	<!-- トピック。 -->
 	<xsl:template name="topic" match="topic">
 		<xsl:param name="noscript">false</xsl:param>
-		<xsl:param name="title"><xsl:value-of select="@title" /></xsl:param>
+		<xsl:param name="title"><xsl:value-of select="@title" /><xsl:if test="@id"> [<a href="?{@id}">詳細</a>]</xsl:if></xsl:param>
 		<xsl:param name="id"><xsl:value-of select="@id" /></xsl:param>
 		<xsl:param name="body">
 			<xsl:apply-templates select="p|ul|form">
 				<xsl:with-param name="noscript"><xsl:value-of select="$noscript" /></xsl:with-param>
 			</xsl:apply-templates>
-			<xsl:if test="@id">
-				<ul class="clear">
-					<li><a href="?{@id}">&quot;<xsl:value-of select="@title" />&quot;の詳細を見る</a></li>
-				</ul>
-			</xsl:if>
 		</xsl:param>
 		<div class="section">
 			<xsl:if test="string-length($id) > 0 and $noscript = 'false'">
@@ -254,7 +255,7 @@
 			<section>
 				<h2 class="title">
 					<xsl:if test="@created">[<xsl:value-of select="@created" />]</xsl:if>
-					<xsl:value-of select="$title" />
+					<xsl:copy-of select="$title" />
 				</h2>
 				<div class="article">
 					<article>

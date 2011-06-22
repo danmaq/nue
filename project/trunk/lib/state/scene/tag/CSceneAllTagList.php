@@ -67,14 +67,17 @@ class CSceneAllTagList
 			$xmlbuilder->createUserLogonInfo($this->user);
 			$xmlbuilder->createSearchInfo();
 			$t = $xmlbuilder->createTopic(_('全タグ一覧'));
-			$p = $xmlbuilder->createParagraph($t);
+			$dom = $xmlbuilder->getDOM();
+			$ul = $dom->createElement('ul');
+			$t->appendChild($ul);
 			foreach($this->tags as $item)
 			{
 				$id = $item->getID();
-				$xmlbuilder->createHTMLElement($p, 'a',
+				$li = $dom->createElement('li');
+				$xmlbuilder->createHTMLElement($li, 'a',
 					array('href' => '?t=' . urlencode($id)), $id);
-				$xmlbuilder->addText($p, sprintf(_('(%d件)'), $item->getListFromTagCount()));
-				$xmlbuilder->createHTMLElement($p, 'br');
+				$xmlbuilder->addText($li, sprintf(_('(%d件)'), $item->getListFromTagCount()));
+				$ul->appendChild($li);
 			}
 			$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
 			$entity->dispose();

@@ -1,3 +1,3 @@
 UPDATE		NUE_INDEX_TAG_TREE
 	SET		SORT = :sort
-	WHERE	NAME = :name;
+	WHERE	LOWER(NAME) = LOWER(:name);

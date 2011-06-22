@@ -60,6 +60,24 @@ class CDocumentBuilder
 	}
 
 	/**
+	 *	XSLスキンへのパスを取得します。
+	 *
+	 *	@param string $xslpath XSLファイルへのパス。
+	 *	@return string XSLファイルへのパス。
+	 */
+	private static function getSkinPath($xslpath)
+	{
+		$result = sprintf('skin/%s/%s', $_GET['skin'], $xslpath);
+		if(!file_exists(sprintf('%s/%s', NUE_ROOT, $result)))
+		{
+			$_GET['skin'] = CConfigure::SKINSET;
+			// 既定も存在しない場合無限ループになるので再帰にはしない。
+			$result = sprintf('skin/%s/%s', $_GET['skin'], $xslpath);
+		}
+		return $result;
+	}
+
+	/**
 	 *	コンストラクタ。
 	 *
 	 *	@param string $title タイトル メッセージ。
@@ -142,7 +160,7 @@ class CDocumentBuilder
 			header('Content-Type: text/xml; charset=UTF-8');
 			$dom = $this->getDOM();
 			$xsl = $dom->createProcessingInstruction('xml-stylesheet',
-				sprintf('type="text/xsl" href="skin/%s/%s"', CConfigure::SKINSET, $xslpath));
+				sprintf('type="text/xsl" href="%s"', self::getSkinPath($xslpath)));
 			$dom->insertBefore($xsl, $dom->firstChild);
 			echo $dom->saveXML();
 		}
@@ -168,7 +186,7 @@ class CDocumentBuilder
 	{
 		$xslt = new XSLTProcessor();
 		$xsl = new DOMDocument();
-		$xsl->load(sprintf('%s/skin/%s/%s', NUE_ROOT, CConfigure::SKINSET, $xslpath));
+		$xsl->load(sprintf('%s/%s', NUE_ROOT, self::getSkinPath($xslpath)));
 		$xslt->importStyleSheet($xsl);
 		return $xslt->transformToXML($this->getDOM());
 	}

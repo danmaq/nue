@@ -97,29 +97,33 @@ class CSceneTopicView
 				$xmlbuilder->createUserLogonInfo($user);
 				$xmlbuilder->createSearchInfo();
 				$xmlbuilder->createCategoryList();
-				$xmlbuilder->createTopic($topic);
 
-				$t = $xmlbuilder->createTopic(_('タグ'));
-				$p = $xmlbuilder->createParagraph($t);
+				$t = $xmlbuilder->createTopic(_('この記事について'));
+				$dom = $xmlbuilder->getDOM();
+				$ul = $dom->createElement('ul');
+				$t->appendChild($ul);
+				$li = $dom->createElement('li');
+				$ul->appendChild($li);
+				$xmlbuilder->addText($li, _('投稿日: ') . date('Y/m/d H:i', $topic->userTimeStamp));
+				$li = $dom->createElement('li');
+				$ul->appendChild($li);
+				$xmlbuilder->addText($li, _('更新日: ') . date('Y/m/d H:i',
+					$topic->getEntity()->getUpdated()));
+				$li = $dom->createElement('li');
+				$ul->appendChild($li);
+				$xmlbuilder->addText($li, _('投稿者: ') . $this->author);
+				$p = $xmlbuilder->createParagraph($t, _('タグ'));
+				$xmlbuilder->addText($p, ' | ');
 				foreach($topic->getTagAssignList() as $item)
 				{
 					$id = $item->getTag()->getID();
 					$xmlbuilder->createHTMLElement($p, 'a',
 						array('href' => '?t=' . urlencode($id)), $id);
-					$xmlbuilder->createHTMLElement($p, 'br');
+					$xmlbuilder->addText($p, ' | ');
 				}
 
-				$t = $xmlbuilder->createTopic(_('この記事について'));
-				$p = $xmlbuilder->createParagraph($t);
-				$xmlbuilder->addText(
-					$p, _('投稿日: ') . date('Y/m/d H:i', $topic->userTimeStamp));
-				$xmlbuilder->createHTMLElement($p, 'br');
-				$xmlbuilder->addText(
-					$p, _('更新日: ') . date('Y/m/d H:i', $topic->getEntity()->getUpdated()));
+				$xmlbuilder->createTopic($topic);
 
-				$p = $xmlbuilder->createParagraph($t);
-				$xmlbuilder->addText(
-					$p, _('投稿者: ') . $this->author);
 				if($user !== null)
 				{
 					$body =& $user->storage();
