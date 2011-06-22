@@ -173,7 +173,6 @@ class CTag
 	public function getListFromTag($loadBody = true, CPager $pager = null)
 	{
 		$result = array();
-		$name = $this->getID();
 		if($pager === null)
 		{
 			$pager = new CPager();
@@ -187,7 +186,7 @@ class CTag
 			CFileSQLTagAssign::getInstance()->selectFromName,
 			$this->createDBParams() + $pager->getLimit()) as $item)
 		{
-			$assign = new CTagAssign($name, $item['TOPIC_ID'], $item['ENTITY_ID']);
+			$assign = new CTagAssign($item['NAME'], $item['TOPIC_ID'], $item['ENTITY_ID']);
 			if($assign->rollback())
 			{
 				array_push($result, $assign);
@@ -290,6 +289,7 @@ class CTag
 		$result = count($body) > 0;
 		if($result)
 		{
+			$this->name = $body[0]['NAME'];
 			$this->createEntity($body[0]['ENTITY_ID']);
 		}
 		return $result;

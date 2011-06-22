@@ -196,6 +196,7 @@ class CTagAssign
 		$result = count($body) > 0;
 		if($result)
 		{
+			$this->name = $body[0]['NAME'];
 			$this->createEntity($body[0]['ENTITY_ID']);
 		}
 		return $result;

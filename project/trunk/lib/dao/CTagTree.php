@@ -86,7 +86,7 @@ class CTagTree
 			$tag = new CTag($name);
 			if($tag->rollback())
 			{
-				array_unshift($result, $name);
+				array_unshift($result, $tag->getID());
 				$body &= $tag->storage();
 				$category = new CTagCategory($name);
 				if(!$category->isExists())
@@ -277,6 +277,7 @@ class CTagTree
 		$result = count($body) > 0;
 		if($result)
 		{
+			$this->name = $body[0]['NAME'];
 			$this->cgen = $body[0]['SORT'];
 			$this->createEntity($body[0]['ENTITY_ID']);
 		}

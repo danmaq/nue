@@ -187,6 +187,7 @@ class CTagCategory
 		$result = count($body) > 0;
 		if($result)
 		{
+			$this->name = $body[0]['NAME'];
 			$this->order = $body[0]['SORT'];
 			$this->createEntity($body[0]['ENTITY_ID']);
 		}

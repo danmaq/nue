@@ -65,6 +65,7 @@ class CSceneParseQuery
 		$this->setQueryIfNotExists('t', CConfigure::DEFAULT_TAG);
 		$this->setQueryIfNotExists('from', 0);
 		$this->setQueryIfNotExists('tpp', CConfigure::DEFAULT_TOPIC_PER_PAGE);
+		$this->setQueryIfNotExists('skin', CConfigure::SKINSET);
 		$mode = 'core/article/view';
 		if(isset($_GET['id']))
 		{
