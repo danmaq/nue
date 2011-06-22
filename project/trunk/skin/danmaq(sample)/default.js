@@ -203,7 +203,8 @@ function CCategory(cat)
 		this.initializeFolder();
 		this.toggleVisible(true);
 		// Prefixを付けるために、「一旦閉じた後に」開く
-		if(this.child.text().toLowerCase().indexOf(m_current_tag.toLowerCase()) >= 0)
+		if(m_current_tag.length > 0 &&
+			this.child.text().toLowerCase().indexOf(m_current_tag.toLowerCase()) >= 0)
 		{
 			this.toggleVisible(true);
 		}
