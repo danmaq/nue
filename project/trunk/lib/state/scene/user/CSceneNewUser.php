@@ -59,11 +59,11 @@ class CSceneNewUser
 			if(CUser::getTotalCount() > 0)
 			{
 				$topicName = _('サインアップ');
-				$p = $this->createForm($xmlbuilder, _('ログオン'), 'core/user/logon');
+				$p = $this->createForm($xmlbuilder, _('ログオン'), 'core/user/logon', _('ログオン'));
 				$xmlbuilder->createTextInput(
 					$p, 'password', 'pwd', '', _('パスワード(半角英数字)'), 4, 255, true);
 			}
-			$this->createForm($xmlbuilder, $topicName, 'core/user/add');
+			$this->createForm($xmlbuilder, $topicName, 'core/user/add', _('登録'));
 			if(CUser::getTotalCount() > 0)
 			{
 				$topic = $xmlbuilder->createTopic(_('ユーザ登録でできること'));
@@ -91,8 +91,9 @@ class CSceneNewUser
 	 *	@param CDocumentBuilder $xmlbuilder DOM構築オブジェクト。
 	 *	@param string $topicName トピック名。
 	 *	@param string $action ジャンプ先URI。
+	 *	@param string $buttonCaption ボタンの表示名。
 	 */
-	private function createForm(CDocumentBuilder $xmlbuilder, $topicName, $action)
+	private function createForm(CDocumentBuilder $xmlbuilder, $topicName, $action, $buttonCaption)
 	{
 		$topic = $xmlbuilder->createTopic($topicName);
 		$form = $xmlbuilder->createForm($topic, './');
@@ -101,7 +102,7 @@ class CSceneNewUser
 			isset($_GET['id']) ? $_GET['id'] : '', _('ID(半角英数字)'), 1, 255);
 		$p = $xmlbuilder->createParagraph($form);
 		$xmlbuilder->createHiddenInput($p, 'f', $action);
-		$xmlbuilder->createSubmitInput($p, _('登録'));
+		$xmlbuilder->createSubmitInput($p, $buttonCaption);
 		return $result;
 	}
 }

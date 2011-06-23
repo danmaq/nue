@@ -91,7 +91,7 @@ class CScenePrefUser
 
 			$p = $xmlbuilder->createParagraph($form);
 			$xmlbuilder->createHiddenInput($p, 'f', 'core/user/mod');
-			$xmlbuilder->createSubmitInput($p, _('登録'));
+			$xmlbuilder->createSubmitInput($p, _('変更確定'));
 			if(!$body['root'])
 			{
 				$topic = $xmlbuilder->createTopic(_('アカウント削除'));
