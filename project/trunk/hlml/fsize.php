@@ -20,6 +20,6 @@ if(isset($attrs['path']))
 	}
 }
 
-$result = $dom->createTextNode(sprintf('%.2F KB', $fsize / 1048576));
+$result = $dom->createTextNode(sprintf('%.2F MB', $fsize / 1048576));
 
 ?>
