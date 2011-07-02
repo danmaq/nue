@@ -11,7 +11,7 @@
 	{
 		background: Black url("image/bg_default.png") no-repeat fixed center center;
 		color: rgb(188, 192, 221);
-		font-family: "メイリオ", "Meiryo", "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "Osaka", "ＭＳ Ｐゴシック", sans-serif;
+		font-family: "メイリオ", "Meiryo", "Segoe", "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "Osaka", "ＭＳ Ｐゴシック", sans-serif;
 		margin: 0px;
 	}
 
@@ -64,7 +64,7 @@
 
 	input
 	{
-		font-family: "メイリオ", "Meiryo", "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "Osaka", "ＭＳ Ｐゴシック", sans-serif;
+		font-family: "メイリオ", "Meiryo", "Segoe", "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "Osaka", "ＭＳ Ｐゴシック", sans-serif;
 	}
 
 	p
