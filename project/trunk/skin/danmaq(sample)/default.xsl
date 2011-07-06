@@ -40,7 +40,7 @@
 				<link href="http://twitter.com/danmaq" rel="Author" />
 				<xsl:choose>
 					<xsl:when test="contains(@ua, 'Safari')"><script type="text/javascript" src="skin/danmaq(sample)/jquery.js">;</script></xsl:when>
-					<xsl:otherwise><script type="text/javascript" src="skin/danmaq(sample)/jquery-src.js">;</script></xsl:otherwise>
+					<xsl:otherwise><script type="text/javascript" src="skin/danmaq(sample)/jquery.jgz">;</script></xsl:otherwise>
 				</xsl:choose>
 				<script type="text/javascript" src="skin/danmaq(sample)/default.js">;</script>
 				<xsl:comment> 評価中 </xsl:comment>
