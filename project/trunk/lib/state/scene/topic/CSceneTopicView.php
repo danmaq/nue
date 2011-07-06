@@ -93,7 +93,7 @@ class CSceneTopicView
 				$user = $this->user;
 				$topic = $this->topic;
 				$body =& $topic->storage();
-				$xmlbuilder = new CDocumentBuilder(_('TOPIC'));
+				$xmlbuilder = new CDocumentBuilder($body['caption']);
 				$xmlbuilder->createUserLogonInfo($user);
 				$xmlbuilder->createSearchInfo();
 				$xmlbuilder->createCategoryList();
