@@ -54,7 +54,7 @@ class CPager
 	 */
 	public function setMaxPagesFromCount($topics)
 	{
-		$result = ceil($value / $this->TopicsPerPage);
+		$result = ceil($topics / $this->TopicsPerPage);
 		$this->topics = $topics;
 		$this->maxPage = $result;
 		return $result;
