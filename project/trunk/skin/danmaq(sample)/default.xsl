@@ -88,10 +88,7 @@
 					<xsl:attribute name="id">header</xsl:attribute>
 				</xsl:if>
 				<header>
-					<h1>
-						<a href="./"><img alt="{@site}" src="skin/danmaq(sample)/image/logo.png" height="60" width="236" /></a><br />
-						GAMES, ILLUSTRATIONS and MUSICS
-					</h1>
+					<h1><a href="./"><img alt="{@site}" src="skin/danmaq(sample)/image/logo.png" height="60" width="236" /></a><br />GAMES, ILLUSTRATIONS and MUSICS</h1>
 					<xsl:apply-templates select="user|search">
 						<xsl:with-param name="noscript"><xsl:value-of select="$noscript" /></xsl:with-param>
 					</xsl:apply-templates>
@@ -125,7 +122,7 @@
 					<xsl:if test="@page &gt; 0">
 						<a href="?{$query}({@page - 1}/{@tpp})">&lt;前のページへ</a>
 					</xsl:if>
-					<span> | <xsl:value-of select="@page + 1" />/<xsl:value-of select="@max" />ページ目(<xsl:value-of select="@tpp" />件/ページ:<xsl:value-of select="@topics" />件) | </span>
+					<span> | <xsl:value-of select="@page + 1" />/<xsl:value-of select="@max" />ページ目(全<xsl:value-of select="@topics" />件:<xsl:value-of select="@tpp" />件/ページ) | </span>
 					<xsl:if test="@page + 1 &lt; @max">
 						<a href="?{$query}({@page + 1}/{@tpp})">次のページへ&gt;</a>
 					</xsl:if>
