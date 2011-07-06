@@ -40,7 +40,7 @@
 				<link href="http://twitter.com/danmaq" rel="Author" />
 				<xsl:choose>
 					<xsl:when test="contains(@ua, 'Safari')"><script type="text/javascript" src="skin/danmaq(sample)/jquery.js">;</script></xsl:when>
-					<xsl:otherwise><script type="text/javascript" src="skin/danmaq(sample)/jquery.jgz">;</script></xsl:otherwise>
+					<xsl:otherwise><script type="text/javascript" src="skin/danmaq(sample)/jquery-src.js">;</script></xsl:otherwise>
 				</xsl:choose>
 				<script type="text/javascript" src="skin/danmaq(sample)/default.js">;</script>
 				<xsl:comment> 評価中 </xsl:comment>
@@ -309,8 +309,13 @@
 	<!-- HTML名前空間を持つモノは丸投げしてしまう。 -->
 	<xsl:template match="xhtml:*">
 		<xsl:param name="noscript">false</xsl:param>
+		<xsl:variable name="body">
+			<xsl:apply-templates>
+				<xsl:with-param name="noscript"><xsl:value-of select="$noscript" /></xsl:with-param>
+			</xsl:apply-templates>
+		</xsl:variable>
 		<xsl:choose>
-			<xsl:when test="$noscript = 'false' and (local-name() = 'img')">
+			<xsl:when test="$noscript = 'false' and (local-name() = 'img' or local-name() = 'iframe')">
 				<span class="{local-name()}">
 					<xsl:for-each select="@*">
 						<span class="{name()}">
@@ -320,17 +325,15 @@
 							</xsl:choose>
 						</span>
 					</xsl:for-each>
-<!--
-					<span class="__body__"><xsl:value-of select="." /></span>
--->
+					<xsl:if test="string-length($body) > 0">
+						<span class="__body__"><xsl:copy-of select="$body" /></span>
+					</xsl:if>
 				</span>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:element name="{local-name()}">
 					<xsl:copy-of select="@*" />
-					<xsl:apply-templates>
-						<xsl:with-param name="noscript"><xsl:value-of select="$noscript" /></xsl:with-param>
-					</xsl:apply-templates>
+					<xsl:copy-of select="$body" />
 				</xsl:element>
 			</xsl:otherwise>
 		</xsl:choose>

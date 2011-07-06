@@ -15,7 +15,7 @@ function CSection(section)
 {
 
 	var defaultHidden = Array();
-	var span2TagTarget = Array('img');
+	var span2TagTarget = Array('iframe', 'img');
 	var jSection = $(section);
 
 	/**	表示するかどうか。 */
@@ -87,17 +87,20 @@ function CSection(section)
 			{
 				var attr = $(attrs[i]);
 				var key = attr.attr('class');
-				var value = attr.text();
 				if(key == '__body__')
 				{
-					if(value.length > 0)
+					try
 					{
-						element.text(value);
+						element.prepend(attrs[i]);
+					}
+					catch(e)
+					{
+						// TODO : やっぱこれまずいよな……
 					}
 				}
 				else
 				{
-					element.attr(key, value);
+					element.attr(key, attr.text());
 				}
 			}
 			target.after(element);
