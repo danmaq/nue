@@ -60,7 +60,7 @@
 					<xsl:if test="@page &gt; 0">
 						<a href="?{$query}({@page - 1}/{@tpp})">&lt;前のページへ</a>
 					</xsl:if>
-					<span> | <xsl:value-of select="@page + 1" />/<xsl:value-of select="@max" />ページ目(<xsl:value-of select="@tpp" />件/ページ) | </span>
+					<span> | <xsl:value-of select="@page + 1" />/<xsl:value-of select="@max" />ページ目(<xsl:value-of select="@tpp" />件/ページ:<xsl:value-of select="@topics" />件) | </span>
 					<xsl:if test="@page + 1 &lt; @max">
 						<a href="?{$query}({@page + 1}/{@tpp})">次のページへ&gt;</a>
 					</xsl:if>
@@ -132,11 +132,19 @@
 		<ul><xsl:apply-templates select="li" /></ul>
 	</xsl:template>
 
+	<!-- 番号付きリスト。 -->
+	<xsl:template match="ol">
+		<xsl:if test="@title">
+			<h3><xsl:value-of select="@title" /></h3>
+		</xsl:if>
+		<ol><xsl:apply-templates select="li" /></ol>
+	</xsl:template>
+
 	<!-- トピック。 -->
 	<xsl:template name="topic" match="topic">
 		<xsl:param name="title"><xsl:value-of select="@title" /></xsl:param>
 		<xsl:param name="body">
-			<xsl:apply-templates select="p|ul|form" />
+			<xsl:apply-templates select="p|ul|ol|form" />
 		</xsl:param>
 		<section>
 			<h2>
@@ -158,7 +166,7 @@
 	<xsl:template match="form">
 		<form onsubmit="return true;">
 			<xsl:copy-of select="@*" />
-			<xsl:apply-templates select="p|ul" />
+			<xsl:apply-templates select="p|ul|ol" />
 		</form>
 	</xsl:template>
 
