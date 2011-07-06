@@ -17,6 +17,9 @@ class CPager
 	/**	1ページの最大記事数。 */
 	public $TopicsPerPage = CConfigure::DEFAULT_TOPIC_PER_PAGE;
 
+	/**	現在の件数。 */
+	public $topics = 0;
+
 	/**
 	 *	コンストラクタ。
 	 *
@@ -46,12 +49,13 @@ class CPager
 	/**
 	 *	件数から最大ページ番号を設定し、返します。
 	 *
-	 *	@param int $value 件数。
+	 *	@param int $topics 件数。
 	 *	@return int 最大ページ番号。
 	 */
-	public function setMaxPagesFromCount($value)
+	public function setMaxPagesFromCount($topics)
 	{
 		$result = ceil($value / $this->TopicsPerPage);
+		$this->topics = $topics;
 		$this->maxPage = $result;
 		return $result;
 	}

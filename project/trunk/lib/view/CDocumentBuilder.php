@@ -267,6 +267,7 @@ class CDocumentBuilder
 		$this->createAttribute($result, 'page', $pager->target);
 		$this->createAttribute($result, 'tpp', $pager->TopicsPerPage);
 		$this->createAttribute($result, 'max', $pager->maxPage);
+		$this->createAttribute($result, 'topics', $pager->topics);
 		$this->getRootElement()->appendChild($result);
 		return $result;
 	}
@@ -293,21 +294,29 @@ class CDocumentBuilder
 			$ul = null;
 			foreach($caption->getDescription() as $desc)
 			{
+				// TODO : この辺のロジック美しくないなぁ
 				if(preg_match('/^@/', $desc))
 				{
+					$prefix = 1;
+					$ol = preg_match('/^@@@/', $desc);
 					$separate = preg_match('/^@@/', $desc);
 					if($separate)
 					{
+						$prefix = 2;
 						$ul = null;
+					}
+					if($ol)
+					{
+						$prefix = 3;
 					}
 					if($ul === null)
 					{
-						$ul = $dom->createElement('ul');
+						$ul = $dom->createElement($ol ? 'ol' : 'ul');
 						$topic->appendChild($ul);
 					}
 					$li = $dom->createElement('li');
 					$ul->appendChild($li);
-					$this->addHLML($li, substr($desc, $separate ? 2 : 1), $ul);
+					$this->addHLML($li, substr($desc, $prefix), $ul);
 				}
 				else
 				{

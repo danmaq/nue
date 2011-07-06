@@ -125,7 +125,7 @@
 					<xsl:if test="@page &gt; 0">
 						<a href="?{$query}({@page - 1}/{@tpp})">&lt;前のページへ</a>
 					</xsl:if>
-					<span> | <xsl:value-of select="@page + 1" />/<xsl:value-of select="@max" />ページ目(<xsl:value-of select="@tpp" />件/ページ) | </span>
+					<span> | <xsl:value-of select="@page + 1" />/<xsl:value-of select="@max" />ページ目(<xsl:value-of select="@tpp" />件/ページ:<xsl:value-of select="@topics" />件) | </span>
 					<xsl:if test="@page + 1 &lt; @max">
 						<a href="?{$query}({@page + 1}/{@tpp})">次のページへ&gt;</a>
 					</xsl:if>
@@ -238,13 +238,29 @@
 		</ul>
 	</xsl:template>
 
+	<!-- カテゴリ。 -->
+	<xsl:template match="ol">
+		<xsl:param name="noscript">false</xsl:param>
+		<xsl:if test="@title">
+			<h3><xsl:value-of select="@title" /></h3>
+		</xsl:if>
+		<ol>
+			<xsl:if test="@class">
+				<xsl:attribute name="class"><xsl:value-of select="@class" /></xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates select="li">
+				<xsl:with-param name="noscript"><xsl:value-of select="$noscript" /></xsl:with-param>
+			</xsl:apply-templates>
+		</ol>
+	</xsl:template>
+
 	<!-- トピック。 -->
 	<xsl:template name="topic" match="topic">
 		<xsl:param name="noscript">false</xsl:param>
 		<xsl:param name="title"><xsl:value-of select="@title" /><xsl:if test="@id"> [<a href="?{@id}">詳細</a>]</xsl:if></xsl:param>
 		<xsl:param name="id"><xsl:value-of select="@id" /></xsl:param>
 		<xsl:param name="body">
-			<xsl:apply-templates select="p|ul|form">
+			<xsl:apply-templates select="p|ul|ol|form">
 				<xsl:with-param name="noscript"><xsl:value-of select="$noscript" /></xsl:with-param>
 			</xsl:apply-templates>
 		</xsl:param>
@@ -271,7 +287,7 @@
 		<xsl:param name="noscript">false</xsl:param>
 		<form onsubmit="return true;">
 			<xsl:copy-of select="@*" />
-			<xsl:apply-templates select="p|ul">
+			<xsl:apply-templates select="p|ul|ol">
 				<xsl:with-param name="noscript"><xsl:value-of select="$noscript" /></xsl:with-param>
 			</xsl:apply-templates>
 		</form>
