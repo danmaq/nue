@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<body title="ページ タイトル" site="ブログ タイトル" ver="0.4.64"
+	ua="Mozilla/4.0 (compatible; MSIE 5.17; Mac_PowerPC)"
+	xmlns:xhtml="http://www.w3.org/1999/xhtml"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="./skin/nue.xsd">
+	<!-- ua要素にはアクセスしてきたUA名が格納されています。これを見て表示制御してやるといいかも -->
+	<!-- ver要素にはNUEのバージョンが格納されています。正規表現で表すと\d+\.\d+\.\d+です -->
+
+	<user id="hogehoge" name="ほげ太郎" root="root" />
+	<!-- ログオン時かつログオフ可能な場合、user要素+id、name属性が入ります。 -->
+	<!-- ログオン時かつログオフ不可な場所ではuser要素+name属性が入ります。 -->
+	<!-- ログオフ時かつログオン可能な場所ではuser要素のみが入ります。 -->
+	<!-- ログオフ時かつログオン不可な場所ではuser要素自体が入りません。 -->
+
+	<search tag="ほげ" />
+	<!-- タグ検索時、または検索可能時に入ります。検索時はtag属性が含まれます。 -->
+
+	<pager page="1" tpp="10" max="5" />
+	<!-- ページャ。有効時のみ挿入されます。 -->
+	<!-- pageは現在ページ、tppは記事数/ページ、maxは最大ページ数。 -->
+
+	<category>
+		<li href="%e3%82%ab%e3%83%86%e3%82%b4%e3%83%aa%e3%82%bf%e3%82%b0%e4%b8%80%e8%a6%a7">カテゴリタグ一覧</li>
+		<li>
+			<ul>
+				<lh href="%e3(省略)%b0">サブカテゴリを持つタグ</lh>
+				<li href="%e3(省略)%b01">サブカテゴリタグ1</li>
+				<li href="%e3(省略)%b02">サブカテゴリタグ2</li>
+				<li href="%e3(省略)%99">ここでは割愛しますが無限に入れ子できます</li>
+				<li href="%28(省略)%29">(既定の設定では5階層までに制約をかけています)</li>
+			</ul>
+		</li>
+	</category>
+
+	<topic title="トピック タイトル" id="550E8400-E29B-41D4-A716-446655440000"
+		created="2011/06/12" updated="2011/06/12">
+		<p>
+			文章。ここにHTMLのインライン要素が挿入できます。
+			(ただし、xhtml名前空間を使用すること)
+			例: <xhtml:br />
+			<xhtml:em>HTML使用例</xhtml:em>
+		</p>
+		<ul title="リストも設定可能です">
+			<li>リスト1</li>
+			<li>リスト2</li>
+			<li>リスト3</li>
+		</ul>
+		<ol title="リストも設定可能です">
+			<li>リスト1</li>
+			<li>リスト2</li>
+			<li>リスト3</li>
+		</ol>
+		<p title="段落にもタイトルを設定することが可能です">
+			1トピック内に複数の段落を設定できます。
+		</p>
+	</topic>
+	<topic title="複数トピックを作成可能です">
+		<p>
+			投降された記事以外には記事ID(GUID)は割り振られません。
+		</p>
+		<p>
+			このようなXMLデータがNUEから出力されますので、これに対応するXSLを作成して
+			お好みのデザイン・レイアウトへ調整してください。
+		</p>
+	</topic>
+</body>
