@@ -2,10 +2,10 @@
 
 if(isset($attrs['videoid']))
 {
-	$shortUrl = 'http://youtu.be/' . $attrs['videoid'];
+	$shortUrl = 'http://www.nicovideo.jp/watch/' . $attrs['videoid'];
 	$result = $this->simpleHMLMConvert('iframe', array(
-		'width' => 425, 'height' => 349,
-		'src' => 'http://www.youtube.com/embed/' . $attrs['videoid'],
+		'width' => 312, 'height' => 192,
+		'src' => 'http://www.nicovideo.jp/thumb/' . $attrs['videoid'],
 		'srcdoc' => $shortUrl,
 		'seamless' => 'seamless',
 		'allowfullscreen' => 'true'));
