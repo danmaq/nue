@@ -75,7 +75,7 @@ class CSceneAllTagList
 				$id = $item->getID();
 				$li = $dom->createElement('li');
 				$xmlbuilder->createHTMLElement($li, 'a',
-					array('href' => '?t=' . urlencode($id)), $id);
+					array('href' => '?/' . urlencode($id)), $id);
 				$xmlbuilder->addText($li, sprintf(_('(%d件)'), $item->getListFromTagCount()));
 				$ul->appendChild($li);
 			}
