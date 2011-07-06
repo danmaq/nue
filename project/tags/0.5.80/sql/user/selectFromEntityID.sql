@@ -1,0 +1,3 @@
+SELECT		ID
+	FROM	NUE_INDEX_USER
+	WHERE	ENTITY_ID = :entity_id;
