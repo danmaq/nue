@@ -51,6 +51,17 @@ function CSection(section)
 	}
 
 	/**
+	 *	特定タグを変換します。
+	 */
+	this.convertTag = function()
+	{
+		for(var i = span2TagTarget.length; --i >= 0; )
+		{
+			this.span2Tag(span2TagTarget[i]);
+		}
+	}
+
+	/**
 	 *	タイトルバーを初期化します。
 	 */
 	this.initializeTitleBar = function()
@@ -123,12 +134,6 @@ function CSection(section)
 			{
 				this.toggleVisible(true);
 			}
-		}
-
-		// 特定タグ変換
-		for(var i = span2TagTarget.length; --i >= 0; )
-		{
-			this.span2Tag(span2TagTarget[i]);
 		}
 	}
 }
@@ -229,13 +234,16 @@ try
 				m_current_tag = '';
 			}
 		}
+		var sectionInstanceList = Array();
 		var sections = $('.onscript .section');
-		for(var i = sections.length; --i >= 0; new CSection(sections[i]))
+		for(var i = sections.length; --i >= 0; sectionInstanceList.push(new CSection(sections[i])))
 			;
 		var tags = $('.onscript #nav ul:first li:has(ul)');
 		for(var i = tags.length; --i >= 0; new CCategory(tags[i]))
 			;
 		$('#body').show();
+		for(var i = sectionInstanceList.length; --i >= 0; sectionInstanceList[i].convertTag())
+			;
 	};
 }
 catch(err)
