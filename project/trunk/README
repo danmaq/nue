@@ -79,8 +79,8 @@ _____________________________________________________________________
 ・img (alt, src, height, width)
 ・ins (cite, datetime)
 ・kbd ()
-・nicovideo (videoid) ：ニコニコ動画のサムネイルを貼り付けます。
-・params (title, class) ：段落にサブタイトルやCSSクラスを設定できます。
+・nicovideo (alt, videoid) ：ニコニコ動画のサムネイルを貼り付けます。
+・params (class) ：段落にサブタイトルやCSSクラスを設定できます。
 ・q (cite)
 ・samp ()
 ・strong ()
@@ -88,7 +88,7 @@ _____________________________________________________________________
 ・sup ()
 ・time (datetime)
 ・var ()
-・youtube (videoid) ：YouTubeのサムネイルを貼り付けます。
+・youtube (alt, videoid) ：YouTubeのサムネイルを貼り付けます。
 また、すべての要素に対し、title属性を設定可能です。
 詳しい使い方は hlml/README をご参照ください。
 

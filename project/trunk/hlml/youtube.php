@@ -9,7 +9,8 @@ if(isset($attrs['videoid']))
 		'srcdoc' => $shortUrl,
 		'seamless' => 'seamless',
 		'allowfullscreen' => 'true'));
-	$this->createHTMLElement($result, 'a', array('href' => $shortUrl), $shortUrl);
+	$this->createHTMLElement($result, 'a', array('href' => $shortUrl),
+		isset($attrs['alt']) ? $attrs['alt'] : $shortUrl);
 }
 
 ?>
