@@ -4,6 +4,9 @@ var FADETIME = 50;
 /**	現在検索しているタグ キーワード。 */
 var m_current_tag = '';
 
+/**	記事ウィンドウ オブジェクト一覧。 */
+var m_sections = Array();
+
 ////////////////////////////////////////////////////////////
 
 /**
@@ -221,6 +224,12 @@ function CCategory(cat)
 
 ////////////////////////////////////////////////////////////
 
+function convertTag()
+{
+	for(var i = m_sections.length; --i >= 0; m_sections[i].convertTag())
+		;
+}
+
 try
 {
 	window.onload = function()
@@ -234,16 +243,14 @@ try
 				m_current_tag = '';
 			}
 		}
-		var sectionInstanceList = Array();
 		var sections = $('.onscript .section');
-		for(var i = sections.length; --i >= 0; sectionInstanceList.push(new CSection(sections[i])))
+		for(var i = sections.length; --i >= 0; m_sections.push(new CSection(sections[i])))
 			;
 		var tags = $('.onscript #nav ul:first li:has(ul)');
 		for(var i = tags.length; --i >= 0; new CCategory(tags[i]))
 			;
 		$('#body').show();
-		for(var i = sectionInstanceList.length; --i >= 0; sectionInstanceList[i].convertTag())
-			;
+		window.setTimeout('convertTag()', 800);
 	};
 }
 catch(err)

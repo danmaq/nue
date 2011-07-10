@@ -318,7 +318,7 @@
 			<xsl:when test="$noscript = 'false' and (local-name() = 'img' or local-name() = 'iframe')">
 				<span class="{local-name()}">
 					<xsl:for-each select="@*">
-						<span class="{name()}">
+						<span class="{name()}" style="display: none;">
 							<xsl:choose>
 								<xsl:when test="string-length(.) > 0"><xsl:value-of select="." /></xsl:when>
 								<xsl:otherwise><xsl:text> </xsl:text></xsl:otherwise>
