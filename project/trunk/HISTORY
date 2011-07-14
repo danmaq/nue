@@ -31,6 +31,16 @@ NUE - Network Utterance Environment
 ・bg_mask.png/logo.png/bg_default.pngがonloadより先に読まれているのはまずい
 ・IE5.5だと動かないっぽい
 
+id
+uid
+2chid (host+date)*sha1
+timestamp
+host
+ip
+ua
+referer
+
+
 ======================================================================
 ■2011/7/10 - Version 0.6.83
 YouTube/ニコニコ動画表示機能を改良。代替テキストに対応した。
