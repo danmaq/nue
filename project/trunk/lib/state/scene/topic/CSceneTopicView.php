@@ -118,7 +118,7 @@ class CSceneTopicView
 				{
 					$id = $item->getTag()->getID();
 					$xmlbuilder->createHTMLElement($p, 'a',
-						array('href' => '?t=' . urlencode($id)), $id);
+						array('href' => '?/' . urlencode($id)), $id);
 					$xmlbuilder->addText($p, ' | ');
 				}
 

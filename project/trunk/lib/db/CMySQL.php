@@ -199,7 +199,8 @@ class CMySQL
 			$name = ':' . $item;
 			if(is_array($args[$item]))
 			{
-				$stmt->bindParam($name, $args[$item][0], $args[$item][1]);
+				$stmt->bindParam($name, $args[$item][0],
+					$args[$item][0] === null ? PDO::PARAM_NULL : $args[$item][1]);
 			}
 			else
 			{
