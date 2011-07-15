@@ -16,6 +16,9 @@ class CSceneParseQuery
 	/**	トップページかどうか。 */
 	private $top = true;
 
+	/**	プラグイン名。 */
+	private $plugin = '';
+
 	/**
 	 *	この状態のオブジェクトを取得します。
 	 *
@@ -48,6 +51,16 @@ class CSceneParseQuery
 	}
 
 	/**
+	 *	プラグインのパスを取得します。
+	 *
+	 *	@return string パス。
+	 */
+	public function getPluginPath()
+	{
+		return $this->plugin;
+	}
+
+	/**
 	 *	この状態が開始されたときに呼び出されます。
 	 *
 	 *	@param CEntity $entity この状態が適用されたオブジェクト。
@@ -62,16 +75,15 @@ class CSceneParseQuery
 			$this->parsePage($item);
 			$this->parseGUID($item);
 		}
-		$this->setQueryIfNotExists('t', CConfigure::DEFAULT_TAG);
 		$this->setQueryIfNotExists('from', 0);
 		$this->setQueryIfNotExists('tpp', CConfigure::DEFAULT_TOPIC_PER_PAGE);
 		$this->setQueryIfNotExists('skin', CConfigure::SKINSET);
-		$mode = 'core/article/view';
-		if(isset($_GET['id']))
+		$existId = isset($_GET['id']);
+		if($this->setQueryIfNotExists('f',
+			$existId ? 'core/article/topic/view' : 'core/article/view') && !$existId)
 		{
-			$mode = 'core/article/topic/view';
+			$this->setQueryIfNotExists('t', CConfigure::DEFAULT_TAG);
 		}
-		$this->setQueryIfNotExists('f', $mode);
 	}
 
 	/**
@@ -82,7 +94,9 @@ class CSceneParseQuery
 	public function execute(CEntity $entity)
 	{
 		$nextState = CSceneSimpleError::getIllegalModeInstance();
-		$target = $this->getPluginPath();
+		$target = NUE_ROOT . preg_replace('/(\.|\/){2,}/', '\1', sprintf('/plugin/%s.php', str_replace(
+			"\0", '', $_SERVER['REQUEST_METHOD'] == 'POST' ? $_POST['f'] : $_GET['f'])));
+		$this->plugin = $target;
 		if(file_exists($target))
 		{
 			require_once($target);
@@ -104,13 +118,16 @@ class CSceneParseQuery
 	 *
 	 *	@param string $key キー。
 	 *	@param string $value 値。
+	 *	@return boolean 値を設定できた場合、true。
 	 */
 	private function setQueryIfNotExists($key, $value)
 	{
-		if(!isset($_GET[$key]) || strlen($_GET[$key]) === 0)
+		$result = !isset($_GET[$key]) || strlen($_GET[$key]) === 0;
+		if($result)
 		{
 			$_GET[$key] = $value;
 		}
+		return $result;
 	}
 
 	/**
@@ -171,17 +188,6 @@ class CSceneParseQuery
 				unset($_GET[$item]);
 			}
 		}
-	}
-
-	/**
-	 *	プラグインのパスを取得します。
-	 *
-	 *	@return string パス。
-	 */
-	private function getPluginPath()
-	{
-		return NUE_ROOT . preg_replace('/(\.|\/){2,}/', '\1', sprintf('/plugin/%s.php', str_replace(
-			"\0", '', $_SERVER['REQUEST_METHOD'] == 'POST' ? $_POST['f'] : $_GET['f'])));
 	}
 }
 

@@ -1,0 +1,24 @@
+INSERT INTO NUE_ACCESS
+(
+	USER_ID,
+	DAILY_ID,
+	MODULE,
+	TAG,
+	TOPIC,
+	REMOTE_HOST,
+	REMOTE_ADDR,
+	USER_AGENT,
+	REFERER
+)
+VALUES
+(
+	:user_id,
+	:daily_id,
+	:module,
+	:tag,
+	:topic,
+	:remote_host,
+	:remote_addr,
+	:user_agent,
+	:referer
+);

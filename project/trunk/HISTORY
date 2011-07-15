@@ -21,7 +21,7 @@ NUE - Network Utterance Environment
 ・XSLTスキン数種類追加。(default→simple、danmaq抜き、bowuop、YASiM-CITY、MAKINA-CITY、KUTO)
 ・XSLTスキン側でページ指定ジャンプ機能追加。
 ・記事総件数、タグ総件数。
-・アクセスログ。解析は後回し。
+＠アクセスログ。解析は後回し。
 
 ■BUGS
 ・子タグのソート問題。
@@ -31,17 +31,12 @@ NUE - Network Utterance Environment
 ・bg_mask.png/logo.png/bg_default.pngがonloadより先に読まれているのはまずい
 ・IE5.5だと動かないっぽい
 
-id
-uid
-2chid (host+date)*sha1
-timestamp
-host
-ip
-ua
-referer
-
 
 ======================================================================
+■2011/7/15 - Version 0.6.84
+アクセスログ機能を実装完了。
+記事に割り当てられたタグの検索URLを?t=hogeから?/hoge形式に変更。
+
 ■2011/7/10 - Version 0.6.83
 YouTube/ニコニコ動画表示機能を改良。代替テキストに対応した。
 danmaqスキンの画像/動画の遅延ロード機能がうまく機能していないので対策した。
@@ -107,8 +102,6 @@ HLMLパーサにおいて、属性の値が存在しない場合落ちる不具�
 
 ■2011/6/17 - Version 0.4.65
 サンプル用新XSLの実装ほぼ完了したので適用してみた。
-タグ検索機能が、?t=hogeの代わりに?/hogeで呼び出せるようにした。
-ページャ実装の下準備。
 @@リスト区切りにて、@が余計に表示されてしまう不具合を修正。
 
 ■2011/6/15 - Version 0.4.63
