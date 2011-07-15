@@ -22,6 +22,7 @@ NUE - Network Utterance Environment
 ・XSLTスキン側でページ指定ジャンプ機能追加。
 ・記事総件数、タグ総件数。
 ・アクセスログだけ追加する機能。(SSI用)
+・やっぱjsとCSSも圧縮
 
 ■BUGS
 ・子タグのソート問題。
@@ -30,7 +31,7 @@ NUE - Network Utterance Environment
 ・Entityがリークしてるぞ
 ・bg_mask.png/logo.png/bg_default.pngがonloadより先に読まれているのはまずい
 ・IE5.5だと動かないっぽい
-
+・<meta name="1" content="page"/>…逆じゃね？
 
 ======================================================================
 ■2011/7/15 - Version 0.6.84
