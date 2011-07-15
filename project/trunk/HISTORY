@@ -21,7 +21,7 @@ NUE - Network Utterance Environment
 ・XSLTスキン数種類追加。(default→simple、danmaq抜き、bowuop、YASiM-CITY、MAKINA-CITY、KUTO)
 ・XSLTスキン側でページ指定ジャンプ機能追加。
 ・記事総件数、タグ総件数。
-＠アクセスログ。解析は後回し。
+・アクセスログだけ追加する機能。(SSI用)
 
 ■BUGS
 ・子タグのソート問題。
