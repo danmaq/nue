@@ -30,7 +30,7 @@
 				<meta name="author" content="danmaq" />
 				<meta name="viewport" content="width=789" />
 				<xsl:if test="pager">
-					<meta name="{pager/@page + 1}" content="page" />
+					<meta name="page" content="{pager/@page + 1}" />
 				</xsl:if>
 				<title>
 					<xsl:if test="@title and string-length(@title) > 0"><xsl:value-of select="@title" /> - </xsl:if>
