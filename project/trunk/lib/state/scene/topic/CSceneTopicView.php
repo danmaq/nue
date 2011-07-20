@@ -118,7 +118,7 @@ class CSceneTopicView
 				{
 					$id = $item->getTag()->getID();
 					$xmlbuilder->createHTMLElement($p, 'a',
-						array('href' => '?/' . urlencode($id)), $id);
+						array('href' => '?%2F' . urlencode($id)), $id);
 					$xmlbuilder->addText($p, ' | ');
 				}
 
@@ -132,15 +132,15 @@ class CSceneTopicView
 						$t = $xmlbuilder->createTopic(_('管理'));
 						$p = $xmlbuilder->createParagraph($t);
 						$xmlbuilder->createHTMLElement($p, 'a',
-							array('href' => '?f=core/article/topic/new&amp;id=' . $topic->getID()),
+							array('href' => '?f=core%2Farticle%2Ftopic%2Fnew&amp;id=' . $topic->getID()),
 							_('記事編集'));
 						$xmlbuilder->addText($p, ' | ');
 						$xmlbuilder->createHTMLElement($p, 'a',
-							array('href' => '?f=core/article/topic/remove&amp;id=' . $topic->getID()),
+							array('href' => '?f=core%2Farticle%2Ftopic%2Fremove&amp;id=' . $topic->getID()),
 							_('記事削除'));
 						$xmlbuilder->addText($p, ' | ');
 						$xmlbuilder->createHTMLElement($p, 'a',
-							array('href' => '?f=core/article/topic/new'), _('記事新規作成'));
+							array('href' => '?f=core%2Farticle%2Ftopic%2Fnew'), _('記事新規作成'));
 					}
 				}
 				$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);

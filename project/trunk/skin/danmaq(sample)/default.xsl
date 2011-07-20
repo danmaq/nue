@@ -205,7 +205,7 @@
 		<li>
 			<xsl:choose>
 				<xsl:when test="count(ul) = 0 and @href">
-					<a href="?/{@href}"><xsl:value-of select="." /></a>
+					<a href="?%2F{@href}"><xsl:value-of select="." /></a>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:apply-templates>
@@ -223,7 +223,7 @@
 			<h3><xsl:value-of select="@title" /></h3>
 		</xsl:if>
 		<xsl:if test="lh">
-			<a href="?/{lh/@href}"><xsl:value-of select="lh" /></a>
+			<a href="?%2F{lh/@href}"><xsl:value-of select="lh" /></a>
 		</xsl:if>
 		<ul>
 			<xsl:if test="@class">

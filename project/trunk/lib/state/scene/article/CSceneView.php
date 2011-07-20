@@ -128,12 +128,12 @@ class CSceneView
 						if($tag !== null && count($topics) > 0)
 						{
 							$xmlbuilder->createHTMLElement($p, 'a',
-								array('href' => ('?f=core/tag/pref&amp;t=' . urlencode($tag))),
+								array('href' => ('?f=core%2Ftag%2Fpref&amp;t=' . urlencode($tag))),
 								sprintf(_('%s タグの設定'), $tag));
 							$xmlbuilder->addText($p, ' | ');
 						}
 						$xmlbuilder->createHTMLElement($p, 'a',
-							array('href' => '?f=core/article/topic/new'),
+							array('href' => '?f=core%2Farticle%2Ftopic%2Fnew'),
 							_('記事作成'));
 					}
 				}
