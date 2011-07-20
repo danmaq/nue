@@ -255,9 +255,6 @@
 	<xsl:template name="topic" match="topic">
 		<xsl:param name="noscript">false</xsl:param>
 		<xsl:param name="title"><xsl:value-of select="@title" /><xsl:if test="@id"> [<a href="?{@id}">詳細</a>]</xsl:if></xsl:param>
-<!--
-		<xsl:param name="id"><xsl:value-of select="@id" /></xsl:param>
--->
 		<xsl:param name="body">
 			<xsl:apply-templates select="p|ul|ol|form">
 				<xsl:with-param name="noscript"><xsl:value-of select="$noscript" /></xsl:with-param>
