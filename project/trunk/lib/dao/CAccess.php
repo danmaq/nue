@@ -66,7 +66,7 @@ class CAccess
 				isset($_SERVER['REMOTE_HOST']) ? $_SERVER['REMOTE_HOST'] : $addr, PDO::PARAM_STR),
 			'remote_addr'	=> array($addr, PDO::PARAM_STR),
 			'user_agent'	=> array($_SERVER['HTTP_USER_AGENT'], PDO::PARAM_STR),
-			'referer'		=> array($_SERVER['HTTP_REFERER'], PDO::PARAM_STR)));
+			'referer'		=> array(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null, PDO::PARAM_STR)));
 		if($result)
 		{
 			self::$allCount++;
