@@ -17,7 +17,6 @@ var m_sections = Array();
 function CSection(section)
 {
 
-	var defaultHidden = Array();
 	var span2TagTarget = Array('iframe', 'img');
 	var jSection = $(section);
 
@@ -129,15 +128,6 @@ function CSection(section)
 		// ヘッダ部入力のサイズ制限
 		this.article.find('input:text').addClass('text');
 		this.article.find('input:password').addClass('text');
-
-		// 特定トピックの最小化 (TODO : 記憶)
-		for(var i = defaultHidden.length; --i >= 0; )
-		{
-			if(defaultHidden[i] == jSection.attr('id'))
-			{
-				this.toggleVisible(true);
-			}
-		}
 	}
 }
 
