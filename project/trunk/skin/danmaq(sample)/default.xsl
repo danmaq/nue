@@ -88,7 +88,7 @@
 					<xsl:attribute name="id">header</xsl:attribute>
 				</xsl:if>
 				<header>
-					<h1><a href="./"><img alt="{@site}" src="skin/danmaq(sample)/image/logo.png" height="60" width="236" /></a><br />GAMES, ILLUSTRATIONS and MUSICS</h1>
+					<h1><a href="./"><img alt="{@site}" src="skin/danmaq(sample)/image/logo.png" height="60" width="236" /></a><br />GAMES, ILLUSTRATIONS and MUSICS<br />SINCE 1999.MAY</h1>
 					<xsl:apply-templates select="user|search">
 						<xsl:with-param name="noscript"><xsl:value-of select="$noscript" /></xsl:with-param>
 					</xsl:apply-templates>
