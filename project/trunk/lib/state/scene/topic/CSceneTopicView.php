@@ -3,7 +3,7 @@
 require_once(NUE_CONSTANTS);
 require_once(NUE_LIB_ROOT . '/dao/CTopic.php');
 require_once(NUE_LIB_ROOT . '/view/CDocumentBuilder.php');
-require_once(NUE_LIB_ROOT . '/state/scene/article/CSceneView.php');
+require_once(NUE_LIB_ROOT . '/state/scene/error/CSceneSimpleError.php');
 
 /**
  *	記事表示のシーンです。
@@ -86,7 +86,7 @@ class CSceneTopicView
 			$nextState = CEmptyState::getInstance();
 			if($this->topic === null)
 			{
-				$nextState = CSceneView::getInstance();
+				$nextState = CSceneSimpleError::getNotFoundInstance();
 			}
 			else
 			{

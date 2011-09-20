@@ -14,11 +14,28 @@ class CSceneSimpleError
 	/**	未定義の動作状態を指定した場合のエラー クラス オブジェクト。 */
 	private static $illegalMode = null;
 
+	/**	存在しないページを指定した場合のエラー クラス オブジェクト。 */
+	private static $notfound = null;
+
 	/**	セッション開始に失敗した場合のエラー クラス オブジェクト。 */
 	private static $sessionFailed = null;
 
 	/**	エラー メッセージ。 */
 	private $description;
+
+	/**
+	 *	存在しないページを指定した場合のエラー オブジェクトを取得します。
+	 *
+	 *	@return IState 状態のオブジェクト。
+	 */
+	public static function getNotFoundInstance()
+	{
+		if(self::$notfound == null)
+		{
+			self::$notfound = new CSceneSimpleError(_('そのページは存在しない。'));
+		}
+		return self::$notfound;
+	}
 
 	/**
 	 *	未定義の動作状態を指定した場合のエラー オブジェクトを取得します。
